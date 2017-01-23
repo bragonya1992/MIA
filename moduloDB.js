@@ -139,11 +139,15 @@ from Curso where Nombre=?),?,?,?,?);`,[username,curso,seccion,semestreActual,ani
 }
 
 
-exports.publicar=function(CodigoMaestro,para,contenido,socket){
+exports.publicar=function(CodigoMaestro,para,contenido,socket,app_users,socketon){
   var notes;
   connection.query(`insert into publicacion(idPublicacion,para,fkCodigoMaestro,contenido) values(0,?,?,?);`,[para,CodigoMaestro,contenido], function(err, rows, fields) {
     if (!err){
-      notes=1;
+      notes = rows;
+      notes="{\"publicacion\":[";
+      notes+="{\"idPublicacion\":\""+rows.insertId+"\",\"fecha\":\"hace pocos momentos\",\"contenido\":\""+contenido+"\",\"para\":\""+para+"\"}";
+      notes+="]}";
+      //console.log("ESTAS SON MIS NOTAS: "+JSON.stringify(fields));
     }
     else{
       console.log('Error while performing Query.'+err);
@@ -151,15 +155,15 @@ exports.publicar=function(CodigoMaestro,para,contenido,socket){
     }
   }).on('end', function(){
               console.log("salida on: "+notes);
-              if(notes==1){
+              if(notes!=0){
                 socket.emit("responsePublicacion","Su ultima publicacion fue exitosa");
                 if(para==1){
-                  notificarTodosAlumnos();
+                  notificarTodosAlumnos(notes,app_users,socketon);
                 }else if(para ==2){
-                  notificarTodosMaestro();
+                  notificarTodosMaestro(notes,app_users,socketon);
                 }else if(para ==0){
-                  notificarTodosMaestro();
-                  notificarTodosAlumnos();
+                  notificarTodosMaestro(notes,app_users,socketon);
+                  notificarTodosAlumnos(notes,app_users,socketon);
                 }
               }else{
                 socket.emit("responsePublicacion","Su ultima publicacion fue erronea, lo sentimos");
@@ -170,8 +174,7 @@ exports.publicar=function(CodigoMaestro,para,contenido,socket){
 exports.getPublicacion=function(para,pagination,socket){
   var notes;
   var realPaginationInf = pagination*10;
-  var realPaginationSup = realPaginationInf+10;
-  connection.query(`select idPublicacion,DATE_FORMAT(fecha,'%b %d %Y %h:%i %p') As fecha, contenido, para from publicacion where para=0 or para=? order by fecha desc limit ?,?;`,[para,realPaginationInf,realPaginationSup], function(err, rows, fields) {
+  connection.query(`select idPublicacion,DATE_FORMAT(fecha,'%Y-%m-%d %H:%i') As fecha, contenido, para from publicacion where para=0 or para=? order by fecha desc limit ?,10;`,[para,realPaginationInf], function(err, rows, fields) {
     if (!err){
       notes="{\"publicacion\":[";
       for(var i in rows){
@@ -191,7 +194,7 @@ exports.getPublicacion=function(para,pagination,socket){
 }
 
 
-function notificarTodosAlumnos (){
+function notificarTodosAlumnos (notesContent,app_users,socket){
   var notes;
   connection.query(`select carne from alumno;`, function(err, rows, fields) {
     if (!err){
@@ -208,7 +211,8 @@ function notificarTodosAlumnos (){
                   for(j in app_users){
                     if(notes[i].carne==app_users[j].username){
                       console.log(i+" "+notes[i].carne+" socket: "+j);
-                      socket.connected[j].emit("newPublications","{\"mensaje\":\"Tienes nuevas publicaciones en la seccion de noticias FARUSAC\"}");
+                      socket.connected[j].emit("newPublication","{\"mensaje\":\"Tienes nuevas publicaciones en la seccion de noticias FARUSAC\"}");
+                      socket.connected[j].emit("recieverRealTimePublications",notesContent);
                     }
                   }
 
@@ -218,7 +222,8 @@ function notificarTodosAlumnos (){
 }
 
 
-function notificarTodosMaestro (){
+
+function notificarTodosMaestro (notesContent,app_users,socket){
   var notes;
   connection.query(`select codigomaestro from maestro;`, function(err, rows, fields) {
     if (!err){
@@ -236,6 +241,7 @@ function notificarTodosMaestro (){
                     if(notes[i].codigomaestro==app_users[j].username){
                       console.log(i+" "+notes[i].codigomaestro+" socket: "+j);
                       socket.connected[j].emit("newPublications","{\"mensaje\":\"Tienes nuevas publicaciones en la seccion de noticias FARUSAC\"}");
+                      socket.connected[j].emit("recieverRealTimePublications",notesContent);
                     }
                   }
 
@@ -406,7 +412,7 @@ SET visto=1 WHERE visto=0 and asignacionAlumno.fkCarne=? and Curso.Nombre=? and 
 exports.getTopAlumno=function(carne,curso,seccion,inf,sup,socket){
   console.log(carne+ "pide mas mensajes del curso "+curso);
   var notes;
-  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,DATE_FORMAT(Mensaje.fecha,'%b %d %Y %h:%i %p') As Fecha,asignacionAlumno.fkSeccion as Seccion, Instancia.visto As Visibilidad
+  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,DATE_FORMAT(Mensaje.fecha,'%Y-%m-%d %H:%i') As Fecha,asignacionAlumno.fkSeccion as Seccion, Instancia.visto As Visibilidad
 from Instancia  
 join asignacionAlumno on fkCodigoCursoAlumno=fkCodigoCurso and Instancia.fkCarne=asignacionAlumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
 join Curso on asignacionAlumno.fkCodigoCurso=CodigoCurso
@@ -435,7 +441,7 @@ order by Mensaje.fecha desc limit `+inf+`,`+sup,[carne,semestreActual,anioActual
 exports.getMensajesAlumno=function(carne,curso,seccion,socket){
   console.log(carne+ "pide mas mensajes del curso "+curso);
   var notes;
-  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,DATE_FORMAT(Mensaje.fecha,'%b %d %Y %h:%i %p') as Fecha,asignacionAlumno.fkSeccion as Seccion, Instancia.visto As Visibilidad
+  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,DATE_FORMAT(Mensaje.fecha,'%Y-%m-%d %H:%i') as Fecha,asignacionAlumno.fkSeccion as Seccion, Instancia.visto As Visibilidad
 from Instancia  
 join asignacionAlumno on fkCodigoCursoAlumno=fkCodigoCurso and Instancia.fkCarne=asignacionAlumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
 join Curso on asignacionAlumno.fkCodigoCurso=CodigoCurso
@@ -464,7 +470,7 @@ order by Mensaje.fecha desc limit 10;`,[carne,semestreActual,anioActual,curso,se
 exports.getMensajesMaestro=function(codigo,curso,seccion,socket){
   console.log(codigo+ "pide mas mensajes del curso "+curso);
   var notes;
-  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,Mensaje.fkSeccion as Seccion,DATE_FORMAT(Mensaje.fecha,'%b %d %Y %h:%i %p') as Fecha
+  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,Mensaje.fkSeccion as Seccion,DATE_FORMAT(Mensaje.fecha,'%Y-%m-%d %H:%i') as Fecha
 from Mensaje  
 join Curso on Mensaje.fkCodigoCurso=CodigoCurso
 where Mensaje.fkCodigoMaestro=? and Mensaje.fkSemestre=? and Mensaje.fkAnio=? and Curso.Nombre=? and Mensaje.fkSeccion=?
@@ -491,7 +497,7 @@ order by Mensaje.fecha desc limit 10`,[codigo,semestreActual,anioActual,curso,se
 exports.getTopMaestro=function(codigo,curso,seccion,inf,sup,socket){
   console.log(codigo+ "pide mas mensajes del curso "+curso);
   var notes;
-  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,DATE_FORMAT(Mensaje.fecha,'%b %d %Y %h:%i %p') As Fecha,Mensaje.fkSeccion as Seccion,Mensaje.fecha
+  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,DATE_FORMAT(Mensaje.fecha,'%Y-%m-%d %H:%i') As Fecha,Mensaje.fkSeccion as Seccion,Mensaje.fecha
 from Mensaje  
 join Curso on Mensaje.fkCodigoCurso=CodigoCurso
 where Mensaje.fkCodigoMaestro=? and Mensaje.fkSemestre=? and Mensaje.fkAnio=? and Curso.Nombre=? and Mensaje.fkSeccion=?

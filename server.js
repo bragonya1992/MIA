@@ -118,7 +118,7 @@ io.sockets.on('connection', function(socket) {
     if(app_users[this.id]){
       var peticion = JSON.parse(cad);
       console.log(app_users[this.id].username+" (super usuario) va a publicar ");
-      DB.publicar(peticion.codigo,peticion.para,peticion.contenido,io.sockets.connected[this.id]);
+      DB.publicar(peticion.codigo,peticion.para,peticion.contenido,io.sockets.connected[this.id],app_users,io.sockets);
     }
   
   });
