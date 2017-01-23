@@ -35,7 +35,7 @@ import java.util.List;
 public class SocketIO {
     private Socket mSocket;
     private Context miContexto;
-    private String nombreHost="192.168.42.131";
+    private String nombreHost="192.168.1.6";
     private String puertoHost="8081";
     private static final int NOTIFICATION_ID = 101;
     private NotificationCompat.Builder builder;
@@ -87,6 +87,9 @@ public class SocketIO {
         mSocket.on("recibirAsignacionCurso",recibirAsignacionCurso);
         mSocket.on("recibirEstadoRegistro",recibirEstadoRegistro);
         mSocket.on("recieverPublications",recieverPublications);
+        mSocket.on("newPublication",newPublication);
+        mSocket.on("responsePublicacion",responsePublicacion);
+        mSocket.on("recieverRealTimePublications",recieverRealTimePublications);
     }
 
     public void pedirCursosMaestro(){
@@ -202,6 +205,22 @@ public class SocketIO {
                 public void run() {
                     try {
                         principal.addPublications(MensajesManager.convertJsonToPublications(args[0].toString().trim()));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener recieverRealTimePublications = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        principal.addPublicationFirst(MensajesManager.convertJsonToPublications(args[0].toString().trim()));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -370,6 +389,32 @@ public class SocketIO {
             });
         }
     };
+    private Emitter.Listener newPublication = new Emitter.Listener() {
+
+        @Override
+        public void call(final Object... args) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    newPublicationNotification(args[0].toString().trim());
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener responsePublicacion = new Emitter.Listener() {
+
+        @Override
+        public void call(final Object... args) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(miContexto,args[0].toString().trim(),Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    };
+
     private Emitter.Listener notificacion = new Emitter.Listener() {
 
         @Override
@@ -390,7 +435,33 @@ public class SocketIO {
         NotificationManager notificationManager = (NotificationManager) miContexto.getSystemService(miContexto.NOTIFICATION_SERVICE);
         notificationManager.cancel("MensajeriaFARUSAC", NOTIFICATION_ID);
     }
-
+    public void newPublicationNotification(String valor){
+        if(!principal.mIsInForegroundMode && !MensajesAlumnos.mIsInForegroundMode && !MensajesMaestros.mIsInForegroundMode) {
+                    Intent intent = new Intent(miContexto, Autenticacion.class);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(miContexto, 0, intent, 0);
+                    //Se construye la notificacion
+                    NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+                    inboxStyle.setBigContentTitle("Mensajeria FARUSAC");
+                    builder.setSmallIcon(R.drawable.ic_menu_share);
+                    builder.setContentIntent(pendingIntent);
+                    builder.setAutoCancel(true);
+                    builder.setLargeIcon(BitmapFactory.decodeResource(miContexto.getResources(), R.drawable.ic_menu_slideshow));
+                    builder.setContentTitle("Mensajeria FARUSAC");
+                    builder.setContentText("Tienes publicaciones nuevas");
+                    builder.setTicker("Nuevas publicaciones de la unidad central de FARUSAC");
+                    //Vibracion
+                    builder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
+                    //LED
+                    builder.setLights(Color.RED, 3000, 3000);
+                    //Tono
+                    builder.setSound(Uri.parse("android.resource://com.usac.brayan.mensajeriaarquitectura/" + R.raw.dog));
+                    inboxStyle.addLine("Ve a la pagina princiapal de MIA");
+                    builder.setStyle(inboxStyle);
+                    // Enviar la notificacion
+                    NotificationManager notificationManager = (NotificationManager) miContexto.getSystemService(miContexto.NOTIFICATION_SERVICE);
+                    notificationManager.notify("MensajeriaFARUSAC", NOTIFICATION_ID, builder.build());
+        }
+    }
 
     public void nuevaNotificacion(String valor){
         if(!principal.mIsInForegroundMode && !MensajesAlumnos.mIsInForegroundMode && !MensajesMaestros.mIsInForegroundMode) {

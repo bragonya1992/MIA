@@ -56,7 +56,8 @@
                 android:layout_gravity="center"
                 android:textSize="20dp"
                 android:hint="Introduzca su CUI"
-                android:inputType="number"/>
+                android:inputType="number"
+                android:maxLines="1"/>
 
             <TextView
                 android:layout_gravity="center"
@@ -76,7 +77,8 @@
                 android:gravity="center_vertical"
                 android:layout_gravity="center"
                 android:textSize="20dp"
-                android:hint="Introduzca su nombre"/>
+                android:hint="Introduzca su nombre"
+                android:maxLines="1"/>
 
 
             <TextView
@@ -98,7 +100,8 @@
                 android:layout_gravity="center"
                 android:inputType="textPassword"
                 android:textSize="20dp"
-                android:hint="Introduzca su contraseña"/>
+                android:hint="Introduzca su contraseña"
+                android:maxLines="1"/>
 
             <TextView
                 android:layout_gravity="center"
@@ -119,7 +122,8 @@
                 android:layout_gravity="center"
                 android:inputType="textPassword"
                 android:textSize="20dp"
-                android:hint="Introduzca su contraseña"/>
+                android:hint="Introduzca su contraseña"
+                android:maxLines="1"/>
             <TextView
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
@@ -131,11 +135,10 @@
                 android:text="Elija su categoria (Maestro o alumno)"/>
             <Spinner
                 android:layout_gravity="center"
-                android:layout_width="300dp"
-                android:layout_height="34dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/spinner"
                 android:textAlignment="center"
-                android:background="#dee5ef"
                 android:entries="@array/roles"
                 android:layout_marginTop="10dp"/>
 

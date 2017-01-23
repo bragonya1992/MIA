@@ -30,6 +30,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -65,7 +68,11 @@ public class principal extends AppCompatActivity
         private static int mensajes_totales=0;
         private int pagination=0;
         public static boolean mIsInForegroundMode=false;
-        static Context ct;private boolean loading = true;
+        static Context ct;
+    private static boolean loading = true;
+        private CheckBox chkAlumnos;
+        private CheckBox chkMaestros;
+        private EditText content_publication;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
 
     @Override
@@ -107,10 +114,35 @@ public class principal extends AppCompatActivity
         ct=this;
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        chkAlumnos = (CheckBox) findViewById(R.id.chkAlumnos);
+        chkMaestros = (CheckBox) findViewById(R.id.chkMaestros);
+        content_publication = (EditText) findViewById(R.id.content_publication);
         IntentAlumnos = new Intent(this, MensajesAlumnos.class);
         IntentMaestros = new Intent(this, MensajesMaestros.class);
         iniciarAdapter();
+    }
+
+
+    public void sendToServerPublication(View v){
+        String contenido = content_publication.getText().toString();
+        int para =para();
+        if(para==-1){
+            Toast.makeText(this,"Por favor seleccione a quien desea enviar la publicacion",Toast.LENGTH_LONG).show();
+        }else{
+            ServicioNotificacionesFARUSAC.sc.publicar(para,contenido);
+        }
+    }
+
+    private int para(){
+        if(chkAlumnos.isChecked() && !chkMaestros.isChecked()){
+            return 1;
+        }else if(!chkAlumnos.isChecked() && chkMaestros.isChecked()){
+            return 2;
+        }else if(chkAlumnos.isChecked() && chkMaestros.isChecked()){
+            return 0;
+        }else{
+            return -1;
+        }
     }
 
 
@@ -182,12 +214,19 @@ public class principal extends AppCompatActivity
                 }
             }
         });
-        ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
+        //ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
     }
 
     public static void addPublications(List<Publicacion> newMessages){
         publications_list.addAll(newMessages);
         adapter.notifyDataSetChanged();
+        loading=true;
+    }
+
+    public static void addPublicationFirst(List<Publicacion> newMessages){
+        publications_list.add(0,newMessages.get(0));
+        adapter.notifyDataSetChanged();
+        loading=true;
     }
 
     public static Curso buscarCurso(String nombre, String seccion){
@@ -267,10 +306,14 @@ public class principal extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        pagination=0;
+        publications_list.clear();
         if(Autenticacion.sm.getRole()==2){
             ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
+            ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
         }else{
             ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
+            ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
         }
         mIsInForegroundMode = true;
     }
