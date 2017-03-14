@@ -1,0 +1,22 @@
+{
+  "name": "salachat",
+  "version": "1.0.0",
+  "description": "aprendiendo a usar socketio",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Brayan",
+  "license": "ISC",
+  "dependencies": {
+    "express": "",
+    "socket.io": "",
+    "mysql": "^2.5.4",
+    "isarray": "",
+    "core-util-is": "",
+    "inherits":""
+  },
+  "devDependencies": {
+    "core-util-is": "^1.0.2"
+  }
+}
