@@ -65,6 +65,7 @@ public class AsignacionDeCursos extends AppCompatActivity {
                 return true;
             }
         });
+        buscador.setQueryHint("Busca tu curso aqui");
 
         ServicioNotificacionesFARUSAC.sc.pedirListadoCurso();
     }

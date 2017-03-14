@@ -213,8 +213,6 @@ public class principal extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         // Opciones de tres puntos
-        menu.clear();
-        menu.add("Cerrar Sesion");
         if(Autenticacion.sm.getRole()!=2){
             menu.add("Listado de cursos");
         }

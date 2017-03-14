@@ -53,6 +53,7 @@ public class AdaptadorDeCurso extends RecyclerView.Adapter<AdaptadorDeCurso.Curs
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             Log.d("Voy a asignar el curso "+mContactFilter.get(getAdapterPosition()).nombre,"ASIGNAOR");
+            ServicioNotificacionesFARUSAC.sc.enviarAsignacionCurso(mContactFilter.get(getAdapterPosition()).nombre,mContactFilter.get(getAdapterPosition()).seccion);
             return true;
         }
     }

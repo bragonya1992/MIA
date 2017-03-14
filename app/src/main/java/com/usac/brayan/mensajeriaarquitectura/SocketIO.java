@@ -35,7 +35,7 @@ import java.util.List;
 public class SocketIO {
     private Socket mSocket;
     private Context miContexto;
-    private String nombreHost="192.168.1.6";
+    private String nombreHost="192.168.42.131";
     private String puertoHost="8081";
     private static final int NOTIFICATION_ID = 101;
     private NotificationCompat.Builder builder;
@@ -68,6 +68,7 @@ public class SocketIO {
         mSocket.on("recibirMensajes",recibirMensajes);
         mSocket.on("recibirTop",recibirTop);
         mSocket.on("recibirListadoCursos",recibirListadoCursos);
+        mSocket.on("recibirAsignacionCurso",recibirAsignacionCurso);
     }
 
     public void pedirCursosMaestro(){
@@ -107,6 +108,10 @@ public class SocketIO {
         mSocket.emit("sendMessage","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\",\"mensaje\":\""+mensaje+"\"}");
     }
 
+    public void enviarAsignacionCurso(String curso, String seccion){
+        mSocket.emit("enviarAsignacionCurso","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
+    }
+
     public void close(){
         mSocket.close();
     }
@@ -119,6 +124,24 @@ public class SocketIO {
                 public void run() {
                     try {
                         principal.AsignarCursos(args[0].toString().trim());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener recibirAsignacionCurso = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONObject o = new JSONObject(args[0].toString().trim());
+                        Toast.makeText(miContexto,"Estado de la asignacion del curso "+o.getString("curso")+" seccion "+o.getString("seccion")+":"+o.getString("estado"),Toast.LENGTH_LONG).show();
+                        //principal.AsignarCursos(args[0].toString().trim());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
