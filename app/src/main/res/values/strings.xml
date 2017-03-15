@@ -26,5 +26,10 @@
         <item>Alumno</item>
         <item>Super usuario</item>
     </string-array>
+
+    <string-array name="roles">
+        <item>maestro</item>
+        <item>alumno</item>
+    </string-array>
     <string name="title_activity_principal_alumnos">PrincipalAlumnos</string>
 </resources>

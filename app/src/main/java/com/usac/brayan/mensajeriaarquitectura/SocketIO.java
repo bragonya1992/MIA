@@ -58,8 +58,16 @@ public class SocketIO {
         mSocket.emit("autenticar","{\"carne\":\""+carne+"\",\"role\":\""+role+"\",\"pass\":\""+pass+"\"}");
     }
 
+    public void registrarUsuario(String codigo,String username, String role, String pass){
+        mSocket.emit("registrarUsuario","{\"codigo\":\""+codigo+"\",\"role\":\""+role+"\",\"username\":\""+username+"\",\"pass\":\""+pass+"\"}");
+    }
+
     public void esperarRespuesta(){
         mSocket.on("responseAutenticar",responseAutenticar);
+    }
+
+    public void esperarRegistro(){
+        mSocket.on("recibirEstadoRegistro",recibirEstadoRegistro);
     }
 
     public void escucharNotificaciones(){
@@ -69,6 +77,7 @@ public class SocketIO {
         mSocket.on("recibirTop",recibirTop);
         mSocket.on("recibirListadoCursos",recibirListadoCursos);
         mSocket.on("recibirAsignacionCurso",recibirAsignacionCurso);
+        mSocket.on("recibirEstadoRegistro",recibirEstadoRegistro);
     }
 
     public void pedirCursosMaestro(){
@@ -141,6 +150,24 @@ public class SocketIO {
                     try {
                         JSONObject o = new JSONObject(args[0].toString().trim());
                         Toast.makeText(miContexto,"Estado de la asignacion del curso "+o.getString("curso")+" seccion "+o.getString("seccion")+":"+o.getString("estado"),Toast.LENGTH_LONG).show();
+                        //principal.AsignarCursos(args[0].toString().trim());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener recibirEstadoRegistro = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONObject o = new JSONObject(args[0].toString().trim());
+                        Toast.makeText(miContexto,"El estado de su registro ha sido: "+o.getString("estado"),Toast.LENGTH_LONG).show();
                         //principal.AsignarCursos(args[0].toString().trim());
                     } catch (JSONException e) {
                         e.printStackTrace();
