@@ -1,6 +1,7 @@
 package com.usac.brayan.mensajeriaarquitectura;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -39,8 +40,8 @@ public class MensajesAlumnos extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal_alumnos);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         toolbar.setTitle(actualCurso.nombre+" - "+actualCurso.seccion);
+        setSupportActionBar(toolbar);
         listView = (ListView) findViewById(R.id.msgviewA);
         setLista();
         chatArrayAdapter = actualCurso.mensajes;
@@ -158,9 +159,14 @@ public class MensajesAlumnos extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        String nombre =(String)item.getTitle();
+        //manipular las acciones del menu de los tres puntos
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (nombre.equals("Cerrar Sesion")) {
+            Autenticacion.sm.logoutUser();
+            stopService(new Intent(this,ServicioNotificacionesFARUSAC.class));
+            this.finish();
+            System.exit(0);
             return true;
         }
 

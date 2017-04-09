@@ -1,6 +1,7 @@
 package com.usac.brayan.mensajeriaarquitectura;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -77,7 +78,7 @@ public class MensajesMaestros extends AppCompatActivity
             @Override
             public void onClick(View arg0) {
                 ServicioNotificacionesFARUSAC.sc.enviarMensaje(actualCurso.nombre,actualCurso.seccion,chatText.getText().toString().trim());
-                sendChatMessage(new ChatMessage(2,actualCurso.nombre,actualCurso.seccion,chatText.getText().toString(),""));
+                sendChatMessage(new ChatMessage(2,actualCurso.nombre,actualCurso.seccion,chatText.getText().toString(),"","Hace pocos momentos"));
 
             }
         });
@@ -184,9 +185,14 @@ public class MensajesMaestros extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        String nombre =(String)item.getTitle();
+        //manipular las acciones del menu de los tres puntos
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (nombre.equals("Cerrar Sesion")) {
+            Autenticacion.sm.logoutUser();
+            stopService(new Intent(this,ServicioNotificacionesFARUSAC.class));
+            this.finish();
+            System.exit(0);
             return true;
         }
 

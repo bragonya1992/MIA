@@ -23,7 +23,7 @@ public class MensajesManager {
         if (jsonArray.length() > 0) {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject temp = jsonArray.getJSONObject(i);
-                ChatMessage temporal = new ChatMessage(temp.getInt("visibilidad"),temp.getString("seccion"),temp.getString("curso"),temp.getString("mensaje"),temp.getString("catedratico"));
+                ChatMessage temporal = new ChatMessage(temp.getInt("visibilidad"),temp.getString("seccion"),temp.getString("curso"),temp.getString("mensaje"),temp.getString("catedratico"),temp.getString("fecha"));
                 salida.addLast(temporal);
             }
         }
@@ -37,7 +37,7 @@ public class MensajesManager {
         if (jsonArray.length() > 0) {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject temp = jsonArray.getJSONObject(i);
-                ChatMessage temporal = new ChatMessage(temp.getInt("visibilidad"),temp.getString("seccion"),temp.getString("curso"),temp.getString("mensaje"),temp.getString("catedratico"));
+                ChatMessage temporal = new ChatMessage(temp.getInt("visibilidad"),temp.getString("seccion"),temp.getString("curso"),temp.getString("mensaje"),temp.getString("catedratico"),temp.getString("fecha"));
                 salida.addLast(temporal);
             }
         }

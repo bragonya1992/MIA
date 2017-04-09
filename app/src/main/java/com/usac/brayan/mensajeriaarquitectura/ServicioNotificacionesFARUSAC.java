@@ -36,6 +36,7 @@ public class ServicioNotificacionesFARUSAC extends Service{
         sm = new SessionManager(this);
         sc=new SocketIO(this);
         sc.escucharNotificaciones();
+        sc.registrarse();
         Toast.makeText(this, "Servicio NOTIFICACIONES FARUSAC corriendo!", Toast.LENGTH_SHORT).show();
 
     }

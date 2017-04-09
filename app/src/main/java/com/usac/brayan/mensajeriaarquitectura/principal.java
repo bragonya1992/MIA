@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.content.Context;
 import android.widget.Toast;
@@ -52,11 +53,14 @@ public class principal extends AppCompatActivity
         public static LinkedList<Curso> listaCursos= new LinkedList<>();
         public static Menu nvMenu;
         public static TextView tx;
+        public static TextView notificationsNumber;
+        public static RelativeLayout content_circle;
         public  Intent IntentAlumnos;
         public  Intent IntentMaestros;
         private RecyclerView recycler;
         private RecyclerView.Adapter adapter;
         private RecyclerView.LayoutManager lManager;
+        private static int mensajes_totales=0;
         Button b;
         public static boolean mIsInForegroundMode=false;
         static Context ct;
@@ -67,6 +71,8 @@ public class principal extends AppCompatActivity
         setContentView(R.layout.activity_principal);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         tx = (TextView) findViewById(R.id.textView2);
+        notificationsNumber=(TextView) findViewById(R.id.textOne);
+        content_circle = (RelativeLayout) findViewById(R.id.content_circle);
         b = (Button) findViewById(R.id.btnNotificacion);
         if(Autenticacion.sm.getRole()==2) {
             toolbar.setTitle("Modo para docentes"); // titulo de la ventana
@@ -80,7 +86,7 @@ public class principal extends AppCompatActivity
         nvMenu =nv.getMenu();
         //mapearCursos(nvMenu);
         setSupportActionBar(toolbar);
-        tx.setText(Html.fromHtml("this is <u>underlined</u> text and <b>This text has a color</b>")); // for 24 api and more
+        tx.setText(Html.fromHtml("Bienvenido a MIA  <b><u>"+Autenticacion.sm.getName()+"</u></b>, estas son tus noticias")); // for 24 api and more
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -181,13 +187,21 @@ public class principal extends AppCompatActivity
 
     public static void mapearCursos(){
         nvMenu.clear();
+        mensajes_totales=0;
         for(int i=0;i<listaCursos.size();i++) {
             MenuItem m=nvMenu.add(listaCursos.get(i).nombre+" - "+listaCursos.get(i).seccion);// Agregar elemento al menu deslizable
             int n=listaCursos.get(i).contador;
             if(n>0) {
                 principal p = new principal();
+                mensajes_totales+=n;
                 p.addIcon(m, n, ct);
             }
+        }
+        if(mensajes_totales>0){
+            content_circle.setVisibility(View.VISIBLE);
+            notificationsNumber.setText(""+mensajes_totales);
+        }else{
+            content_circle.setVisibility(View.GONE);
         }
     }
     public void onClic(View view){

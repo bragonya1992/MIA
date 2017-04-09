@@ -8,15 +8,25 @@ public class Mensaje {
     private String curso;
     private String seccion;
     private String mensaje;
+    private String fecha;
 
-    public Mensaje(String seccion, String curso, String mensaje) {
+    public Mensaje(String seccion, String curso, String mensaje, String fecha) {
         this.seccion = seccion;
         this.curso = curso;
         this.mensaje = mensaje;
+        this.fecha = fecha;
     }
 
     public String getCurso() {
         return curso;
+    }
+
+    public String getFecha(){
+        return this.fecha;
+    }
+
+    public void setFecha(String fecha){
+        this.fecha=fecha;
     }
 
     public String getSeccion() {

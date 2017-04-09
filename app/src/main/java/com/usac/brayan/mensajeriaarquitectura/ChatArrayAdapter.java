@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
     private int bold2=-1;
     private int underline1=-1;
     private int underline2=-1;
+    private TextView date;
 
     @Override
     public void add(ChatMessage object) {
@@ -66,7 +68,13 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
             row = inflater.inflate(R.layout.left, parent, false);
         }
         chatText = (TextView) row.findViewById(R.id.msgr);
-        chatText.setText(Html.fromHtml(convertion(chatMessageObj.getMessage())));
+        chatText.setText(Html.fromHtml(convertion(chatMessageObj.getMessage()).replace("$32","<br>")));
+        date = (TextView) row.findViewById(R.id.fecha_msj);
+        try {
+            date.setText(chatMessageObj.getFecha());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         //chatText.setText(Html.fromHtml("this is <u>underlined</u> text and <b>This text has a color</b>"));
         return row;
     }

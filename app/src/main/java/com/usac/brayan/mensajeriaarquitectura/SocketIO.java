@@ -35,7 +35,7 @@ import java.util.List;
 public class SocketIO {
     private Socket mSocket;
     private Context miContexto;
-    private String nombreHost="192.168.42.131";
+    private String nombreHost="192.168.1.6";
     private String puertoHost="8081";
     private static final int NOTIFICATION_ID = 101;
     private NotificationCompat.Builder builder;
@@ -373,7 +373,11 @@ public class SocketIO {
                 builder.setAutoCancel(true);
                 builder.setLargeIcon(BitmapFactory.decodeResource(miContexto.getResources(), R.drawable.ic_menu_slideshow));
                 builder.setContentTitle("Mensajeria FARUSAC");
-                builder.setContentText("Tienes " + notificaciones.size() + " mensajes nuevos");
+                if(notificaciones.size()<5) {
+                    builder.setContentText("Tienes " + notificaciones.size() + " mensajes nuevos");
+                }else{
+                    builder.setContentText("Tienes varios mensajes nuevos");
+                }
                 builder.setTicker(notificaciones.get(0).getCurso()+ "-" + notificaciones.get(0).getSeccion() + ":" + notificaciones.get(0).getMessage());
                 //Vibracion
                 builder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
@@ -383,7 +387,7 @@ public class SocketIO {
                 builder.setSound(Uri.parse("android.resource://com.usac.brayan.mensajeriaarquitectura/"+R.raw.dog));
                 for (int i = 0; i < notificaciones.size(); i++) {
                     ChatMessage temp = notificaciones.get(i);
-                    inboxStyle.addLine(temp.getCurso() + "-" + temp.getSeccion() + ":" + temp.getMessage());
+                    inboxStyle.addLine(temp.getCurso() + "-" + temp.getSeccion() + ":" + temp.getMessage().replace("$32"," "));
 
                 }
                 builder.setStyle(inboxStyle);

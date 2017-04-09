@@ -5,13 +5,15 @@ public class ChatMessage {
     private String message;
     private String curso;
     private String seccion;
+    private String fecha;
 
-    public ChatMessage(int left, String seccion,String curso, String message,String catedratico) {
+    public ChatMessage(int left, String seccion,String curso, String message,String catedratico, String fecha) {
         super();
         this.left = left;
         this.message = message;
         this.curso=curso;
         this.seccion=seccion;
+        this.fecha = fecha;
     }
 
     public int isLeft() {
@@ -28,6 +30,14 @@ public class ChatMessage {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getFecha(){
+        return this.fecha;
+    }
+
+    public void setFecha(String fecha){
+        this.fecha=fecha;
     }
 
     public String getCurso() {
