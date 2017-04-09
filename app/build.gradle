@@ -3,13 +3,20 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
-
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
     defaultConfig {
         applicationId "com.usac.brayan.mensajeriaarquitectura"
         minSdkVersion 15
         targetSdkVersion 24
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
     buildTypes {
         release {
@@ -27,4 +34,5 @@ dependencies {
     compile 'com.github.nkzawa:socket.io-client:0.3.0'
     compile 'com.android.support:recyclerview-v7:21.0.+'
     compile 'com.android.support:cardview-v7:21.0.+'
+    compile 'com.google.android.gms:play-services-vision:7.8.0'
 }

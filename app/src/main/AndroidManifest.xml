@@ -3,12 +3,13 @@
     package="com.usac.brayan.mensajeriaarquitectura">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/iconov3"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -24,6 +25,11 @@
             android:name=".Autenticacion"
             android:label="@string/title_activity_autenticacion"
             android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
         </activity>
 
@@ -39,7 +45,6 @@
         </activity>
         <activity
             android:name=".MensajesAlumnos"
-            android:label="@string/title_activity_principal_alumnos"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
@@ -51,12 +56,9 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".Registro">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".Registro"></activity>
+        <activity android:name=".lectorQRCode">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

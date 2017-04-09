@@ -13,9 +13,9 @@
         <ImageView
             android:id="@+id/logoFARUSAC"
             android:layout_width="100dp"
-            android:layout_height="150dp"
+            android:layout_height="100dp"
             android:scaleType="centerCrop"
-            android:background="@mipmap/logousac"/>
+            android:background="@mipmap/image_publicacion"/>
 
         <TextView
             android:layout_width="wrap_content"
