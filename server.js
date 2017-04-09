@@ -53,7 +53,7 @@ io.sockets.on('connection', function(socket) {
     var peticion = JSON.parse(cad);
     if(app_users[this.id]){
       console.log(app_users[this.id].username+" pidio su lista de cursos");
-      DB.getCursosMaestro(peticion.username,io.sockets.in(this.id));
+      DB.getCursosMaestro(peticion.username,io.sockets.connected[this.id]);
     }
   
   });
@@ -62,8 +62,20 @@ io.sockets.on('connection', function(socket) {
     var peticion = JSON.parse(cad);
     if(app_users[this.id]){
       console.log(app_users[this.id].username+" pidio asigrnarse el curso "+peticion.curso+" seccion: "+peticion.seccion);
-      DB.asignarCurso(peticion.username,peticion.curso,peticion.seccion,io.sockets.in(this.id));
+      DB.asignarCurso(peticion.username,peticion.curso,peticion.seccion,io.sockets.connected[this.id]);
     }
+  
+  });
+
+    socket.on('registrarUsuario',function(cad){
+    var peticion = JSON.parse(cad);
+    console.log(this.id+" pidio registrarse como "+peticion.role+" con nombre "+peticion.username);
+    if(peticion.role=="maestro"){
+      DB.registrarMaestro(peticion.username,peticion.pass,peticion.codigo,io.sockets.connected[this.id]);
+    }else{
+      DB.registrarAlumno(peticion.username,peticion.pass,peticion.codigo,io.sockets.connected[this.id]);
+    }
+    
   
   });
 
@@ -71,7 +83,7 @@ io.sockets.on('connection', function(socket) {
     if(app_users[this.id]){
     var peticion = JSON.parse(cad);
       console.log(app_users[this.id].username+" el alumno pidio su lista de cursos");
-      DB.getCursosAlumno(peticion.username,io.sockets.in(this.id));
+      DB.getCursosAlumno(peticion.username,io.sockets.connected[this.id]);
     }
   
   });
@@ -82,7 +94,7 @@ io.sockets.on('connection', function(socket) {
       var peticion = JSON.parse(cad);
       console.log("JSON: "+cad);
       console.log(app_users[this.id].username+" pidio su mensajes de curso "+peticion.curso);
-      DB.getMensajesAlumno(peticion.username,peticion.curso,peticion.seccion,io.sockets.in(this.id));
+      DB.getMensajesAlumno(peticion.username,peticion.curso,peticion.seccion,io.sockets.connected[this.id]);
     }
   
   });
@@ -93,7 +105,7 @@ io.sockets.on('connection', function(socket) {
       var peticion = JSON.parse(cad);
       console.log("JSON: "+cad);
       console.log(app_users[this.id].username+" pidio su mensajes de su curso curso "+peticion.curso);
-      DB.getMensajesMaestro(peticion.username,peticion.curso,peticion.seccion,io.sockets.in(this.id));
+      DB.getMensajesMaestro(peticion.username,peticion.curso,peticion.seccion,io.sockets.connected[this.id]);
     }
   
   });
@@ -104,7 +116,7 @@ io.sockets.on('connection', function(socket) {
       var peticion = JSON.parse(cad);
       console.log("JSON: "+cad);
       console.log(app_users[this.id].username+" pidio top de su curso curso "+peticion.curso);
-      DB.getTopMaestro(peticion.username,peticion.curso,peticion.seccion,peticion.inicio,peticion.final,io.sockets.in(this.id));
+      DB.getTopMaestro(peticion.username,peticion.curso,peticion.seccion,peticion.inicio,peticion.final,io.sockets.connected[this.id]);
     }
   
   });
@@ -120,7 +132,7 @@ io.sockets.on('connection', function(socket) {
     var peticion = JSON.parse(cad);
         if(app_users[this.id]){
           console.log("inicio: "+peticion.inicio+" final: "+peticion.final);
-          DB.getTopAlumno(peticion.username,peticion.curso,peticion.seccion,peticion.inicio,peticion.final,io.sockets.in(this.id));
+          DB.getTopAlumno(peticion.username,peticion.curso,peticion.seccion,peticion.inicio,peticion.final,io.sockets.connected[this.id]);
         }
   });
 
@@ -128,7 +140,7 @@ io.sockets.on('connection', function(socket) {
   socket.on('autenticar',function(cad){
     var peticion = JSON.parse(cad);
     console.log("Quiere autenticarse: "+cad);
-    DB.autenticar(peticion.carne,peticion.pass,peticion.role,io.sockets.in(this.id));
+    DB.autenticar(peticion.carne,peticion.pass,peticion.role,io.sockets.connected[this.id]);
   });
 
   socket.on('sendMessage',function(cad){
@@ -140,7 +152,7 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('getListadoCursos',function(){
     if(app_users[this.id]){
-      DB.getListadoCursos(io.sockets.in(this.id));
+      DB.getListadoCursos(io.sockets.connected[this.id]);
     }
     
   

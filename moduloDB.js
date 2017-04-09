@@ -51,7 +51,7 @@ exports.autenticar=function(carne,pass,role,socket){
       notes="{\"error\":\""+err+"\"}";
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on picker: "+notes);
                 socket.emit("responseAutenticar", notes);
             });
 }
@@ -59,13 +59,13 @@ exports.autenticar=function(carne,pass,role,socket){
 
 exports.getCursosMaestro=function(CodigoMaestro,socket){
   var notes;
-  connection.query(`select Curso.Nombre,Maestro.Nombre As Catedratico,asignacionMaestro.fkSeccion as Seccion from asignacionMaestro 
+  connection.query(`select Curso.Nombre As Nombre,Maestro.Nombre As Catedratico,asignacionMaestro.fkSeccion as Seccion from asignacionMaestro 
 join Curso on fkCodigoCurso=CodigoCurso 
 join Maestro on CodigoMaestro=fkCodigoMaestro 
 where Maestro.CodigoMaestro=? and asignacionMaestro.fkSemestre=? and asignacionMaestro.fkAnio=?`,[CodigoMaestro,semestreActual,anioActual], function(err, rows, fields) {
     if (!err){
       //console.log('The solution is: ', JSON.stringify(rows));
-      console.log("EXTRACCION: "+rows[0].Nombre);
+      console.log("EXTRACCION: ");
       notes="{\"cursos\":[";
       for(var i in rows){
         notes+="{\"nombre\":\""+rows[i].Nombre+"\",\"catedratico\":\""+rows[i].Catedratico+"\",\"seccion\":\""+rows[i].Seccion+"\"},";
@@ -81,7 +81,7 @@ where Maestro.CodigoMaestro=? and asignacionMaestro.fkSemestre=? and asignacionM
               console.log("salida on: "+notes);
 
               console.log("ENVIANDO A MAESTRO ---------------------"+CodigoMaestro);
-              console.log("salida on: "+notes);
+              console.log("salida on picker 2: "+notes);
                 socket.emit("recibirCursos", notes);
             });
 }
@@ -139,6 +139,25 @@ from Curso where Nombre=?),?,?,?,?);`,[username,curso,seccion,semestreActual,ani
 }
 
 
+exports.registrarAlumno=function(username,password,codigo,socket){
+  var notes;
+  connection.query(`insert into Alumno values(?,?,?)`,[codigo,username,password], function(err, rows, fields) {
+    if (!err){
+      notes="exitoso";
+    }
+    else{
+      console.log('Error mientras se registrarba el usuario '+username+":"+err);
+      notes=err;
+    }
+  }).on('end', function(){
+              console.log("salida on: "+notes);
+            // console.log("estuiantes del curso seran extraidos");
+             var cadena = "{\"estado\":\""+notes+"\"}";
+             socket.emit("recibirEstadoRegistro", cadena);
+            });
+}
+
+
 exports.asignarCurso=function(username,curso,seccion,socket){
   var notes;
   connection.query(`insert into AsignacionAlumno(fkCarne,fkCodigoCurso,fkSeccion,fkSemestre,fkAnio) values(?,(select CodigoCurso from Curso where nombre=?),?,?,?)`,[username,curso,seccion,semestreActual,anioActual], function(err, rows, fields) {
@@ -154,6 +173,24 @@ exports.asignarCurso=function(username,curso,seccion,socket){
             // console.log("estuiantes del curso seran extraidos");
              var cadena = "{\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\",\"estado\":\""+notes+"\"}";
              socket.emit("recibirAsignacionCurso", cadena);
+            });
+}
+
+exports.registrarMaestro=function(username,password,codigo,socket){
+  var notes;
+  connection.query(`insert into Maestro values (?,?,?,0);`,[codigo,username,password], function(err, rows, fields) {
+    if (!err){
+      notes="exitoso";
+    }
+    else{
+      console.log('Error mientras se registrarba el usuario '+username+":"+err);
+      notes=err;
+    }
+  }).on('end', function(){
+              console.log("salida on: "+notes);
+            // console.log("estuiantes del curso seran extraidos");
+             var cadena = "{\"estado\":\""+notes+"\"}";
+             socket.emit("recibirEstadoRegistro", cadena);
             });
 }
 
@@ -178,9 +215,9 @@ where asignacionAlumno.fkSemestre=? and asignacionAlumno.fkAnio=? and Curso.Nomb
                 for(i in notes){
                   for(j in app_users){
                     if(notes[i].Carne==app_users[j].username){
-                      console.log(i+" "+notes[i].Carne);
-                      socket.in(j).emit("recibirMensajes","{\"arreglo\":[{\"seccion\":\""+notes[i].Seccion+"\",\"visibilidad\":\""+0+"\",\"curso\":\""+notes[i].Curso+"\",\"mensaje\":\""+mensaje+"\",\"catedratico\":\"\"}]}");
-                      notificacionesAlumnos(notes[i].Carne,socket.in(j));
+                      console.log(i+" "+notes[i].Carne+" socket: "+j);
+                      socket.connected[j].emit("recibirMensajes","{\"arreglo\":[{\"seccion\":\""+notes[i].Seccion+"\",\"visibilidad\":\""+0+"\",\"curso\":\""+notes[i].Curso+"\",\"mensaje\":\""+mensaje+"\",\"catedratico\":\"\",\"fecha\":\"Hace pocos segundos\"}]}");
+                      notificacionesAlumnos(notes[i].Carne,socket.connected[j]);
                     }
                   }
 
@@ -265,7 +302,7 @@ order by Mensaje.fecha desc limit `+inf+`,`+sup,[carne,semestreActual,anioActual
 exports.getMensajesAlumno=function(carne,curso,seccion,socket){
   console.log(carne+ "pide mas mensajes del curso "+curso);
   var notes;
-  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,asignacionAlumno.fkSeccion as Seccion, Instancia.visto As Visibilidad
+  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,DATE_FORMAT(Mensaje.fecha,'%b %d %Y %h:%i %p') as Fecha,asignacionAlumno.fkSeccion as Seccion, Instancia.visto As Visibilidad
 from Instancia  
 join asignacionAlumno on fkCodigoCursoAlumno=fkCodigoCurso and Instancia.fkCarne=asignacionAlumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
 join Curso on asignacionAlumno.fkCodigoCurso=CodigoCurso
@@ -275,7 +312,7 @@ order by Mensaje.fecha desc limit 10;`,[carne,semestreActual,anioActual,curso,se
     if (!err){
       notes="{\"arreglo\":[";
       for(var i in rows){
-        notes+="{\"seccion\":\""+rows[i].Seccion+"\",\"visibilidad\":\""+rows[i].Visibilidad+"\",\"curso\":\""+rows[i].Curso+"\",\"mensaje\":\""+rows[i].Mensaje+"\",\"catedratico\":\"\"},";
+        notes+="{\"seccion\":\""+rows[i].Seccion+"\",\"visibilidad\":\""+rows[i].Visibilidad+"\",\"curso\":\""+rows[i].Curso+"\",\"mensaje\":\""+rows[i].Mensaje+"\",\"catedratico\":\"\",\"fecha\":\""+rows[i].Fecha+"\"},";
       }
       notes = notes.slice(0, -1);
       notes+="]}";
@@ -294,7 +331,7 @@ order by Mensaje.fecha desc limit 10;`,[carne,semestreActual,anioActual,curso,se
 exports.getMensajesMaestro=function(codigo,curso,seccion,socket){
   console.log(codigo+ "pide mas mensajes del curso "+curso);
   var notes;
-  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,Mensaje.fkSeccion as Seccion,Mensaje.fecha
+  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,Mensaje.fkSeccion as Seccion,DATE_FORMAT(Mensaje.fecha,'%b %d %Y %h:%i %p') as Fecha
 from Mensaje  
 join Curso on Mensaje.fkCodigoCurso=CodigoCurso
 where Mensaje.fkCodigoMaestro=? and Mensaje.fkSemestre=? and Mensaje.fkAnio=? and Curso.Nombre=? and Mensaje.fkSeccion=?
@@ -302,7 +339,7 @@ order by Mensaje.fecha desc limit 10`,[codigo,semestreActual,anioActual,curso,se
     if (!err){
       notes="{\"arreglo\":[";
       for(var i in rows){
-        notes+="{\"seccion\":\""+rows[i].Seccion+"\",\"visibilidad\":\"1\",\"curso\":\""+rows[i].Curso+"\",\"mensaje\":\""+rows[i].Mensaje+"\",\"catedratico\":\"\"},";
+        notes+="{\"seccion\":\""+rows[i].Seccion+"\",\"visibilidad\":\"1\",\"curso\":\""+rows[i].Curso+"\",\"mensaje\":\""+rows[i].Mensaje+"\",\"catedratico\":\"\",\"fecha\":\""+rows[i].Fecha+"\"},";
       }
       notes = notes.slice(0, -1);
       notes+="]}";
