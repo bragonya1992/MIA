@@ -43,7 +43,7 @@ public class SessionManager {
     /**
      * Create login session
      * */
-    public void createLoginSession(String name,int role,int carne){
+    public void createLoginSession(String name,int role,String carne){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
@@ -51,7 +51,7 @@ public class SessionManager {
         editor.putString(KEY_NAME, name);
 
         editor.putInt(ROLE, role);
-        editor.putInt(CARNE, carne);
+        editor.putString(CARNE, carne);
 
 
         // commit changes
@@ -91,10 +91,10 @@ public class SessionManager {
         return pref.getString(KEY_NAME, null);
     }
 
-    public int getId(){
+    public String getId(){
         // user name
 
-        return pref.getInt(CARNE, -1);
+        return pref.getString(CARNE, "");
     }
 
     public int getRole(){

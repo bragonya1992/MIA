@@ -26,10 +26,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 import static android.widget.Toast.LENGTH_SHORT;
 
-public class MensajesMaestros extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MensajesMaestros extends AppCompatActivity {
         private static ChatArrayAdapter chatArrayAdapter;
         private ListView listView;
         private static EditText chatText;
@@ -77,8 +80,8 @@ public class MensajesMaestros extends AppCompatActivity
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                ServicioNotificacionesFARUSAC.sc.enviarMensaje(actualCurso.nombre,actualCurso.seccion,chatText.getText().toString().trim());
-                sendChatMessage(new ChatMessage(2,actualCurso.nombre,actualCurso.seccion,chatText.getText().toString(),"","Hace pocos momentos"));
+                    ServicioNotificacionesFARUSAC.sc.enviarMensaje(actualCurso.nombre,actualCurso.seccion, chatText.getText().toString().replaceAll("[\\n\\r]+","\\$32"));
+                sendChatMessage(new ChatMessage(2,actualCurso.nombre,actualCurso.seccion,chatText.getText().toString().replaceAll("[\\n\\r]+","\\<br\\>"),"","Hace pocos momentos"));
 
             }
         });
@@ -164,12 +167,7 @@ public class MensajesMaestros extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
     @Override
@@ -199,30 +197,7 @@ public class MensajesMaestros extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
     public static boolean sendChatMessage(ChatMessage cm) {
         chatArrayAdapter.add(cm);
         chatText.setText("");

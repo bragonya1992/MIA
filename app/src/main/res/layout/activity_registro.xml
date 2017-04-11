@@ -27,80 +27,126 @@
             />
 
     </android.support.design.widget.AppBarLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="23dp"
+                android:text="Codigo (CUI)"
+                />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtCodigo"
+                android:gravity="center_vertical"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:hint="Introduzca su CUI"
+                android:inputType="number"/>
 
-    <Spinner
-        android:layout_gravity="center"
-        android:layout_width="300dp"
-        android:layout_height="34dp"
-        android:id="@+id/spinner"
-        android:textAlignment="center"
-        android:background="#dee5ef"
-        android:entries="@array/roles"
-        android:layout_marginTop="10dp"/>
-
-    <TextView
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="28dp"
-        android:text="Codigo (CUI)"
-        android:inputType="number"/>
-    <EditText
-        android:layout_width="300dp"
-        android:layout_marginTop="10dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/txtCodigo"
-        android:gravity="center_vertical"
-        android:layout_gravity="center"
-        android:textSize="20dp"
-        android:hint="Introduzca su contraseña"/>
-
-    <TextView
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="28dp"
-        android:text="Nombre"/>
-    <EditText
-        android:layout_width="300dp"
-        android:layout_marginTop="10dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/txtNombre"
-        android:gravity="center_vertical"
-        android:layout_gravity="center"
-        android:textSize="28dp"
-        android:hint="Introduzca su nombre"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="23dp"
+                android:text="Nombre"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtNombre"
+                android:gravity="center_vertical"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:hint="Introduzca su nombre"/>
 
 
-    <TextView
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="28dp"
-        android:text="Password"/>
-    <EditText
-        android:layout_width="300dp"
-        android:layout_marginTop="10dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/txtPassword"
-        android:gravity="center_vertical"
-        android:layout_gravity="center"
-        android:inputType="textPassword"
-        android:textSize="20dp"
-        android:hint="Introduzca su contraseña"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="23dp"
+                android:text="Contraseña"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtPassword"
+                android:gravity="center_vertical"
+                android:layout_gravity="center"
+                android:inputType="textPassword"
+                android:textSize="20dp"
+                android:hint="Introduzca su contraseña"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Registrarse"
-        android:id="@+id/btnRegistrar"
-        android:layout_marginTop="65dp"
-        android:onClick="registrar"
-        android:layout_gravity="center" />
+            <TextView
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="23dp"
+                android:text="Confirme contraseña"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtPasswordConfirm"
+                android:gravity="center_vertical"
+                android:layout_gravity="center"
+                android:inputType="textPassword"
+                android:textSize="20dp"
+                android:hint="Introduzca su contraseña"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="23dp"
+                android:textColor="#ee4444"
+                android:text="Elija su categoria (Maestro o alumno)"/>
+            <Spinner
+                android:layout_gravity="center"
+                android:layout_width="300dp"
+                android:layout_height="34dp"
+                android:id="@+id/spinner"
+                android:textAlignment="center"
+                android:background="#dee5ef"
+                android:entries="@array/roles"
+                android:layout_marginTop="10dp"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Registrarse"
+                android:id="@+id/btnRegistrar"
+                android:layout_marginTop="65dp"
+                android:onClick="registrar"
+                android:layout_gravity="center" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

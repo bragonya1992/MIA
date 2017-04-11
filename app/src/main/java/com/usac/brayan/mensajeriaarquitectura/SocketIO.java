@@ -35,13 +35,17 @@ import java.util.List;
 public class SocketIO {
     private Socket mSocket;
     private Context miContexto;
-    private String nombreHost="192.168.1.6";
+    private String nombreHost="192.168.43.122";
     private String puertoHost="8081";
     private static final int NOTIFICATION_ID = 101;
     private NotificationCompat.Builder builder;
     public SocketIO(Context mc) {
         this.miContexto=mc;
         builder = new NotificationCompat.Builder(miContexto);
+        connect();
+    }
+
+    public void connect(){
         try {
             mSocket = IO.socket("http://"+nombreHost+":"+puertoHost);
         } catch (URISyntaxException e) {}
@@ -49,9 +53,13 @@ public class SocketIO {
             mSocket.connect();
     }
 
+    public boolean isConnected(){
+        return mSocket.connected();
+    }
+
 
     public void registrarse(){
-        mSocket.emit("app_user","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\"}");
+        mSocket.emit("app_user","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"role\":\""+ServicioNotificacionesFARUSAC.sm.getRole()+"\"}");
     }
 
     public void solicitarAutenticacion(String carne, String role, String pass){
@@ -186,7 +194,7 @@ public class SocketIO {
                     try {
                         JSONObject o = new JSONObject(args[0].toString().trim());
                         if(o.length()>1) {
-                            Autenticacion.entrar(o.getString("nombre"), o.getInt("carne"), o.getInt("role"));
+                            Autenticacion.entrar(o.getString("nombre"), o.getString("carne"), o.getInt("role"));
                         }
                     } catch (JSONException e) {
                         try {
@@ -362,38 +370,40 @@ public class SocketIO {
     public void nuevaNotificacion(String valor){
         if(!principal.mIsInForegroundMode && !MensajesAlumnos.mIsInForegroundMode && !MensajesMaestros.mIsInForegroundMode) {
             try {
-                LinkedList<ChatMessage> notificaciones=MensajesManager.convertJsonToMensaje(valor);
-                Intent intent = new Intent(miContexto, Autenticacion.class);
-                PendingIntent pendingIntent = PendingIntent.getActivity(miContexto, 0, intent, 0);
-                //Se construye la notificacion
-                NotificationCompat.InboxStyle inboxStyle =new NotificationCompat.InboxStyle();
-                inboxStyle.setBigContentTitle("Mensajeria FARUSAC");
-                builder.setSmallIcon(R.drawable.ic_menu_share);
-                builder.setContentIntent(pendingIntent);
-                builder.setAutoCancel(true);
-                builder.setLargeIcon(BitmapFactory.decodeResource(miContexto.getResources(), R.drawable.ic_menu_slideshow));
-                builder.setContentTitle("Mensajeria FARUSAC");
-                if(notificaciones.size()<5) {
-                    builder.setContentText("Tienes " + notificaciones.size() + " mensajes nuevos");
-                }else{
-                    builder.setContentText("Tienes varios mensajes nuevos");
-                }
-                builder.setTicker(notificaciones.get(0).getCurso()+ "-" + notificaciones.get(0).getSeccion() + ":" + notificaciones.get(0).getMessage());
-                //Vibracion
-                builder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
-                //LED
-                builder.setLights(Color.RED, 3000, 3000);
-                //Tono
-                builder.setSound(Uri.parse("android.resource://com.usac.brayan.mensajeriaarquitectura/"+R.raw.dog));
-                for (int i = 0; i < notificaciones.size(); i++) {
-                    ChatMessage temp = notificaciones.get(i);
-                    inboxStyle.addLine(temp.getCurso() + "-" + temp.getSeccion() + ":" + temp.getMessage().replace("$32"," "));
+                LinkedList<ChatMessage> notificaciones=MensajesManager.convertJsonToMensajeWithNoDate(valor);
+                if(notificaciones.size()>0) {
+                    Intent intent = new Intent(miContexto, Autenticacion.class);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(miContexto, 0, intent, 0);
+                    //Se construye la notificacion
+                    NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+                    inboxStyle.setBigContentTitle("Mensajeria FARUSAC");
+                    builder.setSmallIcon(R.drawable.ic_menu_share);
+                    builder.setContentIntent(pendingIntent);
+                    builder.setAutoCancel(true);
+                    builder.setLargeIcon(BitmapFactory.decodeResource(miContexto.getResources(), R.drawable.ic_menu_slideshow));
+                    builder.setContentTitle("Mensajeria FARUSAC");
+                    if (notificaciones.size() < 5) {
+                        builder.setContentText("Tienes " + notificaciones.size() + " mensajes nuevos");
+                    } else {
+                        builder.setContentText("Tienes varios mensajes nuevos");
+                    }
+                    builder.setTicker(notificaciones.get(0).getCurso() + "-" + notificaciones.get(0).getSeccion() + ":" + notificaciones.get(0).getMessage());
+                    //Vibracion
+                    builder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
+                    //LED
+                    builder.setLights(Color.RED, 3000, 3000);
+                    //Tono
+                    builder.setSound(Uri.parse("android.resource://com.usac.brayan.mensajeriaarquitectura/" + R.raw.dog));
+                    for (int i = 0; i < notificaciones.size(); i++) {
+                        ChatMessage temp = notificaciones.get(i);
+                        inboxStyle.addLine(temp.getCurso() + "-" + temp.getSeccion() + ":" + temp.getMessage().replace("$32", " "));
 
+                    }
+                    builder.setStyle(inboxStyle);
+                    // Enviar la notificacion
+                    NotificationManager notificationManager = (NotificationManager) miContexto.getSystemService(miContexto.NOTIFICATION_SERVICE);
+                    notificationManager.notify("MensajeriaFARUSAC", NOTIFICATION_ID, builder.build());
                 }
-                builder.setStyle(inboxStyle);
-                // Enviar la notificacion
-                NotificationManager notificationManager = (NotificationManager) miContexto.getSystemService(miContexto.NOTIFICATION_SERVICE);
-                notificationManager.notify("MensajeriaFARUSAC", NOTIFICATION_ID, builder.build());
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }

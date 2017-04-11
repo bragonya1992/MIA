@@ -44,6 +44,20 @@ public class MensajesManager {
         return salida;
     }
 
+    public static LinkedList<ChatMessage> convertJsonToMensajeWithNoDate(String json) throws JSONException {
+        LinkedList<ChatMessage> salida = new LinkedList<>();
+        JSONObject jsonObj = new JSONObject(json);
+        JSONArray jsonArray = jsonObj.getJSONArray("arreglo");
+        if (jsonArray.length() > 0) {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject temp = jsonArray.getJSONObject(i);
+                ChatMessage temporal = new ChatMessage(temp.getInt("visibilidad"),temp.getString("seccion"),temp.getString("curso"),temp.getString("mensaje"),temp.getString("catedratico"));
+                salida.addLast(temporal);
+            }
+        }
+        return salida;
+    }
+
 
     public static LinkedList<Curso> convertJsonToCursos(String json) throws JSONException {
         LinkedList<Curso> items = new LinkedList<>();

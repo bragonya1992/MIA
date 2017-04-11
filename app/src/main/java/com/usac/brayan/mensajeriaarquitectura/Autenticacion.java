@@ -64,7 +64,7 @@ public class Autenticacion extends AppCompatActivity {
 
     }
 
-    public static void entrar(String nombre, int carne, int role){
+    public static void entrar(String nombre, String carne, int role){
         Autenticacion.sm.createLoginSession(nombre,role,carne);
         so.close();
         mContext.startActivity(new Intent(mContext, principal.class));

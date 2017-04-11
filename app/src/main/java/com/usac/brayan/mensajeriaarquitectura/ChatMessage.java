@@ -16,6 +16,14 @@ public class ChatMessage {
         this.fecha = fecha;
     }
 
+    public ChatMessage(int left, String seccion,String curso, String message,String catedratico) {
+        super();
+        this.left = left;
+        this.message = message;
+        this.curso=curso;
+        this.seccion=seccion;
+    }
+
     public int isLeft() {
         return left;
     }
