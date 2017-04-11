@@ -40,7 +40,12 @@ io.sockets.on('connection', function(socket) {
   socket.on('app_user',function(cad){
   	var user = JSON.parse(cad);
   	app_users[this.id]=user;
-  	console.log("Usuario registrado: "+user.username);
+  	console.log("Usuario registrado: "+user.username+" "+user.role);
+    if(user.role.toLowerCase()=="1"){
+      DB.notificarAlumnos(user.username,io.sockets.connected[this.id]);
+    }else{
+      console.log('no notification for teacher, only notices');
+    }
   //   for(var socketid in app_users){
   //     if(app_users[socketid].username=="201213578"){
   //   console.log("lista: "+app_users[socketid].username);

@@ -226,6 +226,33 @@ where asignacionAlumno.fkSemestre=? and asignacionAlumno.fkAnio=? and Curso.Nomb
             });
 }
 
+exports.notificarAlumnos=function (username,socket){
+  var notes;
+  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,asignacionAlumno.fkSeccion as Seccion
+from Instancia  
+join asignacionAlumno on fkCodigoCursoAlumno=fkCodigoCurso and Instancia.fkCarne=asignacionAlumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
+join Curso on asignacionAlumno.fkCodigoCurso=CodigoCurso
+join Mensaje on Instancia.fkMensaje=Mensaje.idMensaje
+where asignacionAlumno.fkCarne=? and asignacionAlumno.fkSemestre=? and asignacionAlumno.fkAnio=? and Instancia.visto=0
+order by Mensaje.fecha desc limit 5;`,[username,semestreActual,anioActual], function(err, rows, fields) {
+    if (!err){
+      notes="{\"arreglo\":[";
+      for(var i in rows){
+        notes+="{\"seccion\":\""+rows[i].Seccion+"\",\"visibilidad\":\"0\",\"curso\":\""+rows[i].Curso+"\",\"mensaje\":\""+rows[i].Mensaje+"\",\"catedratico\":\"\"},";
+      }
+      notes = notes.slice(0, -1);
+      notes+="]}";
+    }
+    else{
+      console.log('Error while performing Query.'+err);
+      notes="{\"error\":\""+err+"\"}";
+    }
+  }).on('end', function(){
+              console.log("salida on: "+notes);
+                socket.emit("inbox", notes);
+            });
+}
+
 function notificacionesAlumnos(username,socket){
   var notes;
   connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,asignacionAlumno.fkSeccion as Seccion
@@ -273,7 +300,7 @@ SET visto=1 WHERE visto=0 and asignacionAlumno.fkCarne=? and Curso.Nombre=? and 
 exports.getTopAlumno=function(carne,curso,seccion,inf,sup,socket){
   console.log(carne+ "pide mas mensajes del curso "+curso);
   var notes;
-  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,asignacionAlumno.fkSeccion as Seccion, Instancia.visto As Visibilidad
+  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,DATE_FORMAT(Mensaje.fecha,'%b %d %Y %h:%i %p') As Fecha,asignacionAlumno.fkSeccion as Seccion, Instancia.visto As Visibilidad
 from Instancia  
 join asignacionAlumno on fkCodigoCursoAlumno=fkCodigoCurso and Instancia.fkCarne=asignacionAlumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
 join Curso on asignacionAlumno.fkCodigoCurso=CodigoCurso
@@ -283,7 +310,7 @@ order by Mensaje.fecha desc limit `+inf+`,`+sup,[carne,semestreActual,anioActual
     if (!err){
       notes="{\"arreglo\":[";
       for(var i in rows){
-        notes+="{\"seccion\":\""+rows[i].Seccion+"\",\"visibilidad\":\""+rows[i].Visibilidad+"\",\"curso\":\""+rows[i].Curso+"\",\"mensaje\":\""+rows[i].Mensaje+"\",\"catedratico\":\"\"},";
+        notes+="{\"seccion\":\""+rows[i].Seccion+"\",\"visibilidad\":\""+rows[i].Visibilidad+"\",\"curso\":\""+rows[i].Curso+"\",\"mensaje\":\""+rows[i].Mensaje+"\",\"catedratico\":\"\",\"fecha\":\""+rows[i].Fecha+"\"},";
       }
       notes = notes.slice(0, -1);
       notes+="]}";
@@ -358,7 +385,7 @@ order by Mensaje.fecha desc limit 10`,[codigo,semestreActual,anioActual,curso,se
 exports.getTopMaestro=function(codigo,curso,seccion,inf,sup,socket){
   console.log(codigo+ "pide mas mensajes del curso "+curso);
   var notes;
-  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,Mensaje.fkSeccion as Seccion,Mensaje.fecha
+  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,DATE_FORMAT(Mensaje.fecha,'%b %d %Y %h:%i %p') As Fecha,Mensaje.fkSeccion as Seccion,Mensaje.fecha
 from Mensaje  
 join Curso on Mensaje.fkCodigoCurso=CodigoCurso
 where Mensaje.fkCodigoMaestro=? and Mensaje.fkSemestre=? and Mensaje.fkAnio=? and Curso.Nombre=? and Mensaje.fkSeccion=?
@@ -366,7 +393,7 @@ order by Mensaje.fecha desc limit `+inf+`,`+sup,[codigo,semestreActual,anioActua
     if (!err){
       notes="{\"arreglo\":[";
       for(var i in rows){
-        notes+="{\"seccion\":\""+rows[i].Seccion+"\",\"visibilidad\":\"1\",\"curso\":\""+rows[i].Curso+"\",\"mensaje\":\""+rows[i].Mensaje+"\",\"catedratico\":\"\"},";
+        notes+="{\"seccion\":\""+rows[i].Seccion+"\",\"visibilidad\":\"1\",\"curso\":\""+rows[i].Curso+"\",\"mensaje\":\""+rows[i].Mensaje+"\",\"fecha\":\""+rows[i].Fecha+"\",\"catedratico\":\"\"},";
       }
       notes = notes.slice(0, -1);
       notes+="]}";

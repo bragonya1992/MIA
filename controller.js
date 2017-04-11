@@ -5,7 +5,7 @@
   socket.on('connect', function(){
     var json = JSON.parse(document.cookie);
     username = json.carne;
-  	socket.emit('app_user',"{\"username\":\""+username+"\"}");
+  	socket.emit('app_user',"{\"username\":\""+username+"\",\"role\":\"maestro\"}");
   	
     socket.emit('listaCursosMaestro',"{\"username\":\""+username+"\"}");
   });

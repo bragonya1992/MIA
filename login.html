@@ -69,8 +69,9 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="controller2.js"></script>
 <div class="container">
+	<div id="loader"></div>
 	<div class="alert alert-danger alert-dismissable" id="myAlert">
-  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <a href="#" class="close" onclick="$('#myAlert').hide()">&times;</a>
   Tus datos son incorrectos
 </div>
     	<div class="row">
@@ -103,27 +104,26 @@
 												<input type="button" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Entrar" onClick="requestForLogIn()">
 											</div>
 
-											<div id="loader"></div>
 										</div>
 									</div>
 								</form>
 								<form id="register-form" role="form" style="display: none;">
 									<div class="form-group">
-										<input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Nombre completo" value="">
+										<input type="text" name="username" id="username_login" tabindex="1" class="form-control" placeholder="Nombre completo" value="">
 									</div>
 									<div class="form-group">
-										<input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="CUI" value="">
+										<input type="text" name="email" id="codigo_login" tabindex="1" class="form-control" placeholder="CUI" value="">
 									</div>
 									<div class="form-group">
-										<input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Contraseña">
+										<input type="password" name="password" id="pass_login" tabindex="2" class="form-control" placeholder="Contraseña">
 									</div>
 									<div class="form-group">
-										<input type="password" name="confirm-password" id="confirm-password" tabindex="2" class="form-control" placeholder="Confirmar contraseña">
+										<input type="password" name="confirm-password" id="pass2_login" tabindex="2" class="form-control" placeholder="Confirmar contraseña">
 									</div>
 									<div class="form-group">
 										<div class="row">
 											<div class="col-sm-6 col-sm-offset-3">
-												<input type="submit" name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="Registrate ahora">
+												<input type="button" name="register-submit" id="register-submit" onClick="requestLogInSystem()" tabindex="4" class="form-control btn btn-register" value="Registrate ahora">
 											</div>
 										</div>
 									</div>
