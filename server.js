@@ -105,6 +105,25 @@ io.sockets.on('connection', function(socket) {
   });
 
 
+  socket.on('getPublicacion',function(cad){
+    if(app_users[this.id]){
+      var peticion = JSON.parse(cad);
+      console.log(app_users[this.id].username+" pidio sus publicaciones ");
+      DB.getPublicacion(peticion.para,peticion.pagination,io.sockets.connected[this.id]);
+    }
+  
+  });
+
+  socket.on('publicar',function(cad){
+    if(app_users[this.id]){
+      var peticion = JSON.parse(cad);
+      console.log(app_users[this.id].username+" (super usuario) va a publicar ");
+      DB.publicar(peticion.codigo,peticion.para,peticion.contenido,io.sockets.connected[this.id]);
+    }
+  
+  });
+
+
   socket.on('getMensajesMaestro',function(cad){
     if(app_users[this.id]){
       var peticion = JSON.parse(cad);

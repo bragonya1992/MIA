@@ -139,6 +139,112 @@ from Curso where Nombre=?),?,?,?,?);`,[username,curso,seccion,semestreActual,ani
 }
 
 
+exports.publicar=function(CodigoMaestro,para,contenido,socket){
+  var notes;
+  connection.query(`insert into publicacion(idPublicacion,para,fkCodigoMaestro,contenido) values(0,?,?,?);`,[para,CodigoMaestro,contenido], function(err, rows, fields) {
+    if (!err){
+      notes=1;
+    }
+    else{
+      console.log('Error while performing Query.'+err);
+      notes=0;
+    }
+  }).on('end', function(){
+              console.log("salida on: "+notes);
+              if(notes==1){
+                socket.emit("responsePublicacion","Su ultima publicacion fue exitosa");
+                if(para==1){
+                  notificarTodosAlumnos();
+                }else if(para ==2){
+                  notificarTodosMaestro();
+                }else if(para ==0){
+                  notificarTodosMaestro();
+                  notificarTodosAlumnos();
+                }
+              }else{
+                socket.emit("responsePublicacion","Su ultima publicacion fue erronea, lo sentimos");
+              }
+            });
+}
+
+exports.getPublicacion=function(para,pagination,socket){
+  var notes;
+  var realPaginationInf = pagination*10;
+  var realPaginationSup = realPaginationInf+10;
+  connection.query(`select idPublicacion,DATE_FORMAT(fecha,'%b %d %Y %h:%i %p') As fecha, contenido, para from publicacion where para=0 or para=? order by fecha desc limit ?,?;`,[para,realPaginationInf,realPaginationSup], function(err, rows, fields) {
+    if (!err){
+      notes="{\"publicacion\":[";
+      for(var i in rows){
+        notes+="{\"idPublicacion\":\""+rows[i].idPublicacion+"\",\"fecha\":\""+rows[i].fecha+"\",\"contenido\":\""+rows[i].contenido+"\",\"para\":\""+rows[i].para+"\"},";
+      }
+      notes = notes.slice(0, -1);
+      notes+="]}";
+    }
+    else{
+      console.log('Error while performing Query.'+err);
+      notes=0;
+    }
+  }).on('end', function(){
+              console.log("salida on: "+notes);
+              socket.emit("recieverPublications",notes);
+            });
+}
+
+
+function notificarTodosAlumnos (){
+  var notes;
+  connection.query(`select carne from alumno;`, function(err, rows, fields) {
+    if (!err){
+      notes=rows;
+    }
+    else{
+      console.log('Error while performing Query.'+err);
+      notes=0;
+    }
+  }).on('end', function(){
+              if(notes!=0){
+                console.log("VOY A NOTIFICAR PUBLICACIONES EN TIEMPO REAL A: ");
+                for(i in notes){
+                  for(j in app_users){
+                    if(notes[i].carne==app_users[j].username){
+                      console.log(i+" "+notes[i].carne+" socket: "+j);
+                      socket.connected[j].emit("newPublications","{\"mensaje\":\"Tienes nuevas publicaciones en la seccion de noticias FARUSAC\"}");
+                    }
+                  }
+
+                }
+              }
+            });
+}
+
+
+function notificarTodosMaestro (){
+  var notes;
+  connection.query(`select codigomaestro from maestro;`, function(err, rows, fields) {
+    if (!err){
+      notes=rows;
+    }
+    else{
+      console.log('Error while performing Query.'+err);
+      notes=0;
+    }
+  }).on('end', function(){
+              if(notes!=0){
+                console.log("VOY A NOTIFICAR PUBLICACIONES EN TIEMPO REAL A: ");
+                for(i in notes){
+                  for(j in app_users){
+                    if(notes[i].codigomaestro==app_users[j].username){
+                      console.log(i+" "+notes[i].codigomaestro+" socket: "+j);
+                      socket.connected[j].emit("newPublications","{\"mensaje\":\"Tienes nuevas publicaciones en la seccion de noticias FARUSAC\"}");
+                    }
+                  }
+
+                }
+              }
+            });
+}
+
+
 exports.registrarAlumno=function(username,password,codigo,socket){
   var notes;
   connection.query(`insert into Alumno values(?,?,?)`,[codigo,username,password], function(err, rows, fields) {
