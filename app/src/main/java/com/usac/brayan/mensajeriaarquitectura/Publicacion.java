@@ -8,6 +8,7 @@ public class Publicacion {
     String contenido;
     String para;
     String fecha;
+    int idPublicacion;
 
     public Publicacion(String mensaje){
         this.contenido=mensaje;
@@ -18,10 +19,11 @@ public class Publicacion {
         this.para=emisor;
     }
 
-    public Publicacion(String mensaje,String para,String fecha){
+    public Publicacion(String mensaje,String para,String fecha,int idPublicacion){
         this.contenido=mensaje;
         this.para=para;
         this.fecha=fecha;
+        this.idPublicacion=idPublicacion;
     }
 
 

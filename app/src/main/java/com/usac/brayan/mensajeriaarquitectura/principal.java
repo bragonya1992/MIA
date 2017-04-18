@@ -1,5 +1,6 @@
 package com.usac.brayan.mensajeriaarquitectura;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -55,15 +56,17 @@ public class principal extends AppCompatActivity
         public static TextView tx;
         public static TextView notificationsNumber;
         public static RelativeLayout content_circle;
+        public static List publications_list = new ArrayList();
         public  Intent IntentAlumnos;
         public  Intent IntentMaestros;
-        private RecyclerView recycler;
-        private RecyclerView.Adapter adapter;
-        private RecyclerView.LayoutManager lManager;
+        private static RecyclerView recycler;
+        private static RecyclerView.Adapter adapter;
+        private android.support.v7.widget.LinearLayoutManager lManager;
         private static int mensajes_totales=0;
-        Button b;
+        private int pagination=0;
         public static boolean mIsInForegroundMode=false;
-        static Context ct;
+        static Context ct;private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +76,6 @@ public class principal extends AppCompatActivity
         tx = (TextView) findViewById(R.id.textView2);
         notificationsNumber=(TextView) findViewById(R.id.textOne);
         content_circle = (RelativeLayout) findViewById(R.id.content_circle);
-        b = (Button) findViewById(R.id.btnNotificacion);
         if(Autenticacion.sm.getRole()==2) {
             toolbar.setTitle("Modo para docentes"); // titulo de la ventana
             ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
@@ -135,14 +137,14 @@ public class principal extends AppCompatActivity
 
 
     public void iniciarAdapter(){
-        // Inicializar Animes
-        List items = new ArrayList();
 
+/*
         items.add(new Publicacion("Este es un mensaje desde el servidor de FARUSAC","Todos","12/12/2012"));
         items.add(new Publicacion("Aqui enviaremos mensajes de forma general","Todos","12/12/2012"));
         items.add(new Publicacion("Tambien podemos enviar mensajes a un grupo en especifico, por ejemplo a los maestros o alumnos segun sea el caso","Maestros","12/12/2012"));
         items.add(new Publicacion("Tambien podemos enviar mensajes a un grupo en especifico, por ejemplo a los maestros o alumnos segun sea el caso","Alumnos","12/12/2012"));
         items.add(new Publicacion("Bienvenidos a Mensajeria FARUSAC, espero sea de su agrado","TODOS","12/12/2012"));
+*/
 
         // Obtener el Recycler
         recycler = (RecyclerView) findViewById(R.id.recicladorPublicaciones);
@@ -153,8 +155,39 @@ public class principal extends AppCompatActivity
         recycler.setLayoutManager(lManager);
 
         // Crear un nuevo adaptador
-        adapter = new AdaptadorPublicacion(items);
+        adapter = new AdaptadorPublicacion(publications_list);
         recycler.setAdapter(adapter);
+        final Activity miActivity = this;
+        recycler.addOnScrollListener(new RecyclerView.OnScrollListener()
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                if(dy > 0) //check for scroll down
+                {
+                    visibleItemCount = lManager.getChildCount();
+                    totalItemCount = lManager.getItemCount();
+                    pastVisiblesItems = lManager.findFirstVisibleItemPosition();
+
+                    if (loading)
+                    {
+                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                        {
+                            loading = false;
+                            pagination=pagination+1;
+                            ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
+                            //Do pagination.. i.e. fetch new data
+                        }
+                    }
+                }
+            }
+        });
+        ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
+    }
+
+    public static void addPublications(List<Publicacion> newMessages){
+        publications_list.addAll(newMessages);
+        adapter.notifyDataSetChanged();
     }
 
     public static Curso buscarCurso(String nombre, String seccion){
@@ -204,15 +237,6 @@ public class principal extends AppCompatActivity
             content_circle.setVisibility(View.GONE);
         }
     }
-    public void onClic(View view){
-
-       // ServicioNotificacionesFARUSAC
-//        SocketIO sc= new SocketIO(this);
-//        sc.escuchar();
-//        sc.registrarse();
-
-    }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

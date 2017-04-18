@@ -35,7 +35,7 @@ import java.util.List;
 public class SocketIO {
     private Socket mSocket;
     private Context miContexto;
-    private String nombreHost="192.168.43.122";
+    private String nombreHost="192.168.42.131";
     private String puertoHost="8081";
     private static final int NOTIFICATION_ID = 101;
     private NotificationCompat.Builder builder;
@@ -86,6 +86,7 @@ public class SocketIO {
         mSocket.on("recibirListadoCursos",recibirListadoCursos);
         mSocket.on("recibirAsignacionCurso",recibirAsignacionCurso);
         mSocket.on("recibirEstadoRegistro",recibirEstadoRegistro);
+        mSocket.on("recieverPublications",recieverPublications);
     }
 
     public void pedirCursosMaestro(){
@@ -94,6 +95,14 @@ public class SocketIO {
 
     public void pedirCursosAlumno(){
         mSocket.emit("listaCursosAlumno","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\"}");
+    }
+
+    public void getPublicaciones(int para, int pagination){
+        mSocket.emit("getPublicacion","{\"para\":\""+para+"\",\"pagination\":\""+pagination+"\"}");
+    }
+
+    public void publicar(int para, String mensaje){
+        mSocket.emit("publicar","{\"para\":\""+para+"\",\"contenido\":\""+mensaje+"\",\"codigo\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\"}");
     }
 
     public void pedirListadoCurso(){
@@ -177,6 +186,22 @@ public class SocketIO {
                         JSONObject o = new JSONObject(args[0].toString().trim());
                         Toast.makeText(miContexto,"El estado de su registro ha sido: "+o.getString("estado"),Toast.LENGTH_LONG).show();
                         //principal.AsignarCursos(args[0].toString().trim());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener recieverPublications = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        principal.addPublications(MensajesManager.convertJsonToPublications(args[0].toString().trim()));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

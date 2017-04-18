@@ -44,6 +44,31 @@ public class MensajesManager {
         return salida;
     }
 
+    public static LinkedList<Publicacion> convertJsonToPublications(String json) throws JSONException {
+        LinkedList<Publicacion> salida = new LinkedList<>();
+        JSONObject jsonObj = new JSONObject(json);
+        JSONArray jsonArray = jsonObj.getJSONArray("publicacion");
+        if (jsonArray.length() > 0) {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject temp = jsonArray.getJSONObject(i);
+                Publicacion temporal = new Publicacion(temp.getString("contenido"),realPara(temp.getString("para")),temp.getString("fecha"),temp.getInt("idPublicacion"));
+                salida.addLast(temporal);
+            }
+        }
+        return salida;
+    }
+
+
+    private static String realPara(String para){
+        if(para.equals("2")){
+            return "Maestros";
+        }else if(para.equals("1")){
+            return "Alumnos";
+        }else{
+            return "Todos";
+        }
+    }
+
     public static LinkedList<ChatMessage> convertJsonToMensajeWithNoDate(String json) throws JSONException {
         LinkedList<ChatMessage> salida = new LinkedList<>();
         JSONObject jsonObj = new JSONObject(json);
