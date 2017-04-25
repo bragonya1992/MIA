@@ -114,6 +114,24 @@ io.sockets.on('connection', function(socket) {
   
   });
 
+  socket.on('getLastPublicacion',function(cad){
+    if(app_users[this.id]){
+      var peticion = JSON.parse(cad);
+      console.log(app_users[this.id].username+" pidio sus publicaciones ");
+      DB.getLastPublicacion(peticion.para,peticion.lastId,io.sockets.connected[this.id]);
+    }
+  
+  });
+
+  socket.on('authPublication',function(cad){
+    if(app_users[this.id]){
+      var peticion = JSON.parse(cad);
+      console.log(app_users[this.id].username+" pidio autorizacion para publicar ");
+      DB.authPublication(peticion.codigo,io.sockets.connected[this.id]);
+    }
+  
+  });
+
   socket.on('publicar',function(cad){
     if(app_users[this.id]){
       var peticion = JSON.parse(cad);
