@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.github.nkzawa.socketio.client.IO;
@@ -90,10 +91,19 @@ public class SocketIO {
         mSocket.on("newPublication",newPublication);
         mSocket.on("responsePublicacion",responsePublicacion);
         mSocket.on("recieverRealTimePublications",recieverRealTimePublications);
+        mSocket.on("responseAuthPublication",responseAuthPublication);
     }
 
     public void pedirCursosMaestro(){
         mSocket.emit("listaCursosMaestro","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\"}");
+    }
+
+    public void authPublication(){
+        mSocket.emit("authPublication","{\"codigo\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\"}");
+    }
+
+    public void getLastPublicacion(){
+        mSocket.emit("getLastPublicacion","{\"para\":\""+ServicioNotificacionesFARUSAC.sm.getRole()+"\",\"lastId\":\""+ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()+"\"}");
     }
 
     public void pedirCursosAlumno(){
@@ -188,6 +198,31 @@ public class SocketIO {
                     try {
                         JSONObject o = new JSONObject(args[0].toString().trim());
                         Toast.makeText(miContexto,"El estado de su registro ha sido: "+o.getString("estado"),Toast.LENGTH_LONG).show();
+                        //principal.AsignarCursos(args[0].toString().trim());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener responseAuthPublication = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONObject o = new JSONObject(args[0].toString().trim());
+                        int llave = o.getInt("auth");
+                        if(llave!=1) {
+                            Toast.makeText(miContexto, "No tienes permisos para hacer publicaciones generales en FARUSAC ", Toast.LENGTH_LONG).show();
+                        }else{
+                            if(principal.writer!=null){
+                                principal.writer.setVisibility(View.VISIBLE);
+                            }
+                        }
                         //principal.AsignarCursos(args[0].toString().trim());
                     } catch (JSONException e) {
                         e.printStackTrace();

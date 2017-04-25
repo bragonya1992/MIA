@@ -60,6 +60,7 @@ public class principal extends AppCompatActivity
         public static TextView notificationsNumber;
         public static RelativeLayout content_circle;
         public static List publications_list = new ArrayList();
+        public static LinearLayout writer;
         public  Intent IntentAlumnos;
         public  Intent IntentMaestros;
         private static RecyclerView recycler;
@@ -83,6 +84,7 @@ public class principal extends AppCompatActivity
         tx = (TextView) findViewById(R.id.textView2);
         notificationsNumber=(TextView) findViewById(R.id.textOne);
         content_circle = (RelativeLayout) findViewById(R.id.content_circle);
+        writer=(LinearLayout) findViewById(R.id.writer);
         if(Autenticacion.sm.getRole()==2) {
             toolbar.setTitle("Modo para docentes"); // titulo de la ventana
             ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
@@ -101,8 +103,7 @@ public class principal extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                ServicioNotificacionesFARUSAC.sc.authPublication();
             }
         });
 
@@ -130,6 +131,7 @@ public class principal extends AppCompatActivity
             Toast.makeText(this,"Por favor seleccione a quien desea enviar la publicacion",Toast.LENGTH_LONG).show();
         }else{
             ServicioNotificacionesFARUSAC.sc.publicar(para,contenido);
+            writer.setVisibility(View.GONE);
         }
     }
 
@@ -221,6 +223,11 @@ public class principal extends AppCompatActivity
         publications_list.addAll(newMessages);
         adapter.notifyDataSetChanged();
         loading=true;
+        if(newMessages.size()>0){
+            if(newMessages.get(0).idPublicacion<ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()){
+                ServicioNotificacionesFARUSAC.sm.setLastPublicationRegister(0);
+            }
+        }
     }
 
     public static void addPublicationFirst(List<Publicacion> newMessages){

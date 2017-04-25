@@ -32,6 +32,7 @@ public class SessionManager {
 
     public static final String ROLE = "ROLE"; //1. Estudiante, 2.Maestro, 3.Super
     public static final String CARNE = "CARNE";
+    public static final String LASTPUBLICATIONREGISTER = "LASTPUBLICATIONREGISTER";
 
     // Constructor
     public SessionManager(Context context){
@@ -56,6 +57,14 @@ public class SessionManager {
 
         // commit changes
         editor.commit();
+    }
+
+    public int getLastPublicationRegister(){
+        return pref.getInt(LASTPUBLICATIONREGISTER,-1);
+    }
+
+    public void setLastPublicationRegister(int value){
+        editor.putInt(LASTPUBLICATIONREGISTER,value);
     }
 
     /**

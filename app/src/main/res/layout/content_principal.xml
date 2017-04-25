@@ -25,7 +25,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/writer"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"/>
+        android:layout_marginRight="5dp"
+        android:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView
         xmlns:android="http://schemas.android.com/apk/res/android"
