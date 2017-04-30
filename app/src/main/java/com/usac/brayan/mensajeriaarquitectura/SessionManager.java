@@ -65,6 +65,7 @@ public class SessionManager {
 
     public void setLastPublicationRegister(int value){
         editor.putInt(LASTPUBLICATIONREGISTER,value);
+        editor.commit();
     }
 
     /**

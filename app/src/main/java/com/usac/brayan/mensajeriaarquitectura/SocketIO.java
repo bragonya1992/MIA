@@ -48,7 +48,15 @@ public class SocketIO {
 
     public void connect(){
         try {
-            mSocket = IO.socket("http://"+nombreHost+":"+puertoHost);
+            if(ServicioNotificacionesFARUSAC.sm!=null) {
+                IO.Options opts = new IO.Options();
+                opts.query = "username=" + ServicioNotificacionesFARUSAC.sm.getId() + "&role=" + ServicioNotificacionesFARUSAC.sm.getRole();
+                Log.d("SocketIO", "Connect" + opts.query);
+                mSocket = IO.socket("http://" + nombreHost + ":" + puertoHost, opts);
+            }else{
+                Log.d("SocketIO", "Connect");
+                mSocket = IO.socket("http://" + nombreHost + ":" + puertoHost);
+            }
         } catch (URISyntaxException e) {}
         if(!mSocket.connected())
             mSocket.connect();
@@ -104,6 +112,7 @@ public class SocketIO {
 
     public void getLastPublicacion(){
         mSocket.emit("getLastPublicacion","{\"para\":\""+ServicioNotificacionesFARUSAC.sm.getRole()+"\",\"lastId\":\""+ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()+"\"}");
+        Log.d("SocketIO","getLastPublicacion "+"{\"para\":\""+ServicioNotificacionesFARUSAC.sm.getRole()+"\",\"lastId\":\""+ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()+"\"}");
     }
 
     public void pedirCursosAlumno(){
@@ -152,7 +161,9 @@ public class SocketIO {
     }
 
     public void close(){
+
         mSocket.close();
+        Log.d("SocketIO","Close");
     }
 
     private Emitter.Listener recibirCursos = new Emitter.Listener() {

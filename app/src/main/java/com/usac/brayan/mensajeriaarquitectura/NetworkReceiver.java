@@ -18,7 +18,7 @@ public class NetworkReceiver extends BroadcastReceiver {
             NetworkInfo ni=(NetworkInfo) intent.getExtras().get(ConnectivityManager.EXTRA_NETWORK_INFO);
             if(ni!=null && ni.getState()==NetworkInfo.State.CONNECTED) {
                 ServicioNotificacionesFARUSAC.sc.connect();
-                ServicioNotificacionesFARUSAC.sc.registrarse();
+                //ServicioNotificacionesFARUSAC.sc.registrarse();
                 ServicioNotificacionesFARUSAC.sc.getLastPublicacion();
             }
         }

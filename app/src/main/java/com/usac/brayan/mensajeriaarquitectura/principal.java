@@ -225,8 +225,8 @@ public class principal extends AppCompatActivity
         adapter.notifyDataSetChanged();
         loading=true;
         if(newMessages.size()>0){
-            if(newMessages.get(0).idPublicacion<ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()){
-                ServicioNotificacionesFARUSAC.sm.setLastPublicationRegister(0);
+            if(newMessages.get(0).idPublicacion>ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()){
+                ServicioNotificacionesFARUSAC.sm.setLastPublicationRegister(newMessages.get(0).idPublicacion);
             }
         }
     }
@@ -235,6 +235,11 @@ public class principal extends AppCompatActivity
         publications_list.add(0,newMessages.get(0));
         adapter.notifyDataSetChanged();
         loading=true;
+        if(newMessages.size()>0){
+            if(newMessages.get(0).idPublicacion>ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()){
+                ServicioNotificacionesFARUSAC.sm.setLastPublicationRegister(newMessages.get(0).idPublicacion);
+            }
+        }
     }
 
     public static Curso buscarCurso(String nombre, String seccion){
@@ -382,4 +387,5 @@ public class principal extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
