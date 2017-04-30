@@ -1,5 +1,9 @@
 package com.usac.brayan.mensajeriaarquitectura;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +27,7 @@ public class Registro extends AppCompatActivity {
         txtCodigo= (EditText) findViewById(R.id.txtCodigo);
         sp = (Spinner) findViewById(R.id.spinner);
         txtPasswordConfirm = (EditText) findViewById(R.id.txtPasswordConfirm);
+        registerReceiver(abcd, new IntentFilter("xyz"));
     }
 
     public void registrar(View v){
@@ -44,4 +49,11 @@ public class Registro extends AppCompatActivity {
             Toast.makeText(this,"Por favor verifique que la confirmación de contraseña sea igual",Toast.LENGTH_LONG).show();
         }
     }
+
+    private final BroadcastReceiver abcd = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
 }

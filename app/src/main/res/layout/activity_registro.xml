@@ -57,7 +57,8 @@
                 android:textSize="20dp"
                 android:hint="Introduzca su CUI"
                 android:inputType="number"
-                android:maxLines="1"/>
+                android:imeOptions="actionNext"
+                android:singleLine="true"/>
 
             <TextView
                 android:layout_gravity="center"
@@ -78,7 +79,8 @@
                 android:layout_gravity="center"
                 android:textSize="20dp"
                 android:hint="Introduzca su nombre"
-                android:maxLines="1"/>
+                android:imeOptions="actionNext"
+                android:singleLine="true"/>
 
 
             <TextView
@@ -101,7 +103,8 @@
                 android:inputType="textPassword"
                 android:textSize="20dp"
                 android:hint="Introduzca su contraseña"
-                android:maxLines="1"/>
+                android:imeOptions="actionNext"
+                android:singleLine="true"/>
 
             <TextView
                 android:layout_gravity="center"
@@ -123,7 +126,8 @@
                 android:inputType="textPassword"
                 android:textSize="20dp"
                 android:hint="Introduzca su contraseña"
-                android:maxLines="1"/>
+                android:imeOptions="actionNext"
+                android:singleLine="true"/>
             <TextView
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"

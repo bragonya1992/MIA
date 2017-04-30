@@ -51,7 +51,7 @@ public class MensajesManager {
         if (jsonArray.length() > 0) {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject temp = jsonArray.getJSONObject(i);
-                Publicacion temporal = new Publicacion(temp.getString("contenido"),realPara(temp.getString("para")),temp.getString("fecha"),temp.getInt("idPublicacion"));
+                Publicacion temporal = new Publicacion(temp.getString("contenido").replace("$32","<br>"),realPara(temp.getString("para")),temp.getString("fecha"),temp.getInt("idPublicacion"));
                 salida.addLast(temporal);
             }
         }

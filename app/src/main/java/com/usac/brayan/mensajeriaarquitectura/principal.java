@@ -65,7 +65,7 @@ public class principal extends AppCompatActivity
         public  Intent IntentMaestros;
         private static RecyclerView recycler;
         private static RecyclerView.Adapter adapter;
-        private android.support.v7.widget.LinearLayoutManager lManager;
+        private WrapContentLinearLayoutManager lManager;
         private static int mensajes_totales=0;
         private int pagination=0;
         public static boolean mIsInForegroundMode=false;
@@ -85,7 +85,7 @@ public class principal extends AppCompatActivity
         notificationsNumber=(TextView) findViewById(R.id.textOne);
         content_circle = (RelativeLayout) findViewById(R.id.content_circle);
         writer=(LinearLayout) findViewById(R.id.writer);
-        if(Autenticacion.sm.getRole()==2) {
+        if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
             toolbar.setTitle("Modo para docentes"); // titulo de la ventana
             ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
         }else{
@@ -130,8 +130,9 @@ public class principal extends AppCompatActivity
         if(para==-1){
             Toast.makeText(this,"Por favor seleccione a quien desea enviar la publicacion",Toast.LENGTH_LONG).show();
         }else{
-            ServicioNotificacionesFARUSAC.sc.publicar(para,contenido);
+            ServicioNotificacionesFARUSAC.sc.publicar(para,contenido.replaceAll("[\\n\\r]+","\\$32"));
             writer.setVisibility(View.GONE);
+            content_publication.setText("");
         }
     }
 
@@ -185,7 +186,7 @@ public class principal extends AppCompatActivity
         recycler.setHasFixedSize(true);
 
         // Usar un administrador para LinearLayout
-        lManager = new LinearLayoutManager(this);
+        lManager = new WrapContentLinearLayoutManager(this);
         recycler.setLayoutManager(lManager);
 
         // Crear un nuevo adaptador

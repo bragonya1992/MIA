@@ -36,7 +36,7 @@ import java.util.List;
 public class SocketIO {
     private Socket mSocket;
     private Context miContexto;
-    private String nombreHost="192.168.1.6";
+    private String nombreHost="192.168.1.7";
     private String puertoHost="8081";
     private static final int NOTIFICATION_ID = 101;
     private NotificationCompat.Builder builder;
@@ -198,6 +198,9 @@ public class SocketIO {
                     try {
                         JSONObject o = new JSONObject(args[0].toString().trim());
                         Toast.makeText(miContexto,"El estado de su registro ha sido: "+o.getString("estado"),Toast.LENGTH_LONG).show();
+                        if(o.getString("estado").equals("exitoso")){
+                            miContexto.sendBroadcast(new Intent("xyz"));
+                        }
                         //principal.AsignarCursos(args[0].toString().trim());
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -239,7 +242,9 @@ public class SocketIO {
                 @Override
                 public void run() {
                     try {
-                        principal.addPublications(MensajesManager.convertJsonToPublications(args[0].toString().trim()));
+                        if(principal.publications_list!=null){
+                            principal.addPublications(MensajesManager.convertJsonToPublications(args[0].toString().trim()));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -255,7 +260,9 @@ public class SocketIO {
                 @Override
                 public void run() {
                     try {
-                        principal.addPublicationFirst(MensajesManager.convertJsonToPublications(args[0].toString().trim()));
+                        if(principal.publications_list!=null){
+                            principal.addPublicationFirst(MensajesManager.convertJsonToPublications(args[0].toString().trim()));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -272,15 +279,19 @@ public class SocketIO {
                 public void run() {
                     try {
                         JSONObject o = new JSONObject(args[0].toString().trim());
-                        if(o.length()>1) {
-                            Autenticacion.entrar(o.getString("nombre"), o.getString("carne"), o.getInt("role"));
+                        if(o.isNull("error")) {
+                            if (o.length() > 1) {
+                                Autenticacion.entrar(o.getString("nombre"), o.getString("carne"), o.getInt("role"));
+                            }
+                        }else{
+                            Toast.makeText(miContexto,"Sus datos son invalidos, por favor vuelva a intentarlo",Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         try {
                             JSONObject o = new JSONObject(args[0].toString().trim());
-                            Autenticacion.noEntrar(o.getString("error"));
+                            Toast.makeText(miContexto,o.getString("error"),Toast.LENGTH_LONG).show();
                         } catch (JSONException e1) {
-                            Autenticacion.noEntrar("Sus datos son invalidos, por favor vuelva a intentarlo");
+                            Toast.makeText(miContexto,"Sus datos son invalidos, por favor vuelva a intentarlo",Toast.LENGTH_LONG).show();
                         }
                     }
                 }
@@ -431,6 +442,7 @@ public class SocketIO {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
+                    Log.d("NotificationBuilder","NewNotification");
                     newPublicationNotification(args[0].toString().trim());
                 }
             });

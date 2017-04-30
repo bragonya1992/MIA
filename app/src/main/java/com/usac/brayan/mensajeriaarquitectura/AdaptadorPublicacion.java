@@ -1,6 +1,7 @@
 package com.usac.brayan.mensajeriaarquitectura;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,7 @@ public class AdaptadorPublicacion extends RecyclerView.Adapter<AdaptadorPublicac
 
     @Override
     public void onBindViewHolder(PublicacionViewHolder viewHolder, int i) {
-        viewHolder.contenido.setText(items.get(i).getContenido());
+        viewHolder.contenido.setText(Html.fromHtml(items.get(i).getContenido()));
         viewHolder.fecha.setText(items.get(i).getFecha());
         viewHolder.para.setText("Para:"+String.valueOf(items.get(i).getPara()));
     }
