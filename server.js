@@ -20,7 +20,7 @@ app.get('/', function(req, res) {
 keypress(process.stdin);
 
 //listen for the "keypress" event
-process.stdin.on('keypress', function (ch, key) {
+/*process.stdin.on('keypress', function (ch, key) {
   console.log('got "keypress"', key);
   if (key.ctrl && key.name == 'x') {
     process.exit();
@@ -30,17 +30,33 @@ process.stdin.on('keypress', function (ch, key) {
   }
   console.log("pp");
   }
-});
+});*/
 
 // process.stdin.setRawMode(true);
 // process.stdin.resume();
 
 io.sockets.on('connection', function(socket) {  
-  console.log('Alguien se ha conectado con Sockets 1'+socket.id);
+  console.log('Alguien se ha conectado con Sockets '+socket.id);
+  io.use(function(socket, next){
+    console.log("Query: ", socket.handshake.query.username);
+    if(socket.handshake.query.username){
+      var user = JSON.parse("{\"username\":\""+socket.handshake.query.username+"\",\"role\":\""+socket.handshake.query.role+"\"}");
+      app_users[socket.id]=user;
+      console.log("Usuario registrado Query: "+user.username+" socket "+socket.id);
+      if(user.role.toLowerCase()=="1"){
+        DB.notificarAlumnos(user.username,socket);
+      }else{
+        console.log('no notification for teacher, only notices');
+      }
+    }else{
+      console.log("no register socket, identity anonymous "+socket.id);
+    }
+    return next();
+});
   socket.on('app_user',function(cad){
   	var user = JSON.parse(cad);
   	app_users[this.id]=user;
-  	console.log("Usuario registrado: "+user.username+" "+user.role);
+  	console.log("Usuario registrado: "+user.username+" socket "+this.id);
     if(user.role.toLowerCase()=="1"){
       DB.notificarAlumnos(user.username,io.sockets.connected[this.id]);
     }else{
@@ -59,6 +75,8 @@ io.sockets.on('connection', function(socket) {
     if(app_users[this.id]){
       console.log(app_users[this.id].username+" pidio su lista de cursos");
       DB.getCursosMaestro(peticion.username,io.sockets.connected[this.id]);
+    }else{
+      console.log("no se encontro socket "+this.id);
     }
   
   });
@@ -181,8 +199,8 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('autenticar',function(cad){
     var peticion = JSON.parse(cad);
-    console.log("Quiere autenticarse: "+cad);
-    DB.autenticar(peticion.carne,peticion.pass,peticion.role,io.sockets.connected[this.id]);
+      console.log("Quiere autenticarse: "+cad);
+      DB.autenticar(peticion.carne,peticion.pass,peticion.role,io.sockets.connected[this.id]);
   });
 
   socket.on('sendMessage',function(cad){

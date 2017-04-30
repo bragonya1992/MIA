@@ -197,7 +197,6 @@ exports.getPublicacion=function(para,pagination,socket){
 exports.getLastPublicacion=function(para,lastId,socket){
   var notes;
   var lengthRows=0;
-  var realPaginationInf = pagination*10;
   connection.query(`select idPublicacion,DATE_FORMAT(fecha,'%Y-%m-%d %H:%i') As fecha, contenido, para from publicacion where (para=0 or para=?) and idPublicacion>? order by fecha desc limit 0,10;`,[para,lastId], function(err, rows, fields) {
     if (!err){
       lengthRows=rows.length;
@@ -236,11 +235,7 @@ exports.authPublication=function(CodigoMaestro,socket){
       notes=2;
     }
   }).on('end', function(){
-              if(lengthRows>0){
                 socket.emit("responseAuthPublication","{\"auth\":\""+notes+"\"}");
-              }else{
-                socket.emit("responseAuthPublication","{\"auth\":\"2\"}");
-              }
             });
 }
 
@@ -265,7 +260,6 @@ function notificarTodosAlumnos (notesContent,app_users,socket){
                       socket.connected[j].emit("recieverRealTimePublications",notesContent);
                     }
                   }
-
                 }
               }
             });
@@ -290,7 +284,7 @@ function notificarTodosMaestro (notesContent,app_users,socket){
                   for(j in app_users){
                     if(notes[i].codigomaestro==app_users[j].username){
                       console.log(i+" "+notes[i].codigomaestro+" socket: "+j);
-                      socket.connected[j].emit("newPublications","{\"mensaje\":\"Tienes nuevas publicaciones en la seccion de noticias FARUSAC\"}");
+                      socket.connected[j].emit("newPublication","{\"mensaje\":\"Tienes nuevas publicaciones en la seccion de noticias FARUSAC\"}");
                       socket.connected[j].emit("recieverRealTimePublications",notesContent);
                     }
                   }
