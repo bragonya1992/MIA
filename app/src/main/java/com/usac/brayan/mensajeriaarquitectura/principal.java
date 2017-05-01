@@ -221,23 +221,27 @@ public class principal extends AppCompatActivity
     }
 
     public static void addPublications(List<Publicacion> newMessages){
-        publications_list.addAll(newMessages);
-        adapter.notifyDataSetChanged();
-        loading=true;
-        if(newMessages.size()>0){
-            if(newMessages.get(0).idPublicacion>ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()){
-                ServicioNotificacionesFARUSAC.sm.setLastPublicationRegister(newMessages.get(0).idPublicacion);
+        if(adapter!=null) {
+            publications_list.addAll(newMessages);
+            adapter.notifyDataSetChanged();
+            loading = true;
+            if (newMessages.size() > 0) {
+                if (newMessages.get(0).idPublicacion > ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()) {
+                    ServicioNotificacionesFARUSAC.sm.setLastPublicationRegister(newMessages.get(0).idPublicacion);
+                }
             }
         }
     }
 
     public static void addPublicationFirst(List<Publicacion> newMessages){
-        publications_list.add(0,newMessages.get(0));
-        adapter.notifyDataSetChanged();
-        loading=true;
-        if(newMessages.size()>0){
-            if(newMessages.get(0).idPublicacion>ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()){
-                ServicioNotificacionesFARUSAC.sm.setLastPublicationRegister(newMessages.get(0).idPublicacion);
+        if(adapter!=null) {
+            publications_list.add(0, newMessages.get(0));
+            adapter.notifyDataSetChanged();
+            loading = true;
+            if (newMessages.size() > 0) {
+                if (newMessages.get(0).idPublicacion > ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()) {
+                    ServicioNotificacionesFARUSAC.sm.setLastPublicationRegister(newMessages.get(0).idPublicacion);
+                }
             }
         }
     }
