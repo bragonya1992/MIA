@@ -52,7 +52,7 @@ io.sockets.on('connection', function(socket) {
       console.log("no register socket, identity anonymous "+socket.id);
     }
     return next();
-});
+}).on('error', function(err) { console.log("handler error" +err) });;
   socket.on('app_user',function(cad){
   	var user = JSON.parse(cad);
   	app_users[this.id]=user;
