@@ -317,7 +317,7 @@ exports.registrarAlumno=function(username,password,codigo,socket){
 
 exports.asignarCurso=function(username,curso,seccion,socket){
   var notes;
-  connection.query(`insert into AsignacionAlumno(fkCarne,fkCodigoCurso,fkSeccion,fkSemestre,fkAnio) values(?,(select CodigoCurso from Curso where nombre=? and seccion=?),?,?,?)`,[username,curso,seccion,seccion,semestreActual,anioActual], function(err, rows, fields) {
+  connection.query(`insert into AsignacionAlumno(fkCarne,fkCodigoCurso,fkSeccion,fkSemestre,fkAnio) values(?,(select CodigoCurso from Curso where nombre=?),?,?,?)`,[username,curso,seccion,semestreActual,anioActual], function(err, rows, fields) {
     if (!err){
       notes="exitoso";
     }
@@ -368,7 +368,7 @@ where AsignacionAlumno.fkSemestre=? and AsignacionAlumno.fkAnio=? and Curso.Nomb
               console.log("salida on: "+notes);
               if(notes!=0){
                 //socket.emit("enviarMensaje", notes,mensaje);
-                console.log("VOY A MANDAR MENSAJES EN TIEMPO REAL A: ");
+                console.log("VOY A MANDAR MENSAJE "+mensaje+" EN TIEMPO REAL A: ");
                 for(i in notes){
                   for(j in app_users){
                     if(notes[i].Carne==app_users[j].username){
