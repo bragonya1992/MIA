@@ -39,6 +39,8 @@ import android.widget.TextView;
 import android.content.Context;
 import android.widget.Toast;
 
+
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,6 +95,7 @@ public class principal extends AppCompatActivity
             ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
         }
         ServicioNotificacionesFARUSAC.sc.cancelNotification();
+        ServicioNotificacionesFARUSAC.sc.registrarse();
         NavigationView nv=(NavigationView) findViewById(R.id.nav_view);
         nvMenu =nv.getMenu();
         //mapearCursos(nvMenu);
@@ -112,6 +115,8 @@ public class principal extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+
+
         ct=this;
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -130,7 +135,7 @@ public class principal extends AppCompatActivity
         if(para==-1){
             Toast.makeText(this,"Por favor seleccione a quien desea enviar la publicacion",Toast.LENGTH_LONG).show();
         }else{
-            ServicioNotificacionesFARUSAC.sc.publicar(para,contenido.replaceAll("[\\n\\r]+","\\$32"));
+            ServicioNotificacionesFARUSAC.sc.publicar(para, StringEscapeUtils.escapeJava(contenido.replaceAll("[\\n\\r]+","\\$32").replace("\"","$33").replace("\"","$33").replace("$34","\'")));
             writer.setVisibility(View.GONE);
             content_publication.setText("");
         }

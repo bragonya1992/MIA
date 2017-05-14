@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Currency;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,8 +37,8 @@ import java.util.List;
 public class SocketIO {
     private Socket mSocket;
     private Context miContexto;
-    private String nombreHost="192.168.1.7";
-    private String puertoHost="8081";
+    private String nombreHost="node-server-bragonya.c9users.io";
+    private String puertoHost="8080";
     private static final int NOTIFICATION_ID = 101;
     private NotificationCompat.Builder builder;
     public SocketIO(Context mc) {
@@ -210,7 +211,9 @@ public class SocketIO {
                         JSONObject o = new JSONObject(args[0].toString().trim());
                         Toast.makeText(miContexto,"El estado de su registro ha sido: "+o.getString("estado"),Toast.LENGTH_LONG).show();
                         if(o.getString("estado").equals("exitoso")){
-                            miContexto.sendBroadcast(new Intent("xyz"));
+                            miContexto.sendBroadcast(new Intent("xyz").putExtra("estado",true));
+                        }else{
+                            miContexto.sendBroadcast(new Intent("xyz").putExtra("estado",false));
                         }
                         //principal.AsignarCursos(args[0].toString().trim());
                     } catch (JSONException e) {
@@ -500,10 +503,10 @@ public class SocketIO {
                     //Se construye la notificacion
                     NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
                     inboxStyle.setBigContentTitle("Mensajeria FARUSAC");
-                    builder.setSmallIcon(R.drawable.ic_menu_share);
+                    builder.setSmallIcon(R.drawable.ic_chat_bubble);
                     builder.setContentIntent(pendingIntent);
                     builder.setAutoCancel(true);
-                    builder.setLargeIcon(BitmapFactory.decodeResource(miContexto.getResources(), R.drawable.ic_menu_slideshow));
+                    builder.setLargeIcon(BitmapFactory.decodeResource(miContexto.getResources(), R.drawable.ic_chat_bubble));
                     builder.setContentTitle("Mensajeria FARUSAC");
                     builder.setContentText("Tienes publicaciones nuevas");
                     builder.setTicker("Nuevas publicaciones de la unidad central de FARUSAC");
@@ -531,10 +534,10 @@ public class SocketIO {
                     //Se construye la notificacion
                     NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
                     inboxStyle.setBigContentTitle("Mensajeria FARUSAC");
-                    builder.setSmallIcon(R.drawable.ic_menu_share);
+                    builder.setSmallIcon(R.drawable.ic_chat_bubble);
                     builder.setContentIntent(pendingIntent);
                     builder.setAutoCancel(true);
-                    builder.setLargeIcon(BitmapFactory.decodeResource(miContexto.getResources(), R.drawable.ic_menu_slideshow));
+                    builder.setLargeIcon(BitmapFactory.decodeResource(miContexto.getResources(), R.drawable.ic_chat_bubble));
                     builder.setContentTitle("Mensajeria FARUSAC");
                     if (notificaciones.size() < 5) {
                         builder.setContentText("Tienes " + notificaciones.size() + " mensajes nuevos");
@@ -550,7 +553,7 @@ public class SocketIO {
                     builder.setSound(Uri.parse("android.resource://com.usac.brayan.mensajeriaarquitectura/" + R.raw.dog));
                     for (int i = 0; i < notificaciones.size(); i++) {
                         ChatMessage temp = notificaciones.get(i);
-                        inboxStyle.addLine(temp.getCurso() + "-" + temp.getSeccion() + ":" + temp.getMessage().replace("$32", " "));
+                        inboxStyle.addLine(temp.getCurso() + "-" + temp.getSeccion() + ":" + temp.getMessage().replace("$32", " ").replace("$33","\"").replace("$34","\'"));
 
                     }
                     builder.setStyle(inboxStyle);

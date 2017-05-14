@@ -26,6 +26,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -80,8 +82,8 @@ public class MensajesMaestros extends AppCompatActivity {
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                    ServicioNotificacionesFARUSAC.sc.enviarMensaje(actualCurso.nombre,actualCurso.seccion, chatText.getText().toString().replaceAll("[\\n\\r]+","\\$32"));
-                sendChatMessage(new ChatMessage(2,actualCurso.nombre,actualCurso.seccion,chatText.getText().toString().replaceAll("[\\n\\r]+","\\<br\\>"),"","Hace pocos momentos"));
+                    ServicioNotificacionesFARUSAC.sc.enviarMensaje(actualCurso.nombre,actualCurso.seccion, StringEscapeUtils.escapeJava(chatText.getText().toString().replaceAll("[\\n\\r]+","\\$32").replace("\"","$33").replace("$34","\'")));
+                sendChatMessage(new ChatMessage(2,actualCurso.nombre,actualCurso.seccion,chatText.getText().toString().replaceAll("[\\n\\r]+","\\<br\\>").replace("\"","$33").replace("$34","\'"),"","Hace pocos momentos"));
 
             }
         });

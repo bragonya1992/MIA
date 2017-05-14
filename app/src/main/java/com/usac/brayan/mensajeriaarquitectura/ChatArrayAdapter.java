@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -68,7 +70,7 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
             row = inflater.inflate(R.layout.left, parent, false);
         }
         chatText = (TextView) row.findViewById(R.id.msgr);
-        chatText.setText(Html.fromHtml(convertion(chatMessageObj.getMessage()).replace("$32","<br>")));
+        chatText.setText(Html.fromHtml(StringEscapeUtils.unescapeJava(convertion(chatMessageObj.getMessage()).replace("$32","<br>").replace("$33","\"").replace("$34","\'"))));
         date = (TextView) row.findViewById(R.id.fecha_msj);
         try {
             date.setText(chatMessageObj.getFecha());

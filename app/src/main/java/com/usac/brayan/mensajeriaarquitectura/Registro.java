@@ -7,7 +7,9 @@ import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -16,6 +18,8 @@ public class Registro extends AppCompatActivity {
     EditText txtPassword;
     EditText txtCodigo;
     EditText txtPasswordConfirm;
+    ProgressBar circular_progress_bar;
+    Button btnRegistrar;
     Spinner sp;
     public static SocketIO so;
     @Override
@@ -27,6 +31,8 @@ public class Registro extends AppCompatActivity {
         txtCodigo= (EditText) findViewById(R.id.txtCodigo);
         sp = (Spinner) findViewById(R.id.spinner);
         txtPasswordConfirm = (EditText) findViewById(R.id.txtPasswordConfirm);
+        circular_progress_bar= (ProgressBar) findViewById(R.id.circular_progress_bar);
+        btnRegistrar = (Button) findViewById(R.id.btnRegistrar);
         registerReceiver(abcd, new IntentFilter("xyz"));
     }
 
@@ -39,6 +45,8 @@ public class Registro extends AppCompatActivity {
                     so = new SocketIO(this);
                     so.esperarRegistro();
                     so.registrarUsuario(txtCodigo.getText().toString(), txtNombre.getText().toString(), sp.getSelectedItem().toString(), txtPassword.getText().toString());
+                    circular_progress_bar.setVisibility(View.VISIBLE);
+                    btnRegistrar.setEnabled(false);
                 }else{
                     Toast.makeText(this,"Su CUI debe tener de 13 digitos",Toast.LENGTH_LONG).show();
                 }
@@ -53,7 +61,12 @@ public class Registro extends AppCompatActivity {
     private final BroadcastReceiver abcd = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            finish();
+            boolean response = intent.getBooleanExtra("estado",false);
+            if(response) {
+                finish();
+            }else{
+                btnRegistrar.setEnabled(true);
+            }
         }
     };
 }

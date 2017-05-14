@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.app.NotificationCompat;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +52,7 @@ public class MensajesManager {
         if (jsonArray.length() > 0) {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject temp = jsonArray.getJSONObject(i);
-                Publicacion temporal = new Publicacion(temp.getString("contenido").replace("$32","<br>"),realPara(temp.getString("para")),temp.getString("fecha"),temp.getInt("idPublicacion"));
+                Publicacion temporal = new Publicacion(StringEscapeUtils.unescapeJava(temp.getString("contenido").replace("$32","<br>").replace("$33","\"").replace("$34","\'")),realPara(temp.getString("para")),temp.getString("fecha"),temp.getInt("idPublicacion"));
                 salida.addLast(temporal);
             }
         }
