@@ -110,6 +110,15 @@ io.sockets.on('connection', function(socket) {
     }
   
   });
+  
+  socket.on('getAlumnos',function(cad){
+    if(app_users[this.id]){
+    var peticion = JSON.parse(cad);
+      console.log(app_users[this.id].username+" el alumno pidio su lista de cursos");
+      DB.getAlumnos(peticion.curso,peticion.seccion,io.sockets.connected[this.id]);
+    }
+  
+  });
 
 
   socket.on('getMensajesAlumno',function(cad){

@@ -436,6 +436,30 @@ order by Mensaje.fecha desc limit 5;`,[username,semestreActual,anioActual], func
                 socket.emit("inbox", notes);
             });
 }
+            
+  exports.getAlumnos= function(curso,seccion,socket){
+  var notes;
+  connection.query(`select fkCarne as carne, Alumno.Nombre as nombre from asignacionalumno 
+  join curso on curso.codigocurso=asignacionalumno.fkcodigocurso 
+  join alumno on alumno.carne=asignacionalumno.fkCarne 
+  where curso.nombre=? and fkseccion=? and fksemestre=? and fkanio=?;`,[curso,seccion,semestreActual,anioActual], function(err, rows, fields) {
+    if (!err){
+      notes="{\"alumnos\":[";
+      for(var i in rows){
+        notes+="{\"nombre\":\""+rows[i].nombre+"\",\"carne\":\""+rows[i].carne+"\"},";
+      }
+      notes = notes.slice(0, -1);
+      notes+="]}";
+    }
+    else{
+      console.log('Error while performing Query.'+err);
+      notes="{\"error\":\""+err+"\"}";
+    }
+  }).on('end', function(){
+              console.log("salida on: "+notes);
+                socket.emit("recieverAlumnos", notes);
+            });
+}
 
 exports.cambiarVisibilidad=function(carne,curso,seccion){
   console.log(carne+ "pide cambiar la visilidad de los mensajes del curso "+curso);
