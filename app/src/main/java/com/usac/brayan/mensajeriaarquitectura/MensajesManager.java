@@ -98,4 +98,18 @@ public class MensajesManager {
         }
         return items;
     }
+
+    public static ArrayList<Estudiante> convertJsonToEstudiantes(String json) throws JSONException {
+        ArrayList<Estudiante> items = new ArrayList<>();
+        JSONObject jsonObj = new JSONObject(json);
+        JSONArray jsonArray = jsonObj.getJSONArray("alumnos");
+        if (jsonArray.length() > 0) {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject temp = jsonArray.getJSONObject(i);
+                Estudiante temporal = new Estudiante(temp.getString("nombre"),temp.getString("carne"));
+                items.add(temporal);
+            }
+        }
+        return items;
+    }
 }

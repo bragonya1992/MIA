@@ -1,8 +1,13 @@
 package com.usac.brayan.mensajeriaarquitectura;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.DataSetObserver;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,6 +28,7 @@ import android.view.MenuItem;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,6 +37,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -38,11 +45,12 @@ public class MensajesMaestros extends AppCompatActivity {
         private static ChatArrayAdapter chatArrayAdapter;
         private ListView listView;
         private static EditText chatText;
-        private Button buttonSend;
+        private FloatingActionButton buttonSend;
         private static boolean side = false;
         public static Curso actualCurso;
         public static Context context;
         public static boolean mIsInForegroundMode=false;
+    private ImageButton reads;
 
 
 
@@ -54,30 +62,14 @@ public class MensajesMaestros extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(actualCurso.nombre+" - "+ actualCurso.seccion);
         setSupportActionBar(toolbar);
-        buttonSend = (Button) findViewById(R.id.send);
+        buttonSend = (FloatingActionButton) findViewById(R.id.send);
         listView = (ListView) findViewById(R.id.msgview);
         setLista();
         chatArrayAdapter = actualCurso.mensajes;
-        Log.d("FUERA VER MENSAJES","Adaptados a la lista "+actualCurso.mensajes.getCount());
-        Log.d("FUERA VER MENSAJES","CharArrayAdapter "+chatArrayAdapter.getCount());
         listView.setAdapter(chatArrayAdapter);
-        //chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(), R.layout.right);
+        reads = (ImageButton) findViewById(R.id.reads);
         listView.setAdapter(chatArrayAdapter);
         chatText = (EditText) findViewById(R.id.msg);
-        //chatText.setText(Html.fromHtml("this is <u>underlined</u> text and <b>This text has a color</b>"));
-//        chatText.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                Toast.makeText(getApplicationContext(),chatText.getText().toString(),Toast.LENGTH_SHORT).show();
-//
-//                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-//
-//                    return sendChatMessage();
-//                }
-//                return false;
-//            }
-//
-//        });
 
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +80,14 @@ public class MensajesMaestros extends AppCompatActivity {
             }
         });
 
+        reads.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                ServicioNotificacionesFARUSAC.sc.getAlumnos(actualCurso.nombre,actualCurso.seccion);
+
+            }
+        });
+        registerReceiver(recieverForEstudiantes, new IntentFilter("recieverForEstudiantes"));
         listView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         listView.setAdapter(chatArrayAdapter);
 
@@ -139,6 +139,20 @@ public class MensajesMaestros extends AppCompatActivity {
         //navigationView.setNavigationItemSelectedListener(this);
         //principal.mapearCursos(navigationView.getMenu());
     }
+
+    private final BroadcastReceiver recieverForEstudiantes = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ArrayList<Estudiante> response = (ArrayList<Estudiante>) intent.getSerializableExtra("listaAlumnos");
+            // DialogFragment.show() will take care of adding the fragment
+            // in a transaction.  We also want to remove any currently showing
+            // dialog, so make our own transaction and take care of that here.
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            // Create and show the dialog.
+            MyDialogFragment newFragment = MyDialogFragment.newInstance(response);
+            newFragment.show(ft, "dialog");
+        }
+    };
 
     public void setLista(){
         actualCurso.setLista(getApplicationContext(),R.layout.right);

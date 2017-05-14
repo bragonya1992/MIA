@@ -101,6 +101,7 @@ public class SocketIO {
         mSocket.on("responsePublicacion",responsePublicacion);
         mSocket.on("recieverRealTimePublications",recieverRealTimePublications);
         mSocket.on("responseAuthPublication",responseAuthPublication);
+        mSocket.on("recieverAlumnos",recieverAlumnos);
     }
 
     public void pedirCursosMaestro(){
@@ -147,6 +148,10 @@ public class SocketIO {
 
     public void pedirMensajesMaestro(String curso, String seccion){
         mSocket.emit("getMensajesMaestro","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
+    }
+
+    public void getAlumnos(String curso, String seccion){
+        mSocket.emit("getAlumnos","{\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
     }
 
     public void cambiarVisibilidad(String curso, String seccion){
@@ -397,6 +402,25 @@ public class SocketIO {
                         }
                     }
 
+                }
+            });
+        }
+    };
+
+
+    private Emitter.Listener recieverAlumnos = new Emitter.Listener() {
+
+        @Override
+        public void call(final Object... args) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ArrayList<Estudiante> list = MensajesManager.convertJsonToEstudiantes(args[0].toString().trim());
+                        miContexto.sendBroadcast(new Intent("recieverForEstudiantes").putExtra("listaAlumnos",list));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
