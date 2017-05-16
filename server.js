@@ -36,9 +36,24 @@ keypress(process.stdin);
 // process.stdin.resume();
 
 io.sockets.on('connection', function(socket) {  
-  console.log('Alguien se ha conectado con Sockets '+socket.id);
-  io.use(function(socket, next){
-    console.log("Query: ", socket.handshake.query.username);
+  console.log('Alguien se ha conectado con Sockets '+socket.id+" username: "+socket.handshake.query.username);
+  console.log("Users: ", app_users);
+  if(socket.handshake.query.username){
+      var user = JSON.parse("{\"username\":\""+socket.handshake.query.username+"\",\"role\":\""+socket.handshake.query.role+"\"}");
+      app_users[socket.id]=user;
+      console.log("Usuario registrado Query: "+user.username+" socket "+socket.id);
+      if(user.role.toLowerCase()=="1"){
+        DB.notificarAlumnos(user.username,socket);
+      }else{
+        console.log('no notification for teacher, only notices');
+      }
+    }else{
+      console.log("no register socket, identity anonymous "+socket.id);
+    }
+  
+  
+/*  io.use(function(socket, next){
+    console.log("Users: ", app_users);
     if(socket.handshake.query.username){
       var user = JSON.parse("{\"username\":\""+socket.handshake.query.username+"\",\"role\":\""+socket.handshake.query.role+"\"}");
       app_users[socket.id]=user;
@@ -51,8 +66,9 @@ io.sockets.on('connection', function(socket) {
     }else{
       console.log("no register socket, identity anonymous "+socket.id);
     }
-    return next();
-}).on('error', function(err) { console.log("handler error" +err) });;
+    next();
+}).on('error', function(err) { console.log("handler error" +err) });*/
+
   socket.on('app_user',function(cad){
   	var user = JSON.parse(cad);
   	app_users[this.id]=user;

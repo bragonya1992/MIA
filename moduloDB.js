@@ -129,7 +129,7 @@ from Curso where Nombre=?),?,?,?,?);`,[username,curso,seccion,semestreActual,ani
       notes=0;
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on insertMensaje: "+notes);
               if(notes==1){
                 // console.log("estuiantes del curso seran extraidos");
                 // var cadena = "{\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\",\"mensaje\":\""+mensaje+"\"}";
@@ -155,7 +155,7 @@ exports.publicar=function(CodigoMaestro,para,contenido,socket,app_users,socketon
       notes=0;
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on publicacion: "+notes);
               if(notes!=0){
                 socket.emit("responsePublicacion","Su ultima publicacion fue exitosa");
                 if(para==1){
@@ -189,7 +189,7 @@ exports.getPublicacion=function(para,pagination,socket){
       notes=0;
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on getpublicacion: "+notes);
               socket.emit("recieverPublications",notes);
             });
 }
@@ -307,7 +307,7 @@ exports.registrarAlumno=function(username,password,codigo,socket){
       notes=err;
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on registrarAlumno: "+notes);
             // console.log("estuiantes del curso seran extraidos");
              var cadena = "{\"estado\":\""+notes+"\"}";
              socket.emit("recibirEstadoRegistro", cadena);
@@ -326,7 +326,7 @@ exports.asignarCurso=function(username,curso,seccion,socket){
       notes=err;
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on asignarCurso: "+notes);
             // console.log("estuiantes del curso seran extraidos");
              var cadena = "{\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\",\"estado\":\""+notes+"\"}";
              socket.emit("recibirAsignacionCurso", cadena);
@@ -344,7 +344,7 @@ exports.registrarMaestro=function(username,password,codigo,socket){
       notes=err;
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on registrarMaestro: "+notes);
             // console.log("estuiantes del curso seran extraidos");
              var cadena = "{\"estado\":\""+notes+"\"}";
              socket.emit("recibirEstadoRegistro", cadena);
@@ -365,7 +365,7 @@ where AsignacionAlumno.fkSemestre=? and AsignacionAlumno.fkAnio=? and Curso.Nomb
       notes=0;
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on listaAlumnos: "+notes);
               if(notes!=0){
                 //socket.emit("enviarMensaje", notes,mensaje);
                 console.log("VOY A MANDAR MENSAJE "+mensaje+" EN TIEMPO REAL A: ");
@@ -405,7 +405,7 @@ order by Mensaje.fecha desc limit 5;`,[username,semestreActual,anioActual], func
       notes="{\"error\":\""+err+"\"}";
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on notificar ALumnos: "+notes);
                 socket.emit("inbox", notes);
             });
 }
@@ -432,7 +432,7 @@ order by Mensaje.fecha desc limit 5;`,[username,semestreActual,anioActual], func
       notes="{\"error\":\""+err+"\"}";
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on notificacionesAlumnos: "+notes);
                 socket.emit("inbox", notes);
             });
 }
@@ -456,7 +456,7 @@ order by Mensaje.fecha desc limit 5;`,[username,semestreActual,anioActual], func
       notes="{\"error\":\""+err+"\"}";
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on obtenerAlumnos: "+notes);
                 socket.emit("recieverAlumnos", notes);
             });
 }
@@ -501,7 +501,7 @@ order by Mensaje.fecha desc limit `+inf+`,`+sup,[carne,semestreActual,anioActual
       notes="{\"error\":\""+err+"\"}";
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on getTopAlumno: "+notes);
                 socket.emit("recibirTop", notes);
             });;
 }
@@ -530,7 +530,7 @@ order by Mensaje.fecha desc limit 10;`,[carne,semestreActual,anioActual,curso,se
       notes="{\"error\":\""+err+"\"}";
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on getMensajesAlumon: "+notes);
                 socket.emit("recibirMensajes", notes);
             });;
 }
@@ -557,7 +557,7 @@ order by Mensaje.fecha desc limit 10`,[codigo,semestreActual,anioActual,curso,se
       notes="{\"error\":\""+err+"\"}";
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on getMensajeMaestro: "+notes);
                 socket.emit("recibirMensajes", notes);
             });;
 }
@@ -584,7 +584,7 @@ order by Mensaje.fecha desc limit `+inf+`,`+sup,[codigo,semestreActual,anioActua
       notes="{\"error\":\""+err+"\"}";
     }
   }).on('end', function(){
-              console.log("salida on: "+notes);
+              console.log("salida on getTopMaestros: "+notes);
                 socket.emit("recibirTop", notes);
             });;
 }
