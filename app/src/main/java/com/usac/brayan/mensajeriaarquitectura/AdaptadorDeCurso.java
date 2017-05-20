@@ -92,6 +92,6 @@ public class AdaptadorDeCurso extends RecyclerView.Adapter<AdaptadorDeCurso.Curs
     public void onBindViewHolder(CursoViewHolder viewHolder, int i) {
         viewHolder.nombre.setText(mContactFilter.get(i).nombre);
         viewHolder.seccion.setText("Seccion:"+String.valueOf(mContactFilter.get(i).seccion));
-        viewHolder.catedratico.setText("Catedractico: "+ String.valueOf(mContactFilter.get(i).catedratico));
+        viewHolder.catedratico.setText("Catedrático: "+ String.valueOf(mContactFilter.get(i).catedratico));
     }
 }

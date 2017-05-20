@@ -47,6 +47,9 @@ public class Registro extends AppCompatActivity {
                     so.registrarUsuario(txtCodigo.getText().toString(), txtNombre.getText().toString(), sp.getSelectedItem().toString(), txtPassword.getText().toString());
                     circular_progress_bar.setVisibility(View.VISIBLE);
                     btnRegistrar.setEnabled(false);
+                    txtNombre.setEnabled(false);
+                    txtPassword.setEnabled(false);
+                    txtPasswordConfirm.setEnabled(false);
                 }else{
                     Toast.makeText(this,"Su CUI debe tener de 13 digitos",Toast.LENGTH_LONG).show();
                 }
@@ -66,6 +69,10 @@ public class Registro extends AppCompatActivity {
                 finish();
             }else{
                 btnRegistrar.setEnabled(true);
+                btnRegistrar.setEnabled(true);
+                txtNombre.setEnabled(true);
+                txtPassword.setEnabled(true);
+                txtPasswordConfirm.setEnabled(true);
             }
         }
     };

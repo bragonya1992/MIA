@@ -23,11 +23,11 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
     private TextView chatText;
     private List<ChatMessage> chatMessageList = new ArrayList<ChatMessage>();
     private Context context;
-    private LinkedList<String> pila = new LinkedList<>();
-    private int bold1=-1;
-    private int bold2=-1;
-    private int underline1=-1;
-    private int underline2=-1;
+    private static LinkedList<String> pila = new LinkedList<>();
+    private static int bold1=-1;
+    private static int bold2=-1;
+    private static int underline1=-1;
+    private static int underline2=-1;
     private TextView date;
 
     @Override
@@ -81,7 +81,7 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
         return row;
     }
 
-    public String convertion(String cadena){
+    public static String convertion(String cadena){
         int estado=0;
         String tramo="";
         for(int i =0; i < cadena.length(); i++){
@@ -192,7 +192,7 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
         return generateString();
     }
 
-    public void asignacionBold(int pos){
+    public static void asignacionBold(int pos){
         if(bold1==-1){
             bold1=pos;
         }else{
@@ -203,7 +203,7 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
         }
     }
 
-    public void asignacionUnderline(int pos){
+    public static void asignacionUnderline(int pos){
         if(underline1==-1){
             underline1=pos;
         }else{
@@ -214,17 +214,17 @@ class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
         }
     }
 
-    public  void changeBoldSymbol(int pos1, int pos2){
+    public static void changeBoldSymbol(int pos1, int pos2){
         pila.set(pos1,"<b>");
         pila.set(pos2,"</b>");
     }
 
-    public  void changeUnderlineSymbol(int pos1, int pos2){
+    public static void changeUnderlineSymbol(int pos1, int pos2){
         pila.set(pos1,"<u>");
         pila.set(pos2,"</u>");
     }
 
-    public String generateString(){
+    public static String generateString(){
         String salida="";
         while (!pila.isEmpty()){
             salida+=pila.pop();

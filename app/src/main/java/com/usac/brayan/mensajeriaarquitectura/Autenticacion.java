@@ -12,9 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -22,15 +24,16 @@ import com.tooltip.OnClickListener;
 import com.tooltip.Tooltip;
 
 public class Autenticacion extends AppCompatActivity {
-    Button btnIng;
-    EditText txtCarne;
-    EditText txtPass;
+    static Button btnIng;
+    static EditText txtCarne;
+    static EditText txtPass;
     Spinner sp;
     public static SessionManager sm;
     public static SharedPreferences.Editor editor;
     public static Context mContext;
     public static SocketIO so;
     public static Activity actividad;
+    static ProgressBar wait;
     ImageView chartImageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,7 @@ public class Autenticacion extends AppCompatActivity {
         txtPass=(EditText)findViewById(R.id.txtPass);
         sp=(Spinner) findViewById(R.id.spinner);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
+        wait =(ProgressBar) findViewById(R.id.pbHeaderProgress);
         sm = new SessionManager(this);
         if(sm.isLoggedIn()){
             this.startService(new Intent(this,ServicioNotificacionesFARUSAC.class));
@@ -79,7 +82,10 @@ public class Autenticacion extends AppCompatActivity {
         so = new SocketIO(mContext);
         so.esperarRespuesta();
         so.solicitarAutenticacion(txtCarne.getText().toString(),sp.getSelectedItem().toString(),txtPass.getText().toString());
-
+        view.setEnabled(false);
+        wait.setVisibility(View.VISIBLE);
+        txtCarne.setEnabled(false);
+        txtPass.setEnabled(false);
     }
 
     public static void entrar(String nombre, String carne, int role){
@@ -89,11 +95,18 @@ public class Autenticacion extends AppCompatActivity {
         mContext.startService(new Intent(mContext,ServicioNotificacionesFARUSAC.class));
         final Activity activity= actividad;
         activity.finish();
+        btnIng.setEnabled(true);
+        txtCarne.setEnabled(true);
+        txtPass.setEnabled(true);
     }
 
-    public static void noEntrar(String mensaje){
-        Toast.makeText(mContext,mensaje,Toast.LENGTH_LONG).show();
+    public static void noEntrar(){
         so.close();
+        btnIng.setEnabled(true);
+        txtCarne.setEnabled(true);
+        txtPass.setEnabled(true);
+        //setProgressBarIndeterminateVisibility(false);
+        wait.setVisibility(View.GONE);
     }
 
 }

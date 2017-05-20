@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
@@ -33,6 +34,7 @@ public class ServicioNotificacionesFARUSAC extends Service{
     public static SessionManager sm;
     private Thread workerThread = null;
     CountDownTimer timer;
+    private PowerManager.WakeLock wl;
 
     @Override
     public void onCreate() {
@@ -42,6 +44,13 @@ public class ServicioNotificacionesFARUSAC extends Service{
         sc.escucharNotificaciones();
         //sc.registrarse();
         Log.d("SocketIO","Service onCreate");
+        PowerManager pm = (PowerManager)getApplicationContext().getSystemService(
+                Context.POWER_SERVICE);
+        this.wl = pm.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK
+                        | PowerManager.ON_AFTER_RELEASE,
+                "socketIO");
+        wl.acquire();
 
     }
 
@@ -91,6 +100,7 @@ public class ServicioNotificacionesFARUSAC extends Service{
         Log.d("SocketIO","OnDestroy");
         Toast.makeText(this,"SocketIO onDestroy",Toast.LENGTH_LONG).show();
         sc.close();
+        wl.release();
     }
 
     @Override

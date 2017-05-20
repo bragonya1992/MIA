@@ -35,7 +35,7 @@ public class MyDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //inflate layout with recycler view
         View v = inflater.inflate(R.layout.fragment_dialog, container, false);
-        getDialog().setTitle("¡Ellos son tus estudiantes!");
+        getDialog().setTitle("¡Tus estudiantes! :)");
         list= (ArrayList<Estudiante>) getArguments().getSerializable("list");
         mRecyclerView = (RecyclerView) v.findViewById(R.id.recicladorForEstudiantes);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

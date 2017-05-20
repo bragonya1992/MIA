@@ -47,7 +47,7 @@ public class AdaptadorPublicacion extends RecyclerView.Adapter<AdaptadorPublicac
 
     @Override
     public void onBindViewHolder(PublicacionViewHolder viewHolder, int i) {
-        viewHolder.contenido.setText(Html.fromHtml(items.get(i).getContenido()));
+        viewHolder.contenido.setText(Html.fromHtml(ChatArrayAdapter.convertion(items.get(i).getContenido())));
         viewHolder.fecha.setText(items.get(i).getFecha());
         viewHolder.para.setText("Para:"+String.valueOf(items.get(i).getPara()));
     }

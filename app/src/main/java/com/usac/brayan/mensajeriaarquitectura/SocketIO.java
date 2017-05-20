@@ -18,10 +18,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.thread.EventThread;
+import io.socket.client.Socket;
+import io.socket.client.IO;
+import io.socket.emitter.Emitter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -304,6 +303,7 @@ public class SocketIO {
                             }
                         }else{
                             Toast.makeText(miContexto,"Sus datos son invalidos, por favor vuelva a intentarlo",Toast.LENGTH_LONG).show();
+                            Autenticacion.noEntrar();
                         }
                     } catch (JSONException e) {
                         try {
@@ -311,6 +311,7 @@ public class SocketIO {
                             Toast.makeText(miContexto,o.getString("error"),Toast.LENGTH_LONG).show();
                         } catch (JSONException e1) {
                             Toast.makeText(miContexto,"Sus datos son invalidos, por favor vuelva a intentarlo",Toast.LENGTH_LONG).show();
+                            Autenticacion.noEntrar();
                         }
                     }
                 }
@@ -558,10 +559,10 @@ public class SocketIO {
                     //Se construye la notificacion
                     NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
                     inboxStyle.setBigContentTitle("Mensajeria FARUSAC");
-                    builder.setSmallIcon(R.drawable.ic_chat_bubble);
+                    builder.setSmallIcon(R.drawable.ic_chat_bubble_new);
                     builder.setContentIntent(pendingIntent);
                     builder.setAutoCancel(true);
-                    builder.setLargeIcon(BitmapFactory.decodeResource(miContexto.getResources(), R.drawable.ic_chat_bubble));
+                    builder.setLargeIcon(BitmapFactory.decodeResource(miContexto.getResources(), R.drawable.ic_chat_bubble_new));
                     builder.setContentTitle("Mensajeria FARUSAC");
                     if (notificaciones.size() < 5) {
                         builder.setContentText("Tienes " + notificaciones.size() + " mensajes nuevos");
