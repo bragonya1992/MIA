@@ -36,12 +36,18 @@ keypress(process.stdin);
 // process.stdin.resume();
 
 io.sockets.on('connection', function(socket) {  
+  socket.setMaxListeners(0);
   console.log('Alguien se ha conectado con Sockets '+socket.id+" username: "+socket.handshake.query.username);
-  console.log("Users: ", app_users);
   if(socket.handshake.query.username){
       var user = JSON.parse("{\"username\":\""+socket.handshake.query.username+"\",\"role\":\""+socket.handshake.query.role+"\"}");
+      for (j in app_users) {
+        if (app_users[j].username == user.username) {
+            delete app_users[j];
+        }
+      }
       app_users[socket.id]=user;
       console.log("Usuario registrado Query: "+user.username+" socket "+socket.id);
+      
       if(user.role.toLowerCase()=="1"){
         DB.notificarAlumnos(user.username,socket);
       }else{
@@ -50,6 +56,8 @@ io.sockets.on('connection', function(socket) {
     }else{
       console.log("no register socket, identity anonymous "+socket.id);
     }
+  
+  console.log("Users: ", app_users);
   
   
 /*  io.use(function(socket, next){
@@ -84,7 +92,7 @@ io.sockets.on('connection', function(socket) {
   //   io.sockets.in(socketid).emit("inbox","{\"arreglo\":[{\"seccion\":\"A\",\"visibilidad\":\"1\",\"curso\":\"Mate1\",\"catedratico\":\"Zambrano\",\"mensaje\":\"Buenas noches jovenes\"},{\"seccion\":\"B\",\"curso\":\"Ortodoncia 1\",\"mensaje\":\"manana materiales\"},{\"seccion\":\"C\",\"curso\":\"Progra1\",\"mensaje\":\"Llevar computadora\"}]}");
   //   console.log("acabo de enviar:   "+"{\"arreglo\":[{\"seccion\":\"A\",\"visibilidad\":\"1\",\"curso\":\"Mate1\",\"mensaje\":\"Buenas noches jovenes\"},{\"seccion\":\"B\",\"curso\":\"Ortodoncia 1\",\"mensaje\":\"manana materiales\"},{\"seccion\":\"C\",\"curso\":\"Progra1\",\"mensaje\":\"Llevar computadora\"}]}");
   // }}
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
   socket.on('listaCursosMaestro',function(cad){
     var peticion = JSON.parse(cad);
@@ -95,7 +103,7 @@ io.sockets.on('connection', function(socket) {
       console.log("no se encontro socket "+this.id);
     }
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
   socket.on('enviarAsignacionCurso',function(cad){
     var peticion = JSON.parse(cad);
@@ -104,7 +112,7 @@ io.sockets.on('connection', function(socket) {
       DB.asignarCurso(peticion.username,peticion.curso,peticion.seccion,io.sockets.connected[this.id]);
     }
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
     socket.on('registrarUsuario',function(cad){
     var peticion = JSON.parse(cad);
@@ -116,7 +124,7 @@ io.sockets.on('connection', function(socket) {
     }
     
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
   socket.on('listaCursosAlumno',function(cad){
     if(app_users[this.id]){
@@ -125,7 +133,7 @@ io.sockets.on('connection', function(socket) {
       DB.getCursosAlumno(peticion.username,io.sockets.connected[this.id]);
     }
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
   
   socket.on('getAlumnos',function(cad){
     if(app_users[this.id]){
@@ -134,7 +142,7 @@ io.sockets.on('connection', function(socket) {
       DB.getAlumnos(peticion.curso,peticion.seccion,io.sockets.connected[this.id]);
     }
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
 
   socket.on('getMensajesAlumno',function(cad){
@@ -145,7 +153,7 @@ io.sockets.on('connection', function(socket) {
       DB.getMensajesAlumno(peticion.username,peticion.curso,peticion.seccion,io.sockets.connected[this.id]);
     }
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
 
   socket.on('getPublicacion',function(cad){
@@ -155,7 +163,7 @@ io.sockets.on('connection', function(socket) {
       DB.getPublicacion(peticion.para,peticion.pagination,io.sockets.connected[this.id]);
     }
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
   socket.on('getLastPublicacion',function(cad){
     if(app_users[this.id]){
@@ -164,7 +172,7 @@ io.sockets.on('connection', function(socket) {
       DB.getLastPublicacion(peticion.para,peticion.lastId,io.sockets.connected[this.id]);
     }
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
   socket.on('authPublication',function(cad){
     console.log("alguien quiere publicar PROCEDURE");
@@ -174,7 +182,7 @@ io.sockets.on('connection', function(socket) {
       DB.authPublication(peticion.codigo,io.sockets.connected[this.id]);
     }
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
   socket.on('publicar',function(cad){
     if(app_users[this.id]){
@@ -183,7 +191,7 @@ io.sockets.on('connection', function(socket) {
       DB.publicar(peticion.codigo,peticion.para,peticion.contenido,io.sockets.connected[this.id],app_users,io.sockets);
     }
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
 
   socket.on('getMensajesMaestro',function(cad){
@@ -194,7 +202,7 @@ io.sockets.on('connection', function(socket) {
       DB.getMensajesMaestro(peticion.username,peticion.curso,peticion.seccion,io.sockets.connected[this.id]);
     }
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
 
   socket.on('getTopMaestro',function(cad){
@@ -205,14 +213,14 @@ io.sockets.on('connection', function(socket) {
       DB.getTopMaestro(peticion.username,peticion.curso,peticion.seccion,peticion.inicio,peticion.final,io.sockets.connected[this.id]);
     }
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
     socket.on('cambiarVisibilidad',function(cad){
     var peticion = JSON.parse(cad);
     DB.cambiarVisibilidad(peticion.username,peticion.curso,peticion.seccion);
 
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
     socket.on('getTopAlumno',function(cad){
     var peticion = JSON.parse(cad);
@@ -220,21 +228,21 @@ io.sockets.on('connection', function(socket) {
           console.log("inicio: "+peticion.inicio+" final: "+peticion.final);
           DB.getTopAlumno(peticion.username,peticion.curso,peticion.seccion,peticion.inicio,peticion.final,io.sockets.connected[this.id]);
         }
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
 
   socket.on('autenticar',function(cad){
     var peticion = JSON.parse(cad);
       console.log("Quiere autenticarse: "+cad);
       DB.autenticar(peticion.carne,peticion.pass,peticion.role,io.sockets.connected[this.id]);
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
   socket.on('sendMessage',function(cad){
     var peticion = JSON.parse(cad);
     console.log("El maestro quiere enviar un mensaje: "+cad);
     DB.insertMensajeMaestro(peticion.username,peticion.curso,peticion.seccion,peticion.mensaje,io.sockets,app_users);
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
   socket.on('getListadoCursos',function(){
     if(app_users[this.id]){
@@ -242,7 +250,7 @@ io.sockets.on('connection', function(socket) {
     }
     
   
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
   socket.on('disconnect',function(user){
     if(app_users[this.id]){
@@ -252,10 +260,10 @@ io.sockets.on('connection', function(socket) {
     }else{
       console.log("Socket anonimo: "+this.id+" acaba de abandonar");
     }
-  });
+  }).on('error', function(err) { console.log("handler error" +err) });;
 
   
-});
+}).on('error', function(err) { console.log("handler error" +err) });;
 
 
 
