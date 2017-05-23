@@ -12,23 +12,25 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Toast;
 
+/*
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+*/
 
 import java.io.IOException;
 
 public class lectorQRCode extends AppCompatActivity {
-    BarcodeDetector barcodeDetector;
+    /*BarcodeDetector barcodeDetector;
     CameraSource cameraSource;
-    SurfaceView cameraView;
+    SurfaceView cameraView;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lector_qrcode);
-        barcodeDetector =
+        /*barcodeDetector =
                 new BarcodeDetector.Builder(this)
                         .setBarcodeFormats(Barcode.QR_CODE)
                         .build();
@@ -66,12 +68,12 @@ public class lectorQRCode extends AppCompatActivity {
             public void surfaceDestroyed(SurfaceHolder holder) {
                 cameraSource.stop();
             }
-        });
+        });*/
 
     }
 
     public void detect(View v){
-        barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
+        /*barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
             @Override
             public void release() {
             }
@@ -91,7 +93,7 @@ public class lectorQRCode extends AppCompatActivity {
                 }
 
                 barcodeDetector.release();
-            }});
+            }});*/
     }
 
 }

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "195014126906",
+    "firebase_url": "https://miav2-f5616.firebaseio.com",
+    "project_id": "miav2-f5616",
+    "storage_bucket": "miav2-f5616.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:195014126906:android:c2ac8209c7aed886",
+        "android_client_info": {
+          "package_name": "com.usac.brayan.mensajeriaarquitectura"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "195014126906-q027kimrrjc9dpciq4ta2bsjiusjgjb7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjW77nTqqEi6_W2jO0W9Ocd7ttHiMlQkc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
