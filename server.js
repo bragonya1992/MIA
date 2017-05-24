@@ -263,7 +263,7 @@ io.sockets.on('connection', function(socket) {
   }).on('error', function(err) { console.log("handler error" +err) });;
 
   
-}).on('error', function(err) { console.log("handler error" +err) });;
+}).on('error', function(err) { console.log("handler error" +err) });
 
 
 
@@ -272,5 +272,5 @@ io.sockets.on('connection', function(socket) {
 
 
 server.listen(8080, function() {  
-  console.log("Servidor corriendo en http://localhost:8085");
-});
+  console.log("Servidor corriendo en http://localhost:8080");
+}).on('error', function(err) { console.log("handler error" +err) });;
