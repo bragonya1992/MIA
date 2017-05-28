@@ -117,7 +117,7 @@ group by Curso.Nombre,  Seccion`,[carne,semestreActual,anioActual], function(err
             });
 }
 
-exports.insertMensajeMaestro=function(username,curso,seccion,mensaje,socket,app_users){
+exports.insertMensajeMaestro=function(username,curso,seccion,mensaje,socket){
   var notes;
   connection.query(`insert into Mensaje(idMensaje,fkCodigoMaestro,fkCodigoCurso,fkSeccion,fkSemestre,fkAnio,mensaje) values(0,?,(select CodigoCurso
 from Curso where Nombre=?),?,?,?,?);`,[username,curso,seccion,semestreActual,anioActual,mensaje], function(err, rows, fields) {
@@ -131,16 +131,13 @@ from Curso where Nombre=?),?,?,?,?);`,[username,curso,seccion,semestreActual,ani
   }).on('end', function(){
               console.log("salida on insertMensaje: "+notes);
               if(notes==1){
-                // console.log("estuiantes del curso seran extraidos");
-                // var cadena = "{\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\",\"mensaje\":\""+mensaje+"\"}";
-                // socket.emit("estudiantesRecipientes", cadena);
-                listaAlumnos(curso,seccion,mensaje,socket,app_users);
+                listaAlumnos(curso,seccion,mensaje,socket);
               }
             });
 }
 
 
-exports.publicar=function(CodigoMaestro,para,contenido,socket,app_users,socketon){
+exports.publicar=function(CodigoMaestro,para,contenido,socket,socketon){
   var notes;
   connection.query(`insert into Publicacion(idPublicacion,para,fkCodigoMaestro,contenido) values(0,?,?,?);`,[para,CodigoMaestro,contenido], function(err, rows, fields) {
     if (!err){
@@ -159,12 +156,12 @@ exports.publicar=function(CodigoMaestro,para,contenido,socket,app_users,socketon
               if(notes!=0){
                 socket.emit("responsePublicacion","Su ultima publicacion fue exitosa");
                 if(para==1){
-                  notificarTodosAlumnos(notes,app_users,socketon);
+                  notificarTodosAlumnos(notes,socketon);
                 }else if(para ==2){
-                  notificarTodosMaestro(notes,app_users,socketon);
+                  notificarTodosMaestro(notes,socketon);
                 }else if(para ==0){
-                  notificarTodosMaestro(notes,app_users,socketon);
-                  notificarTodosAlumnos(notes,app_users,socketon);
+                  notificarTodosMaestro(notes,socketon);
+                  notificarTodosAlumnos(notes,socketon);
                 }
               }else{
                 socket.emit("responsePublicacion","Su ultima publicacion fue erronea, lo sentimos");
@@ -240,9 +237,10 @@ exports.authPublication=function(CodigoMaestro,socket){
             });
 }
 
-function notificarTodosAlumnos (notesContent,app_users,socket){
+function notificarTodosAlumnos (notesContent,socket){
   var notes;
-  connection.query(`select carne from alumno;`, function(err, rows, fields) {
+  connection.query(`select alumno.carne as carne, sesion.llave as keyChain from alumno
+join sesion on sesion.cui=alumno.carne`, function(err, rows, fields) {
     if (!err){
       notes=rows;
     }
@@ -254,13 +252,7 @@ function notificarTodosAlumnos (notesContent,app_users,socket){
               if(notes!=0){
                 console.log("VOY A NOTIFICAR PUBLICACIONES EN TIEMPO REAL A: ");
                 for(i in notes){
-                  for(j in app_users){
-                    if(notes[i].carne==app_users[j].username && app_users[j].role==1){
-                      console.log(i+" "+notes[i].carne+" socket: "+j);
-                      socket.connected[j].emit("newPublication","{\"mensaje\":\"Tienes nuevas publicaciones en la seccion de noticias FARUSAC\"}");
-                      socket.connected[j].emit("recieverRealTimePublications",notesContent);
-                    }
-                  }
+                  //notes[i].carne (lowercase), notes[i].keyChain... realtimemessage and notification firebase
                 }
               }
             });
@@ -268,9 +260,10 @@ function notificarTodosAlumnos (notesContent,app_users,socket){
 
 
 
-function notificarTodosMaestro (notesContent,app_users,socket){
+function notificarTodosMaestro (notesContent,socket){
   var notes;
-  connection.query(`select codigomaestro from Maestro;`, function(err, rows, fields) {
+  connection.query(`select Maestro.codigomaestro as codigomaestro, sesion.llave as keyChain from Maestro
+join sesion on sesion.cui=maestro.codigomaestro`, function(err, rows, fields) {
     if (!err){
       notes=rows;
     }
@@ -282,14 +275,7 @@ function notificarTodosMaestro (notesContent,app_users,socket){
               if(notes!=0){
                 console.log("VOY A NOTIFICAR PUBLICACIONES EN TIEMPO REAL A: ");
                 for(i in notes){
-                  for(j in app_users){
-                    if(notes[i].codigomaestro==app_users[j].username && app_users[j].role==2){
-                      console.log(i+" "+notes[i].codigomaestro+" socket: "+j);
-                      socket.connected[j].emit("newPublication","{\"mensaje\":\"Tienes nuevas publicaciones en la seccion de noticias FARUSAC\"}");
-                      socket.connected[j].emit("recieverRealTimePublications",notesContent);
-                    }
-                  }
-
+                  //notes[i].codigomaestro (lowercase), notes[i].keyChain... realtimemessage and notification firebase
                 }
               }
             });
@@ -311,6 +297,24 @@ exports.registrarAlumno=function(username,password,codigo,socket){
             // console.log("estuiantes del curso seran extraidos");
              var cadena = "{\"estado\":\""+notes+"\"}";
              socket.emit("recibirEstadoRegistro", cadena);
+            });
+}
+
+exports.registrarSesion=function(username,keyChain,socket){
+  var notes;
+  connection.query(`replace into sesion values(?,?)`,[username,keyChain], function(err, rows, fields) {
+    if (!err){
+      notes="exitoso";
+    }
+    else{
+      console.log('Error mientras se registrarba el usuario '+username+":"+err);
+      notes=err;
+    }
+  }).on('end', function(){
+              console.log("salida on registrarAlumno: "+notes);
+            // console.log("estuiantes del curso seran extraidos");
+             var cadena = "{\"estado\":\""+notes+"\"}";
+             socket.emit("recibirEstadoSesion", cadena);
             });
 }
 
@@ -351,11 +355,12 @@ exports.registrarMaestro=function(username,password,codigo,socket){
             });
 }
 
-function listaAlumnos(curso,seccion,mensaje,socket,app_users){
+function listaAlumnos(curso,seccion,mensaje,socket){
   var notes;
-  connection.query(`select fkCarne as Carne, fkSeccion as Seccion, Curso.Nombre as Curso
+  connection.query(`select fkCarne as Carne, fkSeccion as Seccion, Curso.Nombre as Curso, sesion.llave as keyChain
 from AsignacionAlumno
 join Curso on Curso.CodigoCurso=AsignacionAlumno.fkCodigoCurso
+join sesion on sesion.cui = asignacionalumno.fkCarne
 where AsignacionAlumno.fkSemestre=? and AsignacionAlumno.fkAnio=? and Curso.Nombre=? and AsignacionAlumno.fkSeccion=?`,[semestreActual,anioActual,curso,seccion], function(err, rows, fields) {
     if (!err){
       notes=rows;
@@ -365,19 +370,11 @@ where AsignacionAlumno.fkSemestre=? and AsignacionAlumno.fkAnio=? and Curso.Nomb
       notes=0;
     }
   }).on('end', function(){
-              console.log("salida on listaAlumnos: "+notes);
               if(notes!=0){
                 //socket.emit("enviarMensaje", notes,mensaje);
                 console.log("VOY A MANDAR MENSAJE "+mensaje+" EN TIEMPO REAL A: ");
                 for(i in notes){
-                  for(j in app_users){
-                    if(notes[i].Carne==app_users[j].username){
-                      console.log(i+" "+notes[i].Carne+" socket: "+j);
-                      socket.connected[j].emit("recibirMensajes","{\"arreglo\":[{\"seccion\":\""+notes[i].Seccion+"\",\"visibilidad\":\""+0+"\",\"curso\":\""+notes[i].Curso+"\",\"mensaje\":\""+mensaje+"\",\"catedratico\":\"\",\"fecha\":\"Hace pocos segundos\"}]}");
-                      notificacionesAlumnos(notes[i].Carne,socket.connected[j]);
-                    }
-                  }
-
+                  //notes[i].Carne, notes[i].keyChain... here will be the magic firebase
                 }
               }
             });
@@ -406,33 +403,6 @@ order by Mensaje.fecha desc limit 5;`,[username,semestreActual,anioActual], func
     }
   }).on('end', function(){
               console.log("salida on notificar ALumnos: "+notes);
-                socket.emit("inbox", notes);
-            });
-}
-
-function notificacionesAlumnos(username,socket){
-  var notes;
-  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,AsignacionAlumno.fkSeccion as Seccion
-from Instancia  
-join AsignacionAlumno on fkCodigoCursoAlumno=fkCodigoCurso and Instancia.fkCarne=AsignacionAlumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
-join Curso on AsignacionAlumno.fkCodigoCurso=CodigoCurso
-join Mensaje on Instancia.fkMensaje=Mensaje.idMensaje
-where AsignacionAlumno.fkCarne=? and AsignacionAlumno.fkSemestre=? and AsignacionAlumno.fkAnio=? and Instancia.visto=0
-order by Mensaje.fecha desc limit 5;`,[username,semestreActual,anioActual], function(err, rows, fields) {
-    if (!err){
-      notes="{\"arreglo\":[";
-      for(var i in rows){
-        notes+="{\"seccion\":\""+rows[i].Seccion+"\",\"visibilidad\":\"0\",\"curso\":\""+rows[i].Curso+"\",\"mensaje\":\""+rows[i].Mensaje+"\",\"catedratico\":\"\"},";
-      }
-      notes = notes.slice(0, -1);
-      notes+="]}";
-    }
-    else{
-      console.log('Error while performing Query.'+err);
-      notes="{\"error\":\""+err+"\"}";
-    }
-  }).on('end', function(){
-              console.log("salida on notificacionesAlumnos: "+notes);
                 socket.emit("inbox", notes);
             });
 }
