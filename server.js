@@ -62,7 +62,13 @@ io.sockets.on('connection', function(socket) {
     DB.getAlumnos(peticion.curso,peticion.seccion,io.sockets.connected[this.id]);
   
   }).on('error', function(err) { console.log("handler error" +err) });;
-
+  
+    socket.on('deleteSesion',function(cad){
+      var peticion = JSON.parse(cad);
+      console.log(peticion.username+" se eliminará su sesión ");
+      DB.deleteSesion(peticion.username);
+  
+    }).on('error', function(err) { console.log("handler error" +err) });;
 
   socket.on('getMensajesAlumno',function(cad){
       var peticion = JSON.parse(cad);

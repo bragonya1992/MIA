@@ -2,6 +2,9 @@ var semestreActual=2;
 var date = new Date();
 var anioActual = 2016;//date.getFullYear();
 var mysql      = require('mysql');
+var FCM = require('fcm-node');
+var serverKey = 'AAAALWe_bTo:APA91bHzwpdBtswfdrkov_6_OCHddTgFubCkfKEwg5P51En4yvpWio8eToTHXb0spI-SGv1VSs53O6qteEPZ1Gxg6mUuqFii0uetSbrxgDKlPD8ekNjiJjlbNxF39EdtxIFCVU_X2DQv'; //put your server key here 
+var fcm = new FCM(serverKey);
   var connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
@@ -20,6 +23,37 @@ exports.query=function(callback,nombre){
       console.log('Error while performing Query.'+err);
       callback(err);
     }
+  });
+}
+
+function sendRealTimeFirebase(keys, collapse,mensaje,cuerpo, titulo,tipo,curso,seccion,fecha,para,idPublicacion){
+  var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera) 
+      registration_ids: keys,
+      collapse_key: collapse,
+      
+      
+      notification: {
+          title: titulo, 
+          body: cuerpo 
+      },
+      
+      data: {  //you can send only notification or only data(or include both) 
+          type: tipo,
+          curse: curso,
+          section: seccion,
+          content: mensaje,
+          date: fecha,
+          to: para,
+          publication: idPublicacion
+      }
+  };
+  
+  fcm.send(message, function(err, response){
+      if (err) {
+          console.log("Something has gone wrong!"+err);
+      } else {
+          console.log("Successfully sent with response: ", response);
+      }
   });
 }
 
@@ -251,8 +285,15 @@ join sesion on sesion.cui=alumno.carne`, function(err, rows, fields) {
   }).on('end', function(){
               if(notes!=0){
                 console.log("VOY A NOTIFICAR PUBLICACIONES EN TIEMPO REAL A: ");
+                var keys = [];
                 for(i in notes){
                   //notes[i].carne (lowercase), notes[i].keyChain... realtimemessage and notification firebase
+                  keys.push(notes[i].keyChain);
+                }
+                if(keys.length>0){
+                  var parse = JSON.parse(notesContent);
+                  var data = parse[0];
+                  sendRealTimeFirebase(keys, "MIAPublication",data.contenido,data.contenido.substring(1, 10)+"...", "Nueva publicación FARUSAC","publication","","",data.fecha,data.para,data.idPublicacion);
                 }
               }
             });
@@ -274,10 +315,33 @@ join sesion on sesion.cui=maestro.codigomaestro`, function(err, rows, fields) {
   }).on('end', function(){
               if(notes!=0){
                 console.log("VOY A NOTIFICAR PUBLICACIONES EN TIEMPO REAL A: ");
+                var keys = [];
                 for(i in notes){
                   //notes[i].codigomaestro (lowercase), notes[i].keyChain... realtimemessage and notification firebase
+                  keys.push(notes[i].keyChain);
+                }
+                if(keys.length>0){
+                  var parse = JSON.parse(notesContent);
+                  var data = parse[0];
+                  sendRealTimeFirebase(keys, "MIAPublication",data.contenido,data.contenido.substring(1, 10)+"...", "Nueva publicación FARUSAC","publication","","",data.fecha,data.para,data.idPublicacion);
                 }
               }
+            });
+}
+
+exports.deleteSesion=function(username){
+  var notes;
+  connection.query(`delete from sesion where cui=?`,[username], function(err, rows, fields) {
+    if (!err){
+      notes="exitoso";
+    }
+    else{
+      console.log('Error mientras se registrarba el usuario '+username+":"+err);
+      notes=err;
+    }
+  }).on('end', function(){
+              console.log("salida on deleteSesion: "+notes);
+            // console.log("estuiantes del curso seran extraidos");
             });
 }
 
@@ -373,14 +437,19 @@ where AsignacionAlumno.fkSemestre=? and AsignacionAlumno.fkAnio=? and Curso.Nomb
               if(notes!=0){
                 //socket.emit("enviarMensaje", notes,mensaje);
                 console.log("VOY A MANDAR MENSAJE "+mensaje+" EN TIEMPO REAL A: ");
+                var keys = [];
                 for(i in notes){
                   //notes[i].Carne, notes[i].keyChain... here will be the magic firebase
+                  keys.push(notes[i].keyChain);
+                }
+                if(keys.length>0){
+                  sendRealTimeFirebase(keys, curso+seccion,mensaje,curso+" "+seccion+":"+mensaje.substring(1, 10)+"...", "MIA","notification",curso,seccion,"hace pocos momentos","","");
                 }
               }
             });
 }
 
-exports.notificarAlumnos=function (username,socket){
+function notificarAlumnos (username,socket){
   var notes;
   connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,AsignacionAlumno.fkSeccion as Seccion
 from Instancia  
