@@ -1,6 +1,7 @@
 package com.usac.brayan.mensajeriaarquitectura;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.tooltip.OnClickListener;
 import com.tooltip.Tooltip;
 
@@ -49,7 +51,7 @@ public class Autenticacion extends AppCompatActivity {
         wait =(ProgressBar) findViewById(R.id.pbHeaderProgress);
         sm = new SessionManager(this);
         if(sm.isLoggedIn()){
-            this.startService(new Intent(this,ServicioNotificacionesFARUSAC.class));
+            ServicioNotificacionesFARUSAC.newInstance(this);
             this.startActivity(new Intent(this, principal.class));
             this.finish();
         }else{
@@ -92,8 +94,8 @@ public class Autenticacion extends AppCompatActivity {
         Autenticacion.sm.createLoginSession(nombre,role,carne);
         so.close();
         mContext.startActivity(new Intent(mContext, principal.class));
-        mContext.startService(new Intent(mContext,ServicioNotificacionesFARUSAC.class));
         final Activity activity= actividad;
+        ServicioNotificacionesFARUSAC.newInstance(activity);
         activity.finish();
         btnIng.setEnabled(true);
         txtCarne.setEnabled(true);

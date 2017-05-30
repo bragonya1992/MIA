@@ -9,6 +9,8 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessagingService;
+import com.usac.brayan.mensajeriaarquitectura.ServicioNotificacionesFARUSAC;
+
 /**
  * Created by Brayan on 22/05/2017.
  */
@@ -28,5 +30,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private void sendRegistrationToServer(String token) {
         // Add custom implementation, as needed.
+        ServicioNotificacionesFARUSAC.newInstance(this);
+        ServicioNotificacionesFARUSAC.sc.registrarse(token);
     }
 }

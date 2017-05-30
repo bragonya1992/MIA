@@ -96,8 +96,6 @@ public class principal extends AppCompatActivity
             toolbar.setTitle("Modo para estudiantes"); // titulo de la ventana
             ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
         }
-        ServicioNotificacionesFARUSAC.sc.cancelNotification();
-        ServicioNotificacionesFARUSAC.sc.registrarse();
         NavigationView nv=(NavigationView) findViewById(R.id.nav_view);
         nvMenu =nv.getMenu();
         //mapearCursos(nvMenu);

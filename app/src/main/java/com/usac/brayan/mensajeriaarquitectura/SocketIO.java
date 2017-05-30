@@ -18,6 +18,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import io.socket.client.Socket;
 import io.socket.client.IO;
 import io.socket.emitter.Emitter;
@@ -48,15 +50,7 @@ public class SocketIO {
 
     public void connect(){
         try {
-            if(ServicioNotificacionesFARUSAC.sm!=null) {
-                IO.Options opts = new IO.Options();
-                opts.query = "username=" + ServicioNotificacionesFARUSAC.sm.getId() + "&role=" + ServicioNotificacionesFARUSAC.sm.getRole();
-                Log.d("SocketIO", "Connect" + opts.query);
-                mSocket = IO.socket("http://" + nombreHost + ":" + puertoHost, opts);
-            }else{
-                Log.d("SocketIO", "Connect");
-                mSocket = IO.socket("http://" + nombreHost + ":" + puertoHost);
-            }
+            mSocket = IO.socket("http://" + nombreHost + ":" + puertoHost);
         } catch (URISyntaxException e) {}
         if(!mSocket.connected())
             mSocket.connect();
@@ -67,8 +61,8 @@ public class SocketIO {
     }
 
 
-    public void registrarse(){
-        mSocket.emit("app_user","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"role\":\""+ServicioNotificacionesFARUSAC.sm.getRole()+"\"}");
+    public void registrarse(String keyChain){
+        mSocket.emit("app_user","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"role\":\""+ServicioNotificacionesFARUSAC.sm.getRole()+"\",\"keyChain\":\""+keyChain+"\"}");
     }
 
     public void solicitarAutenticacion(String carne, String role, String pass){
@@ -101,6 +95,7 @@ public class SocketIO {
         mSocket.on("recieverRealTimePublications",recieverRealTimePublications);
         mSocket.on("responseAuthPublication",responseAuthPublication);
         mSocket.on("recieverAlumnos",recieverAlumnos);
+        mSocket.on("recibirEstadoSesion",recibirEstadoSesion);
     }
 
     public void pedirCursosMaestro(){
@@ -165,6 +160,10 @@ public class SocketIO {
         mSocket.emit("enviarAsignacionCurso","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
     }
 
+
+    public void deleteSesion(){
+        mSocket.emit("deleteSesion","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\"}");
+    }
     public void close(){
 
         mSocket.close();
@@ -179,6 +178,25 @@ public class SocketIO {
                 public void run() {
                     try {
                         principal.AsignarCursos(args[0].toString().trim());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener recibirEstadoSesion = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONObject o= new JSONObject(args[0].toString().trim());
+                        if(!o.getString("estado").equals("exitoso")){
+                            ServicioNotificacionesFARUSAC.sc.registrarse(FirebaseInstanceId.getInstance().getToken());
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

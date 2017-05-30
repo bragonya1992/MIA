@@ -204,7 +204,8 @@ public class MensajesMaestros extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (nombre.equals("Cerrar Sesion")) {
             Autenticacion.sm.logoutUser();
-            stopService(new Intent(this,ServicioNotificacionesFARUSAC.class));
+            //stopService(new Intent(this,ServicioNotificacionesFARUSAC.class));
+            ServicioNotificacionesFARUSAC.sc.deleteSesion();
             this.finish();
             System.exit(0);
             return true;
