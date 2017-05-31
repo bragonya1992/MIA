@@ -351,9 +351,10 @@ public class principal extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (nombre.equals("Cerrar Sesion")) {
             Autenticacion.sm.logoutUser();
-            stopService(new Intent(this,ServicioNotificacionesFARUSAC.class));
-            this.finish();
-            System.exit(0);
+            //stopService(new Intent(this,ServicioNotificacionesFARUSAC.class));
+            ServicioNotificacionesFARUSAC.sc.deleteSesion();
+            //this.finish();
+            //System.exit(0);
             return true;
         } else if (nombre.equals("Listado de cursos")) {
             Intent myIntent = new Intent(this, AsignacionDeCursos.class);

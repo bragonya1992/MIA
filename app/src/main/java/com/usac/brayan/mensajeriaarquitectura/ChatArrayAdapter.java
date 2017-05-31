@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
+public class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
 
     private TextView chatText;
     private List<ChatMessage> chatMessageList = new ArrayList<ChatMessage>();

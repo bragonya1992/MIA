@@ -96,6 +96,7 @@ public class Autenticacion extends AppCompatActivity {
         mContext.startActivity(new Intent(mContext, principal.class));
         final Activity activity= actividad;
         ServicioNotificacionesFARUSAC.newInstance(activity);
+        sendRegistrationToServer(FirebaseInstanceId.getInstance().getToken(),activity);
         activity.finish();
         btnIng.setEnabled(true);
         txtCarne.setEnabled(true);
@@ -109,6 +110,16 @@ public class Autenticacion extends AppCompatActivity {
         txtPass.setEnabled(true);
         //setProgressBarIndeterminateVisibility(false);
         wait.setVisibility(View.GONE);
+    }
+
+    private static void sendRegistrationToServer(String token,Activity a) {
+        // Add custom implementation, as needed.
+        ServicioNotificacionesFARUSAC.newInstance(a);
+        if(token!=null) {
+            ServicioNotificacionesFARUSAC.sc.registrarse(token);
+        }else{
+            Toast.makeText(a,"Lamentablemente aún no tienes token para recibir notificaciones en MIA, las notificaciones te llegarán hasta que un token sea generado por tu dispositivo :(",Toast.LENGTH_LONG).show();
+        }
     }
 
 }

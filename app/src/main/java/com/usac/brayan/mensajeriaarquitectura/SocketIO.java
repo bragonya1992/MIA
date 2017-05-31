@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import io.socket.client.Ack;
 import io.socket.client.Socket;
 import io.socket.client.IO;
 import io.socket.emitter.Emitter;
@@ -162,7 +163,15 @@ public class SocketIO {
 
 
     public void deleteSesion(){
-        mSocket.emit("deleteSesion","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\"}");
+        mSocket.emit("deleteSesion","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\"}",new Ack() {
+            @Override
+            public void call(Object... args) {
+                String response = (String) args[0];
+                if(response.equals("exitoso")){
+                    System.exit(0);
+                }
+            }
+        });
     }
     public void close(){
 

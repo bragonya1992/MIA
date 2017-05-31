@@ -206,8 +206,8 @@ public class MensajesMaestros extends AppCompatActivity {
             Autenticacion.sm.logoutUser();
             //stopService(new Intent(this,ServicioNotificacionesFARUSAC.class));
             ServicioNotificacionesFARUSAC.sc.deleteSesion();
-            this.finish();
-            System.exit(0);
+            //this.finish();
+            //System.exit(0);
             return true;
         }
 
