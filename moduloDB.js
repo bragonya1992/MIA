@@ -329,7 +329,7 @@ join sesion on sesion.cui=maestro.codigomaestro`, function(err, rows, fields) {
             });
 }
 
-exports.deleteSesion=function(username){
+exports.deleteSesion=function(username,callback){
   var notes;
   connection.query(`delete from sesion where cui=?`,[username], function(err, rows, fields) {
     if (!err){
@@ -341,6 +341,7 @@ exports.deleteSesion=function(username){
     }
   }).on('end', function(){
               console.log("salida on deleteSesion: "+notes);
+              callback(notes);
             // console.log("estuiantes del curso seran extraidos");
             });
 }
