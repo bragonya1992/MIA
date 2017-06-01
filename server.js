@@ -13,7 +13,6 @@ app.get('/', function(req, res) {
   res.status(200).send("Hello World!");
 });
 
-
 io.sockets.on('connection', function(socket) {  
   socket.setMaxListeners(0);
   console.log('Alguien se ha conectado con Sockets '+socket.id+" username: "+socket.handshake.query.username);
@@ -63,10 +62,10 @@ io.sockets.on('connection', function(socket) {
   
   }).on('error', function(err) { console.log("handler error" +err) });;
   
-    socket.on('deleteSesion',function(cad){
+    socket.on('deleteSesion',function(cad, callback){
       var peticion = JSON.parse(cad);
       console.log(peticion.username+" se eliminará su sesión ");
-      DB.deleteSesion(peticion.username);
+      DB.deleteSesion(peticion.username,callback);
   
     }).on('error', function(err) { console.log("handler error" +err) });;
 

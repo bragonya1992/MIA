@@ -292,8 +292,9 @@ join sesion on sesion.cui=alumno.carne`, function(err, rows, fields) {
                 }
                 if(keys.length>0){
                   var parse = JSON.parse(notesContent);
-                  var data = parse[0];
-                  sendRealTimeFirebase(keys, "MIAPublication",data.contenido,data.contenido.substring(1, 10)+"...", "Nueva publicación FARUSAC","publication","","",data.fecha,data.para,data.idPublicacion);
+                  console.log(parse);
+                  var data = parse.publicacion[0];
+                  sendRealTimeFirebase(keys, "MIAPublication",data.contenido,data.contenido.substring(0, 10)+"...", "Nueva publicación FARUSAC","publication","","",data.fecha,data.para,data.idPublicacion);
                 }
               }
             });
@@ -322,8 +323,9 @@ join sesion on sesion.cui=maestro.codigomaestro`, function(err, rows, fields) {
                 }
                 if(keys.length>0){
                   var parse = JSON.parse(notesContent);
-                  var data = parse[0];
-                  sendRealTimeFirebase(keys, "MIAPublication",data.contenido,data.contenido.substring(1, 10)+"...", "Nueva publicación FARUSAC","publication","","",data.fecha,data.para,data.idPublicacion);
+                  console.log(parse);
+                  var data = parse.publicacion[0];
+                  sendRealTimeFirebase(keys, "MIAPublication",data.contenido,data.contenido.substring(0, 10)+"...", "Nueva publicación FARUSAC","publication","","",data.fecha,data.para,data.idPublicacion);
                 }
               }
             });
@@ -444,7 +446,7 @@ where AsignacionAlumno.fkSemestre=? and AsignacionAlumno.fkAnio=? and Curso.Nomb
                   keys.push(notes[i].keyChain);
                 }
                 if(keys.length>0){
-                  sendRealTimeFirebase(keys, curso+seccion,mensaje,curso+" "+seccion+":"+mensaje.substring(1, 10)+"...", "MIA","notification",curso,seccion,"hace pocos momentos","","");
+                  sendRealTimeFirebase(keys, curso+seccion,mensaje,curso+" "+seccion+":"+mensaje.substring(0, 10)+"...", "MIA","notification",curso,seccion,"hace pocos momentos","","");
                 }
               }
             });
