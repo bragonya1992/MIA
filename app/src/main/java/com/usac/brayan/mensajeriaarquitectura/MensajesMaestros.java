@@ -203,7 +203,6 @@ public class MensajesMaestros extends AppCompatActivity {
         //manipular las acciones del menu de los tres puntos
         //noinspection SimplifiableIfStatement
         if (nombre.equals("Cerrar Sesion")) {
-            Autenticacion.sm.logoutUser();
             //stopService(new Intent(this,ServicioNotificacionesFARUSAC.class));
             ServicioNotificacionesFARUSAC.sc.deleteSesion();
             //this.finish();

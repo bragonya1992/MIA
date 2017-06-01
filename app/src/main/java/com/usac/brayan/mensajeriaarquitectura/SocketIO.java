@@ -57,6 +57,10 @@ public class SocketIO {
             mSocket.connect();
     }
 
+    public void disconnect(){
+        mSocket.disconnect();
+    }
+
     public boolean isConnected(){
         return mSocket.connected();
     }
@@ -163,11 +167,14 @@ public class SocketIO {
 
 
     public void deleteSesion(){
+        String cui=ServicioNotificacionesFARUSAC.sm.getId();
+        Log.d("deleteSesion",ServicioNotificacionesFARUSAC.sm.getId());
         mSocket.emit("deleteSesion","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\"}",new Ack() {
             @Override
             public void call(Object... args) {
                 String response = (String) args[0];
                 if(response.equals("exitoso")){
+                    Autenticacion.sm.logoutUser();
                     System.exit(0);
                 }
             }

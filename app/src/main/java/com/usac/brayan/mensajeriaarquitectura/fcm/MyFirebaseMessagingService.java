@@ -2,7 +2,9 @@ package com.usac.brayan.mensajeriaarquitectura.fcm;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -40,13 +42,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     public static void tryToShowMessage(Map<String,String> data){
-        ChatMessage temp = new ChatMessage(0,data.get("section"),data.get("curse"),data.get("content"),"",data.get("date"));
-        Curso temporal = principal.buscarCurso(data.get("curse"), data.get("section"));
+        final ChatMessage temp = new ChatMessage(0,data.get("section"),data.get("curse"),data.get("content"),"",data.get("date"));
+        final Curso temporal = principal.buscarCurso(data.get("curse"), data.get("section"));
         String curse="";
         String section="";
         if (temporal != null) {
             if (temporal.mensajes != null) {
-                temporal.mensajes.add(temp);
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Code to run on UI thread
+                        temporal.mensajes.add(temp);
+                    }
+                });
+
                 curse=data.get("curse");
                 section=data.get("section");
             } else {
@@ -64,9 +74,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static void tryToShowPublication(Map<String,String> data){
         if(principal.publications_list!=null){
             Publicacion pub = new Publicacion(data.get("content"),data.get("to"),data.get("date"),Integer.parseInt(data.get("publication")));
-            List<Publicacion> list = new ArrayList<>();
+            final List<Publicacion> list = new ArrayList<>();
             list.add(pub);
-            principal.addPublicationFirst(list);
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    // Code to run on UI thread
+                    principal.addPublicationFirst(list);
+                }
+            });
+
         }
     }
 
