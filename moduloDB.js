@@ -34,7 +34,9 @@ function sendRealTimeFirebase(keys, collapse,mensaje,cuerpo, titulo,tipo,curso,s
       
       notification: {
           title: titulo, 
-          body: cuerpo 
+          body: cuerpo,
+          tag: collapse,
+          sound : "dog"
       },
       
       data: {  //you can send only notification or only data(or include both) 
