@@ -32,12 +32,39 @@ import java.net.URL;
 public class ServicioNotificacionesFARUSAC{
     public static SocketIO sc;
     public static SessionManager sm;
+    private Thread workerThread = null;
+    static CountDownTimer timer;
 
     public static void newInstance(Context c) {
         sm = new SessionManager(c);
         sc = new SocketIO(c);
         sc.escucharNotificaciones();
+        //verifyStatusSocket();
     }
+
+/*    public static void verifyStatusSocket(){
+        if(timer==null) {
+            timer = new CountDownTimer(3000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                public void onFinish() {
+                    if(sc!=null){
+                        Log.d("SocketIO","is in memory");
+                        if(sc.isConnected()){
+                            Log.d("SocketIO","is connected");
+                        }else{
+                            Log.d("SocketIO","is disconnected");
+                        }
+                    }
+                    timer=null;
+                    verifyStatusSocket();
+                }
+            }.start();
+        }
+    }*/
 
 
 

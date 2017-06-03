@@ -24,12 +24,12 @@ public class AplicationMaster extends Application {
                         if(ServicioNotificacionesFARUSAC.sc.isConnected()){
 
                         }else{
-                            ServicioNotificacionesFARUSAC.sc.connect();
+                            //ServicioNotificacionesFARUSAC.sc.connect("master");
                             Log.d("ActivityLifeCycle","socket connect");
                         }
                     }else{
                         ServicioNotificacionesFARUSAC.newInstance(activity);
-                        Log.d("ActivityLifeCycle","socket created");
+                        Log.d("SocketIO","LifeCycle new instance");
                     }
 
                 }
@@ -41,8 +41,9 @@ public class AplicationMaster extends Application {
 
                 numRunningActivities--;
                 if (numRunningActivities == 0) {
-                    ServicioNotificacionesFARUSAC.sc.disconnect();
-                    Log.d("ActivityLifeCycle","socket disconnect");
+                    //ServicioNotificacionesFARUSAC.sc.disconnect();
+                    ServicioNotificacionesFARUSAC.sc= null;
+                    Log.d("SocketIO","LifeCycle delete instance");
                 }
             }
 

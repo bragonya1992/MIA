@@ -46,10 +46,11 @@ public class SocketIO {
     public SocketIO(Context mc) {
         this.miContexto=mc;
         builder = new NotificationCompat.Builder(miContexto);
-        connect();
+        connect("constructor");
     }
 
-    public void connect(){
+    public void connect(String caller){
+        Log.d("SocketIO Connect",caller);
         try {
             mSocket = IO.socket("http://" + nombreHost + ":" + puertoHost);
         } catch (URISyntaxException e) {}
@@ -64,6 +65,7 @@ public class SocketIO {
     public boolean isConnected(){
         return mSocket.connected();
     }
+
 
 
     public void registrarse(String keyChain){
