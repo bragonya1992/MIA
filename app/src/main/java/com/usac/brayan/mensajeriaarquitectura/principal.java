@@ -89,6 +89,9 @@ public class principal extends AppCompatActivity
         notificationsNumber=(TextView) findViewById(R.id.textOne);
         content_circle = (RelativeLayout) findViewById(R.id.content_circle);
         writer=(LinearLayout) findViewById(R.id.writer);
+        if(ServicioNotificacionesFARUSAC.sm==null){
+            ServicioNotificacionesFARUSAC.sm = new SessionManager(this);
+        }
         if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
             toolbar.setTitle("Modo para docentes"); // titulo de la ventana
             ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
@@ -329,7 +332,12 @@ public class principal extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         pagination=0;
-        publications_list.clear();
+        try {
+            publications_list.clear();
+            adapter.notifyDataSetChanged();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         if(Autenticacion.sm.getRole()==2){
             ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
             ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);

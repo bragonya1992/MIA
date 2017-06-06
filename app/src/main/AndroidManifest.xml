@@ -3,11 +3,9 @@
     package="com.usac.brayan.mensajeriaarquitectura">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <application
         android:allowBackup="true"
         android:icon="@drawable/new_logo"
@@ -60,14 +58,6 @@
             android:name=".MensajesAlumnos"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <receiver
-            android:name=".miReciver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
 
         <receiver
             android:name=".NetworkReceiver">

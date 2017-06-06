@@ -60,7 +60,9 @@ public class MensajesMaestros extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mensajesmaestros);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(actualCurso.nombre+" - "+ actualCurso.seccion);
+        if(actualCurso!=null) {
+            toolbar.setTitle(actualCurso.nombre + " - " + actualCurso.seccion);
+        }
         setSupportActionBar(toolbar);
         buttonSend = (FloatingActionButton) findViewById(R.id.send);
         listView = (ListView) findViewById(R.id.msgview);
