@@ -60,6 +60,7 @@ public class SocketIO {
 
     public void disconnect(){
         mSocket.disconnect();
+        mSocket.off();
     }
 
     public boolean isConnected(){

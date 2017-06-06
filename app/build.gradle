@@ -19,8 +19,8 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         multiDexEnabled true
-        versionCode 5
-        versionName "1.0"
+        versionCode 6
+        versionName "2.0"
         signingConfig signingConfigs.config
     }
     lintOptions {
