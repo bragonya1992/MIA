@@ -3,6 +3,8 @@ package com.usac.brayan.mensajeriaarquitectura;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -40,6 +42,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -72,6 +75,7 @@ public class principal extends AppCompatActivity
         private WrapContentLinearLayoutManager lManager;
         private static int mensajes_totales=0;
         private int pagination=0;
+    private static int getKey;
         public static boolean mIsInForegroundMode=false;
         static Context ct;
     private static boolean loading = true;
@@ -120,6 +124,27 @@ public class principal extends AppCompatActivity
         toggle.syncState();
 
 
+        tx.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getKey++;
+                if(getKey==5){
+                    SessionManager sm = new SessionManager(view.getContext());
+                    if(sm.getToken().equals(FirebaseInstanceId.getInstance().getToken())) {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("KeyChain", FirebaseInstanceId.getInstance().getToken());
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(view.getContext(), "Copy keychain to the clipboard!", Toast.LENGTH_SHORT).show();
+                    }else{
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("KeyChain", "the keychain is not the same at the token");
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(view.getContext(), "Wrong keychain!", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+        });
         ct=this;
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
