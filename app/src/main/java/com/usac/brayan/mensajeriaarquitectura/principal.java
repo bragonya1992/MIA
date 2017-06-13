@@ -129,6 +129,7 @@ public class principal extends AppCompatActivity
             public void onClick(View view) {
                 getKey++;
                 if(getKey==5){
+                    getKey=0;
                     SessionManager sm = new SessionManager(view.getContext());
                     if(sm.getToken().equals(FirebaseInstanceId.getInstance().getToken())) {
                         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
