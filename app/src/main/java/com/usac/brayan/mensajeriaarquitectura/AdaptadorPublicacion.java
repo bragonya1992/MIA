@@ -1,11 +1,17 @@
 package com.usac.brayan.mensajeriaarquitectura;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.List;
 
@@ -26,7 +32,19 @@ public class AdaptadorPublicacion extends RecyclerView.Adapter<AdaptadorPublicac
             contenido = (TextView) v.findViewById(R.id.contenidoPublicacion);
             fecha = (TextView) v.findViewById(R.id.fechaPublicacion);
             para = (TextView) v.findViewById(R.id.paraPublicacion);
+            v.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("Publicacion", contenido.getText());
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(view.getContext(), "El contenido se ha copiado al portapapeles!", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
         }
+
+
     }
 
     public AdaptadorPublicacion(List<Publicacion> items) {

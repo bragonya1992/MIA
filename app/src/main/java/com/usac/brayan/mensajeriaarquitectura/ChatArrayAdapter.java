@@ -1,5 +1,7 @@
 package com.usac.brayan.mensajeriaarquitectura;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.text.Html;
 import android.util.Log;
@@ -72,6 +74,17 @@ public class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
         chatText = (TextView) row.findViewById(R.id.msgr);
         chatText.setText(Html.fromHtml(StringEscapeUtils.unescapeJava(convertion(chatMessageObj.getMessage()).replace("$32","<br>").replace("$33","\"").replace("$34","\'"))));
         date = (TextView) row.findViewById(R.id.fecha_msj);
+        final String msj =chatMessageObj.getMessage();
+        chatText.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Publicacion", msj);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(view.getContext(), "El mensaje se ha copiado al portapapeles!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
         try {
             date.setText(chatMessageObj.getFecha());
         }catch (Exception e){
