@@ -1,9 +1,12 @@
 package com.usac.brayan.mensajeriaarquitectura;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Brayan on 11/02/2017.
  */
-public class Publicacion {
+public class Publicacion implements Parcelable{
 
     String contenido;
     String para;
@@ -27,6 +30,33 @@ public class Publicacion {
     }
 
 
+    protected Publicacion(Parcel in) {
+        contenido = in.readString();
+        para = in.readString();
+        fecha = in.readString();
+        idPublicacion = in.readInt();
+    }
+
+    public static final Creator<Publicacion> CREATOR = new Creator<Publicacion>() {
+        @Override
+        public Publicacion createFromParcel(Parcel in) {
+            return new Publicacion(in);
+        }
+
+        @Override
+        public Publicacion[] newArray(int size) {
+            return new Publicacion[size];
+        }
+    };
+
+    public void readFromParcel(Parcel in) {
+        contenido = in.readString();
+        para = in.readString();
+        fecha = in.readString();
+        idPublicacion = in.readInt();
+    }
+
+
     public String getContenido() {
         return contenido;
     }
@@ -37,5 +67,18 @@ public class Publicacion {
 
     public String getFecha() {
         return fecha;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeValue(contenido);
+        parcel.writeValue(para);
+        parcel.writeValue(fecha);
+        parcel.writeValue(idPublicacion);
     }
 }
