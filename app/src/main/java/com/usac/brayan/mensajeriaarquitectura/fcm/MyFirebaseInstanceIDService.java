@@ -10,6 +10,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.usac.brayan.mensajeriaarquitectura.ServicioNotificacionesFARUSAC;
+import com.usac.brayan.mensajeriaarquitectura.SessionManager;
 
 /**
  * Created by Brayan on 22/05/2017.

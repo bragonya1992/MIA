@@ -33,6 +33,7 @@ public class SessionManager {
     public static final String ROLE = "ROLE"; //1. Estudiante, 2.Maestro, 3.Super
     public static final String CARNE = "CARNE";
     public static final String LASTPUBLICATIONREGISTER = "LASTPUBLICATIONREGISTER";
+    public static final String TOKEN = "TOKEN";
 
     // Constructor
     public SessionManager(Context context){
@@ -63,8 +64,17 @@ public class SessionManager {
         return pref.getInt(LASTPUBLICATIONREGISTER,-1);
     }
 
+    public String getToken(){
+        return pref.getString(TOKEN,"");
+    }
+
     public void setLastPublicationRegister(int value){
         editor.putInt(LASTPUBLICATIONREGISTER,value);
+        editor.commit();
+    }
+
+    public void setToken(String token){
+        editor.putString(TOKEN,token);
         editor.commit();
     }
 

@@ -52,6 +52,10 @@ public class Autenticacion extends AppCompatActivity {
         sm = new SessionManager(this);
         if(sm.isLoggedIn()){
             ServicioNotificacionesFARUSAC.newInstance(this);
+            if(!ServicioNotificacionesFARUSAC.sm.getToken().equals(FirebaseInstanceId.getInstance().getToken())){
+                //ServicioNotificacionesFARUSAC.sm.setToken(FirebaseInstanceId.getInstance().getToken());
+                ServicioNotificacionesFARUSAC.sc.registrarse(FirebaseInstanceId.getInstance().getToken());
+            }
             this.startActivity(new Intent(this, principal.class));
             this.finish();
         }else{

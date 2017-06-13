@@ -52,7 +52,10 @@ public class SocketIO {
     public void connect(String caller){
         Log.d("SocketIO Connect",caller);
         try {
-            mSocket = IO.socket("http://" + nombreHost + ":" + puertoHost);
+            IO.Options opts = new IO.Options();
+            opts.reconnection = false;
+            opts.forceNew= true;
+            mSocket = IO.socket("http://" + nombreHost + ":" + puertoHost,opts);
         } catch (URISyntaxException e) {}
         if(!mSocket.connected())
             mSocket.connect();
@@ -60,6 +63,7 @@ public class SocketIO {
 
     public void disconnect(){
         mSocket.disconnect();
+        mSocket.close();
         mSocket.off();
     }
 
@@ -215,6 +219,8 @@ public class SocketIO {
                         JSONObject o= new JSONObject(args[0].toString().trim());
                         if(!o.getString("estado").equals("exitoso")){
                             ServicioNotificacionesFARUSAC.sc.registrarse(FirebaseInstanceId.getInstance().getToken());
+                        }else{
+                            ServicioNotificacionesFARUSAC.sm.setToken(FirebaseInstanceId.getInstance().getToken());
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
