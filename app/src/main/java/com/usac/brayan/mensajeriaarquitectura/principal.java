@@ -17,7 +17,6 @@ import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,7 +63,7 @@ public class principal extends AppCompatActivity
         public static TextView tx;
         public static TextView notificationsNumber;
         public static RelativeLayout content_circle;
-        public static ArrayList<Publicacion> publications_list = new ArrayList();
+        public static List publications_list = new ArrayList();
         public static LinearLayout writer;
         public  Intent IntentAlumnos;
         public  Intent IntentMaestros;
@@ -74,8 +73,6 @@ public class principal extends AppCompatActivity
         private static int mensajes_totales=0;
         private int pagination=0;
         public static boolean mIsInForegroundMode=false;
-    static final String LISTER = "LISTER";
-    static final String PAGINATION = "PAGINATION";
         static Context ct;
     private static boolean loading = true;
         private CheckBox chkAlumnos;
@@ -131,51 +128,7 @@ public class principal extends AppCompatActivity
         content_publication = (EditText) findViewById(R.id.content_publication);
         IntentAlumnos = new Intent(this, MensajesAlumnos.class);
         IntentMaestros = new Intent(this, MensajesMaestros.class);
-        if (savedInstanceState != null) {
-            pagination = savedInstanceState.getInt(PAGINATION,0);
-            if(pagination!=0)
-                publications_list = savedInstanceState.getParcelableArrayList(LISTER);
-
-            Log.d("Data saved", "size list -> "+publications_list.size());
-            Log.d("Data saved", "pagination -> "+pagination);
-        }
-
-        if(publications_list!=null){
-            if(publications_list.isEmpty() || pagination==0){
-                pagination=0;
-                if(Autenticacion.sm.getRole()==2){
-                    ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
-                }else{
-                    ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
-                }
-                publications_list.clear();
-                if(adapter!=null) {
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        }else{
-            publications_list= new ArrayList<>();
-        }
-
         iniciarAdapter();
-    }
-
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the user's current game state
-        savedInstanceState.putInt(PAGINATION, pagination);
-        savedInstanceState.putParcelableArrayList(LISTER, publications_list);
-        // Always call the superclass so it can save the view hierarchy state
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        // Always call the superclass so it can restore the view hierarchy
-        super.onRestoreInstanceState(savedInstanceState);
-
-
-
     }
 
 
@@ -245,7 +198,6 @@ public class principal extends AppCompatActivity
         recycler.setLayoutManager(lManager);
 
         // Crear un nuevo adaptador
-
         adapter = new AdaptadorPublicacion(publications_list);
         recycler.setAdapter(adapter);
         final Activity miActivity = this;
@@ -379,7 +331,7 @@ public class principal extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        /*pagination=0;
+        pagination=0;
         try {
             publications_list.clear();
             adapter.notifyDataSetChanged();
@@ -392,7 +344,7 @@ public class principal extends AppCompatActivity
         }else{
             ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
             ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
-        }*/
+        }
         mIsInForegroundMode = true;
     }
 
