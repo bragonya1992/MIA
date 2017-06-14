@@ -36,6 +36,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.content.Context;
@@ -74,7 +75,9 @@ public class principal extends AppCompatActivity
         private static RecyclerView.Adapter adapter;
         private WrapContentLinearLayoutManager lManager;
         private static int mensajes_totales=0;
-        private int pagination=0;
+        private static int pagination=0;
+    private static ProgressBar circular_progress_bar;
+    private static RelativeLayout content_fallback;
     private static int getKey;
         public static boolean mIsInForegroundMode=false;
         static Context ct;
@@ -91,18 +94,10 @@ public class principal extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         tx = (TextView) findViewById(R.id.textView2);
         notificationsNumber=(TextView) findViewById(R.id.textOne);
+        circular_progress_bar = (ProgressBar) findViewById(R.id.circular_progress_bar);
         content_circle = (RelativeLayout) findViewById(R.id.content_circle);
+        content_fallback = (RelativeLayout) findViewById(R.id.content_fallback);
         writer=(LinearLayout) findViewById(R.id.writer);
-        if(ServicioNotificacionesFARUSAC.sm==null){
-            ServicioNotificacionesFARUSAC.sm = new SessionManager(this);
-        }
-        if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
-            toolbar.setTitle("Modo para docentes"); // titulo de la ventana
-            ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
-        }else{
-            toolbar.setTitle("Modo para estudiantes"); // titulo de la ventana
-            ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
-        }
         NavigationView nv=(NavigationView) findViewById(R.id.nav_view);
         nvMenu =nv.getMenu();
         //mapearCursos(nvMenu);
@@ -154,7 +149,51 @@ public class principal extends AppCompatActivity
         content_publication = (EditText) findViewById(R.id.content_publication);
         IntentAlumnos = new Intent(this, MensajesAlumnos.class);
         IntentMaestros = new Intent(this, MensajesMaestros.class);
+        showLoader();
+        ServicioNotificacionesFARUSAC.newInstance(this, new SocketIOSubscriber(){
+            @Override
+            public void onNext(Object o) {
+                /**
+                 *
+                 **/
+                super.onNext(o);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                showFallback();
+                hideLoader();
+
+            }
+        });
+        if(ServicioNotificacionesFARUSAC.sm==null){
+            ServicioNotificacionesFARUSAC.sm = new SessionManager(this);
+        }
+        if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
+            toolbar.setTitle("Modo para docentes"); // titulo de la ventana
+            ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
+        }else{
+            toolbar.setTitle("Modo para estudiantes"); // titulo de la ventana
+            ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
+        }
         iniciarAdapter();
+    }
+
+    private static void showLoader(){
+        circular_progress_bar.setVisibility(View.VISIBLE);
+    }
+
+    private static void showFallback(){
+        content_fallback.setVisibility(View.VISIBLE);
+    }
+
+    private static void hideLoader(){
+        circular_progress_bar.setVisibility(View.GONE);
+    }
+
+    private static void hideFallback(){
+        content_fallback.setVisibility(View.GONE);
     }
 
 
@@ -206,10 +245,9 @@ public class principal extends AppCompatActivity
 
 
     public static void reconnect(){
+        hideFallback();
+        showLoader();
         if(ServicioNotificacionesFARUSAC.sc!=null){
-            if(ServicioNotificacionesFARUSAC.sc.isConnected()){
-
-            }else{
                 ServicioNotificacionesFARUSAC.sc.connect("reconnect", new SocketIOSubscriber(){
                     @Override
                     public void onNext(Object o) {
@@ -222,10 +260,10 @@ public class principal extends AppCompatActivity
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
-
+                        showFallback();
+                        hideLoader();
                     }
                 });
-            }
         }else{
             ServicioNotificacionesFARUSAC.newInstance(ct, new SocketIOSubscriber(){
                 @Override
@@ -236,11 +274,20 @@ public class principal extends AppCompatActivity
                 @Override
                 public void onError(Throwable e) {
                     super.onError(e);
-
+                    showFallback();
+                    hideLoader();
                 }
             });
         }
+        if(publications_list.isEmpty()){
+            ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
+        }
     }
+
+    public void reloaded(View v){
+        reconnect();
+    }
+
 
 
     public void iniciarAdapter(){
@@ -282,6 +329,7 @@ public class principal extends AppCompatActivity
                         {
                             loading = false;
                             pagination=pagination+1;
+                            showLoader();
                             ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
                             //Do pagination.. i.e. fetch new data
                         }
@@ -293,6 +341,8 @@ public class principal extends AppCompatActivity
     }
 
     public static void addPublications(List<Publicacion> newMessages){
+        hideLoader();
+        hideFallback();
         if(adapter!=null) {
             publications_list.addAll(newMessages);
             adapter.notifyDataSetChanged();
@@ -306,6 +356,8 @@ public class principal extends AppCompatActivity
     }
 
     public static void addPublicationFirst(List<Publicacion> newMessages){
+        hideLoader();
+        hideFallback();
         if(adapter!=null) {
             publications_list.add(0, newMessages.get(0));
             adapter.notifyDataSetChanged();
@@ -404,8 +456,10 @@ public class principal extends AppCompatActivity
         }
         if(Autenticacion.sm.getRole()==2){
             ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
+            showLoader();
             ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
         }else{
+            showLoader();
             ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
             ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
         }

@@ -8,7 +8,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/content_fallback">
+        android:id="@+id/content_fallback"
+        android:visibility="gone">
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,7 +24,8 @@
             android:src="@drawable/ic_autorenew_white_100dp"
             android:layout_below="@id/image_fallback"
             android:id="@+id/button_fallback"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:onClick="reloaded"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
