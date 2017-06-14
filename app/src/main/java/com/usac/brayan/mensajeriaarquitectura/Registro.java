@@ -42,7 +42,21 @@ public class Registro extends AppCompatActivity {
         if(p1.equals(p2)) {
             if(txtPassword.getText().length()>7) {
                 if(txtCodigo.getText().length()== 13) {
-                    so = new SocketIO(this);
+                    so = new SocketIO(this, new SocketIOSubscriber(){
+                        @Override
+                        public void onNext(Object o) {
+                            /**
+                             *
+                             **/
+                            super.onNext(o);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            super.onError(e);
+
+                        }
+                    });
                     so.esperarRegistro();
                     so.registrarUsuario(txtCodigo.getText().toString(), txtNombre.getText().toString(), sp.getSelectedItem().toString(), txtPassword.getText().toString());
                     circular_progress_bar.setVisibility(View.VISIBLE);

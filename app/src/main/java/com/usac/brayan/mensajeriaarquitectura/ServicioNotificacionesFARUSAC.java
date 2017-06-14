@@ -35,9 +35,9 @@ public class ServicioNotificacionesFARUSAC{
     private Thread workerThread = null;
     static CountDownTimer timer;
 
-    public static void newInstance(Context c) {
+    public static void newInstance(Context c,SocketIOSubscriber subscriber) {
         sm = new SessionManager(c);
-        sc = new SocketIO(c);
+        sc = new SocketIO(c, subscriber);
         sc.escucharNotificaciones();
         //verifyStatusSocket();
     }

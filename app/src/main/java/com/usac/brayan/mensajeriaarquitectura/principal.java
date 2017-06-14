@@ -205,6 +205,44 @@ public class principal extends AppCompatActivity
     }
 
 
+    public static void reconnect(){
+        if(ServicioNotificacionesFARUSAC.sc!=null){
+            if(ServicioNotificacionesFARUSAC.sc.isConnected()){
+
+            }else{
+                ServicioNotificacionesFARUSAC.sc.connect("reconnect", new SocketIOSubscriber(){
+                    @Override
+                    public void onNext(Object o) {
+                        /**
+                         *
+                         **/
+                        super.onNext(o);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+
+                    }
+                });
+            }
+        }else{
+            ServicioNotificacionesFARUSAC.newInstance(ct, new SocketIOSubscriber(){
+                @Override
+                public void onNext(Object o) {
+                    super.onNext(o);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    super.onError(e);
+
+                }
+            });
+        }
+    }
+
+
     public void iniciarAdapter(){
 
 /*

@@ -43,22 +43,66 @@ public class SocketIO {
     private String puertoHost="8080";
     private static final int NOTIFICATION_ID = 101;
     private NotificationCompat.Builder builder;
-    public SocketIO(Context mc) {
-        this.miContexto=mc;
-        builder = new NotificationCompat.Builder(miContexto);
-        connect("constructor");
+    private boolean forceNoConnect=false;
+
+    public boolean isForceNoConnect() {
+        return forceNoConnect;
     }
 
-    public void connect(String caller){
+    public void setForceNoConnect(boolean forceNoConnect) {
+        this.forceNoConnect = forceNoConnect;
+    }
+
+    public SocketIO(Context mc, SocketIOSubscriber subscriber) {
+        this.miContexto=mc;
+        builder = new NotificationCompat.Builder(miContexto);
+        connect("constructor",subscriber);
+    }
+
+    public void connect(String caller, final SocketIOSubscriber subscriber){
         Log.d("SocketIO Connect",caller);
         try {
             IO.Options opts = new IO.Options();
             opts.reconnection = false;
             opts.forceNew= true;
             mSocket = IO.socket("http://" + nombreHost + ":" + puertoHost,opts);
+            mSocket.on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+                    forceNoConnect=true;
+                    subscriber.onError(new Throwable("El Socket se desconecto"));
+                }
+
+            }).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+                    forceNoConnect=true;
+                    subscriber.onError(new Throwable("Error de conexión"));
+                }
+
+            }).on(Socket.EVENT_CONNECT_TIMEOUT, new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+                    forceNoConnect=true;
+                    subscriber.onError(new Throwable("Error de time out"));
+                }
+
+            }).on(Socket.EVENT_ERROR, new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+                    forceNoConnect=true;
+                    subscriber.onError(new Throwable("Error en el evento"));
+                }
+
+            });
         } catch (URISyntaxException e) {}
         if(!mSocket.connected())
             mSocket.connect();
+
     }
 
     public void disconnect(){
@@ -68,6 +112,10 @@ public class SocketIO {
     }
 
     public boolean isConnected(){
+        if(forceNoConnect) {
+            forceNoConnect=false;
+            return false;
+        }
         return mSocket.connected();
     }
 

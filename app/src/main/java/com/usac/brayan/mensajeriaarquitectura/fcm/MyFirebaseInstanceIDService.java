@@ -11,6 +11,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.usac.brayan.mensajeriaarquitectura.ServicioNotificacionesFARUSAC;
 import com.usac.brayan.mensajeriaarquitectura.SessionManager;
+import com.usac.brayan.mensajeriaarquitectura.SocketIOSubscriber;
 
 /**
  * Created by Brayan on 22/05/2017.
@@ -32,7 +33,21 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private void sendRegistrationToServer(String token) {
         // Add custom implementation, as needed.
-        ServicioNotificacionesFARUSAC.newInstance(this);
+        ServicioNotificacionesFARUSAC.newInstance(this, new SocketIOSubscriber(){
+            @Override
+            public void onNext(Object o) {
+                /**
+                 *
+                 **/
+                super.onNext(o);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+
+            }
+        });
         ServicioNotificacionesFARUSAC.sc.registrarse(token);
     }
 }

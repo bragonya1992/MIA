@@ -12,7 +12,7 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="null"
+        android:background="@null"
         android:src="@drawable/ic_autorenew_white_100dp"
         android:layout_below="@id/image_fallback"
         android:id="@+id/button_fallback"

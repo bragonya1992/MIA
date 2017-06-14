@@ -25,12 +25,40 @@ public class AplicationMaster extends Application {
                             ServicioNotificacionesFARUSAC.sc.escucharNotificaciones();
 
                         }else{
-                            ServicioNotificacionesFARUSAC.sc.connect("master");
+                            ServicioNotificacionesFARUSAC.sc.connect("master", new SocketIOSubscriber(){
+                                @Override
+                                public void onNext(Object o) {
+                                    /**
+                                     *
+                                     **/
+                                    super.onNext(o);
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    super.onError(e);
+
+                                }
+                            });
                             ServicioNotificacionesFARUSAC.sc.escucharNotificaciones();
                             Log.d("ActivityLifeCycle","socket connect");
                         }
                     }else{
-                        ServicioNotificacionesFARUSAC.newInstance(activity);
+                        ServicioNotificacionesFARUSAC.newInstance(activity, new SocketIOSubscriber(){
+                            @Override
+                            public void onNext(Object o) {
+                                /**
+                                 *
+                                 **/
+                                super.onNext(o);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                super.onError(e);
+
+                            }
+                        });
                         Log.d("SocketIO","LifeCycle new instance");
                     }
 

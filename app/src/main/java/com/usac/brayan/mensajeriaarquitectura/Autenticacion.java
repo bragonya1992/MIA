@@ -25,6 +25,9 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.tooltip.OnClickListener;
 import com.tooltip.Tooltip;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class Autenticacion extends AppCompatActivity {
     static Button btnIng;
     static EditText txtCarne;
@@ -51,7 +54,21 @@ public class Autenticacion extends AppCompatActivity {
         wait =(ProgressBar) findViewById(R.id.pbHeaderProgress);
         sm = new SessionManager(this);
         if(sm.isLoggedIn()){
-            ServicioNotificacionesFARUSAC.newInstance(this);
+            ServicioNotificacionesFARUSAC.newInstance(this, new SocketIOSubscriber(){
+                @Override
+                public void onNext(Object o) {
+                    /**
+                     *
+                     **/
+                    super.onNext(o);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    super.onError(e);
+
+                }
+            });
             if(!ServicioNotificacionesFARUSAC.sm.getToken().equals(FirebaseInstanceId.getInstance().getToken())){
                 //ServicioNotificacionesFARUSAC.sm.setToken(FirebaseInstanceId.getInstance().getToken());
                 ServicioNotificacionesFARUSAC.sc.registrarse(FirebaseInstanceId.getInstance().getToken());
@@ -85,7 +102,21 @@ public class Autenticacion extends AppCompatActivity {
     }
 
     public void onClick(View view)  {
-        so = new SocketIO(mContext);
+        so = new SocketIO(mContext, new SocketIOSubscriber(){
+            @Override
+            public void onNext(Object o) {
+                /**
+                 *
+                 **/
+                super.onNext(o);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+
+            }
+        });
         so.esperarRespuesta();
         so.solicitarAutenticacion(txtCarne.getText().toString(),sp.getSelectedItem().toString(),txtPass.getText().toString());
         view.setEnabled(false);
@@ -99,7 +130,21 @@ public class Autenticacion extends AppCompatActivity {
         so.close();
         mContext.startActivity(new Intent(mContext, principal.class));
         final Activity activity= actividad;
-        ServicioNotificacionesFARUSAC.newInstance(activity);
+        ServicioNotificacionesFARUSAC.newInstance(activity, new SocketIOSubscriber(){
+            @Override
+            public void onNext(Object o) {
+                /**
+                 *
+                 **/
+                super.onNext(o);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+
+            }
+        });
         sendRegistrationToServer(FirebaseInstanceId.getInstance().getToken(),activity);
         activity.finish();
         btnIng.setEnabled(true);
@@ -118,7 +163,21 @@ public class Autenticacion extends AppCompatActivity {
 
     private static void sendRegistrationToServer(String token,Activity a) {
         // Add custom implementation, as needed.
-        ServicioNotificacionesFARUSAC.newInstance(a);
+        ServicioNotificacionesFARUSAC.newInstance(a, new SocketIOSubscriber(){
+            @Override
+            public void onNext(Object o) {
+                /**
+                 *
+                 **/
+                super.onNext(o);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+
+            }
+        });
         if(token!=null) {
             ServicioNotificacionesFARUSAC.sc.registrarse(token);
         }else{
