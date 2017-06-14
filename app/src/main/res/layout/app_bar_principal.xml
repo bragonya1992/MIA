@@ -35,8 +35,9 @@
     </android.support.design.widget.AppBarLayout>
 
         <include layout="@layout/content_principal"
-            android:id="@+id/content_"/>
-        <include layout="@layout/fallback_reload" />
+            android:id="@+id/content"/>
+        <include layout="@layout/fallback_reload"
+            android:id="@+id/fallback"/>
 
 
 
