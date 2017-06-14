@@ -66,7 +66,14 @@ public class SocketIO {
             opts.reconnection = false;
             opts.forceNew= true;
             mSocket = IO.socket("http://" + nombreHost + ":" + puertoHost,opts);
-            mSocket.on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+            mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+                    subscriber.onComplete();
+                }
+
+            }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
 
                 @Override
                 public void call(Object... args) {

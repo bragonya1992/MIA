@@ -13,6 +13,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.NotificationCompat;
@@ -78,8 +80,10 @@ public class principal extends AppCompatActivity
         private static int pagination=0;
     private static ProgressBar circular_progress_bar;
     private static RelativeLayout content_fallback;
+    private static LinearLayout content_principal;
     private static int getKey;
         public static boolean mIsInForegroundMode=false;
+    public static Handler UIHandler = new Handler(Looper.getMainLooper());
         static Context ct;
     private static boolean loading = true;
         private CheckBox chkAlumnos;
@@ -97,6 +101,7 @@ public class principal extends AppCompatActivity
         circular_progress_bar = (ProgressBar) findViewById(R.id.circular_progress_bar);
         content_circle = (RelativeLayout) findViewById(R.id.content_circle);
         content_fallback = (RelativeLayout) findViewById(R.id.content_fallback);
+        content_principal = (LinearLayout) findViewById(R.id.content) ;
         writer=(LinearLayout) findViewById(R.id.writer);
         NavigationView nv=(NavigationView) findViewById(R.id.nav_view);
         nvMenu =nv.getMenu();
@@ -181,19 +186,42 @@ public class principal extends AppCompatActivity
     }
 
     private static void showLoader(){
-        circular_progress_bar.setVisibility(View.VISIBLE);
+        UIHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                circular_progress_bar.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private static void showFallback(){
-        content_fallback.setVisibility(View.VISIBLE);
+
+        UIHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                content_fallback.setVisibility(View.VISIBLE);
+                content_principal.setVisibility(View.GONE);
+            }
+        });
     }
 
     private static void hideLoader(){
-        circular_progress_bar.setVisibility(View.GONE);
+        UIHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                circular_progress_bar.setVisibility(View.GONE);
+            }
+        });
     }
 
     private static void hideFallback(){
-        content_fallback.setVisibility(View.GONE);
+        UIHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                content_fallback.setVisibility(View.GONE);
+                content_principal.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
 
@@ -263,6 +291,24 @@ public class principal extends AppCompatActivity
                         showFallback();
                         hideLoader();
                     }
+
+                    @Override
+                    public void onComplete() {
+                        super.onComplete();
+                        if(publications_list.isEmpty()){
+                            ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
+                        }else{
+                            hideFallback();
+                            hideLoader();
+                        }
+                        if(listaCursos.isEmpty()){
+                            if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
+                                ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
+                            }else{
+                                ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
+                            }
+                        }
+                    }
                 });
         }else{
             ServicioNotificacionesFARUSAC.newInstance(ct, new SocketIOSubscriber(){
@@ -277,11 +323,27 @@ public class principal extends AppCompatActivity
                     showFallback();
                     hideLoader();
                 }
+
+                @Override
+                public void onComplete() {
+                    super.onComplete();
+                    if(publications_list.isEmpty()){
+                        ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
+                    }else{
+                        hideFallback();
+                        hideLoader();
+                    }
+                    if(listaCursos.isEmpty()){
+                        if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
+                            ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
+                        }else{
+                            ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
+                        }
+                    }
+                }
             });
         }
-        if(publications_list.isEmpty()){
-            ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
-        }
+
     }
 
     public void reloaded(View v){
