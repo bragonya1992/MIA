@@ -4,6 +4,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,6 +87,9 @@ public class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
                 return false;
             }
         });
+
+        Linkify.addLinks(chatText, Linkify.WEB_URLS);
+        //Linkify.addLinks(chatText, Linkify.WEB_URLS);
         try {
             date.setText(chatMessageObj.getFecha());
         }catch (Exception e){

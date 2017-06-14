@@ -136,7 +136,7 @@ public class MensajesAlumnos extends AppCompatActivity {
     }
 
     public void setLista(){
-        actualCurso.setLista(getApplicationContext(),R.layout.right);
+        actualCurso.setLista(this,R.layout.right);
         actualCurso.mensajes.clear();
         Log.d("CONTADOR DE Messages",""+actualCurso.mensajes.getCount());
         int nCola= actualCurso.cola.size();

@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ public class AdaptadorPublicacion extends RecyclerView.Adapter<AdaptadorPublicac
                     return false;
                 }
             });
+
         }
 
 
@@ -68,5 +70,6 @@ public class AdaptadorPublicacion extends RecyclerView.Adapter<AdaptadorPublicac
         viewHolder.contenido.setText(Html.fromHtml(ChatArrayAdapter.convertion(items.get(i).getContenido())));
         viewHolder.fecha.setText(items.get(i).getFecha());
         viewHolder.para.setText("Para:"+String.valueOf(items.get(i).getPara()));
+        Linkify.addLinks(viewHolder.contenido, Linkify.WEB_URLS);
     }
 }
