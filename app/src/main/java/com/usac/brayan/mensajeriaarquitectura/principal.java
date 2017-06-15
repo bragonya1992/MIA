@@ -276,6 +276,7 @@ public class principal extends AppCompatActivity
         hideFallback();
         showLoader();
         if(ServicioNotificacionesFARUSAC.sc!=null){
+
                 ServicioNotificacionesFARUSAC.sc.connect("reconnect", new SocketIOSubscriber(){
                     @Override
                     public void onNext(Object o) {
@@ -310,6 +311,7 @@ public class principal extends AppCompatActivity
                         }
                     }
                 });
+            ServicioNotificacionesFARUSAC.sc.escucharNotificaciones();
         }else{
             ServicioNotificacionesFARUSAC.newInstance(ct, new SocketIOSubscriber(){
                 @Override
