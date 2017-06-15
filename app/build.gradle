@@ -19,7 +19,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         multiDexEnabled true
-        versionCode 10
+        versionCode 11
         versionName "2.3"
         signingConfig signingConfigs.config
     }
