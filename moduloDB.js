@@ -29,7 +29,8 @@ exports.query=function(callback,nombre){
 function sendRealTimeFirebase(keys, collapse,mensaje,cuerpo, titulo,tipo,curso,seccion,fecha,para,idPublicacion){
   var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera) 
       registration_ids: keys,
-      collapse_key: collapse,
+      priority: "high",
+      delay_while_idle:true,
       
       
       notification: {
