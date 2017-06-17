@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
+import com.usac.brayan.mensajeriaarquitectura.oneSignal.MessageDataHandler;
 
 import com.onesignal.OneSignal;
 
@@ -18,7 +19,18 @@ public class AplicationMaster extends Application {
         OneSignal.startInit(this)
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
                 .unsubscribeWhenNotificationsAreDisabled(true)
+                .setNotificationReceivedHandler(new MessageDataHandler())
                 .init();
+
+        OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
+            @Override
+            public void idsAvailable(String userId, String registrationId) {
+                Log.d("debug", "User:" + userId);
+                if (registrationId != null)
+                    Log.d("debug", "registrationId:" + registrationId);
+
+            }
+        });
         this.registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
 
 
