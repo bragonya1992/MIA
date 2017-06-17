@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.tooltip.OnClickListener;
 import com.tooltip.Tooltip;
 
@@ -55,14 +54,14 @@ public class Autenticacion extends AppCompatActivity {
         sm = new SessionManager(this);
         if(sm.isLoggedIn()){
 
-            if(!sm.getToken().equals(FirebaseInstanceId.getInstance().getToken())){
+            /*if(!sm.getToken().equals(FirebaseInstanceId.getInstance().getToken())){
                 //ServicioNotificacionesFARUSAC.sm.setToken(FirebaseInstanceId.getInstance().getToken());
                 so = new SocketIO(mContext, new SocketIOSubscriber(){
                     @Override
                     public void onNext(Object o) {
-                        /**
+                        *
                          *
-                         **/
+                         *
                         super.onNext(o);
                     }
 
@@ -74,7 +73,7 @@ public class Autenticacion extends AppCompatActivity {
                 });
                 so.registrarse(FirebaseInstanceId.getInstance().getToken());
                 so.close();
-            }
+            }*/
             this.startActivity(new Intent(this, principal.class));
             this.finish();
         }else{
@@ -144,7 +143,7 @@ public class Autenticacion extends AppCompatActivity {
 
             }
         });*/
-        sendRegistrationToServer(FirebaseInstanceId.getInstance().getToken(),activity);
+        /*sendRegistrationToServer(FirebaseInstanceId.getInstance().getToken(),activity);*/
         activity.finish();
         btnIng.setEnabled(true);
         txtCarne.setEnabled(true);

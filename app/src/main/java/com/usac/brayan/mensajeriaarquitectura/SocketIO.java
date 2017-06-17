@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import io.socket.client.Ack;
 import io.socket.client.Socket;
@@ -273,9 +272,9 @@ public class SocketIO {
                     try {
                         JSONObject o= new JSONObject(args[0].toString().trim());
                         if(!o.getString("estado").equals("exitoso")){
-                            ServicioNotificacionesFARUSAC.sc.registrarse(FirebaseInstanceId.getInstance().getToken());
+                            /*ServicioNotificacionesFARUSAC.sc.registrarse(FirebaseInstanceId.getInstance().getToken());*/
                         }else{
-                            ServicioNotificacionesFARUSAC.sm.setToken(FirebaseInstanceId.getInstance().getToken());
+                            /*ServicioNotificacionesFARUSAC.sm.setToken(FirebaseInstanceId.getInstance().getToken());*/
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

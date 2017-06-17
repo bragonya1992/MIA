@@ -45,8 +45,6 @@ import android.content.Context;
 import android.widget.Toast;
 
 
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
@@ -124,7 +122,7 @@ public class principal extends AppCompatActivity
         toggle.syncState();
 
 
-        tx.setOnClickListener(new View.OnClickListener() {
+        /*tx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getKey++;
@@ -145,7 +143,7 @@ public class principal extends AppCompatActivity
 
                 }
             }
-        });
+        });*/
         ct=this;
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);

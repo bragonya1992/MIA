@@ -5,6 +5,8 @@ import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.onesignal.OneSignal;
+
 /**
  * Created by Brayan on 31/05/2017.
  */
@@ -13,6 +15,10 @@ public class AplicationMaster extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        OneSignal.startInit(this)
+                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
+                .unsubscribeWhenNotificationsAreDisabled(true)
+                .init();
         this.registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
 
 
