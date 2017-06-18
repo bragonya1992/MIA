@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.Toast;
 
 
+import com.onesignal.OneSignal;
+
 import io.socket.client.Ack;
 import io.socket.client.Socket;
 import io.socket.client.IO;
@@ -274,7 +276,15 @@ public class SocketIO {
                         if(!o.getString("estado").equals("exitoso")){
                             /*ServicioNotificacionesFARUSAC.sc.registrarse(FirebaseInstanceId.getInstance().getToken());*/
                         }else{
-                            /*ServicioNotificacionesFARUSAC.sm.setToken(FirebaseInstanceId.getInstance().getToken());*/
+                            OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
+                                @Override
+                                public void idsAvailable(String userId, String registrationId) {
+                                    Log.d("debug", "User:" + userId);
+                                    ServicioNotificacionesFARUSAC.sm.setToken(userId);
+
+                                }
+                            });
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

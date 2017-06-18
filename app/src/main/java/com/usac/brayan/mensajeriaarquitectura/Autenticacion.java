@@ -11,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -21,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.onesignal.OneSignal;
 import com.tooltip.OnClickListener;
 import com.tooltip.Tooltip;
 
@@ -53,27 +55,30 @@ public class Autenticacion extends AppCompatActivity {
         wait =(ProgressBar) findViewById(R.id.pbHeaderProgress);
         sm = new SessionManager(this);
         if(sm.isLoggedIn()){
+            OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
+                @Override
+                public void idsAvailable(String userId, String registrationId) {
+                    if(!sm.getToken().equals(userId)){
+                        //ServicioNotificacionesFARUSAC.sm.setToken(FirebaseInstanceId.getInstance().getToken());
+                        so = new SocketIO(mContext, new SocketIOSubscriber(){
+                            @Override
+                            public void onNext(Object o) {
+                                super.onNext(o);
+                            }
 
-            /*if(!sm.getToken().equals(FirebaseInstanceId.getInstance().getToken())){
-                //ServicioNotificacionesFARUSAC.sm.setToken(FirebaseInstanceId.getInstance().getToken());
-                so = new SocketIO(mContext, new SocketIOSubscriber(){
-                    @Override
-                    public void onNext(Object o) {
-                        *
-                         *
-                         *
-                        super.onNext(o);
+                            @Override
+                            public void onError(Throwable e) {
+                                super.onError(e);
+
+                            }
+                        });
+                        so.registrarse(userId);
+                        so.close();
                     }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
+                }
+            });
 
-                    }
-                });
-                so.registrarse(FirebaseInstanceId.getInstance().getToken());
-                so.close();
-            }*/
             this.startActivity(new Intent(this, principal.class));
             this.finish();
         }else{
@@ -144,6 +149,14 @@ public class Autenticacion extends AppCompatActivity {
             }
         });*/
         /*sendRegistrationToServer(FirebaseInstanceId.getInstance().getToken(),activity);*/
+        OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
+            @Override
+            public void idsAvailable(String userId, String registrationId) {
+                Log.d("debug", "User:" + userId);
+                sendRegistrationToServer(userId,activity);
+
+            }
+        });
         activity.finish();
         btnIng.setEnabled(true);
         txtCarne.setEnabled(true);

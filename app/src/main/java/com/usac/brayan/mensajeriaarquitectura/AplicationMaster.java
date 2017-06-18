@@ -22,15 +22,7 @@ public class AplicationMaster extends Application {
                 .setNotificationReceivedHandler(new MessageDataHandler())
                 .init();
 
-        OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
-            @Override
-            public void idsAvailable(String userId, String registrationId) {
-                Log.d("debug", "User:" + userId);
-                if (registrationId != null)
-                    Log.d("debug", "registrationId:" + registrationId);
 
-            }
-        });
         this.registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
 
 

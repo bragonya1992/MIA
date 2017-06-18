@@ -21,6 +21,7 @@ import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 
+import com.onesignal.OneSignal;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
@@ -122,28 +124,35 @@ public class principal extends AppCompatActivity
         toggle.syncState();
 
 
-        /*tx.setOnClickListener(new View.OnClickListener() {
+        tx.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 getKey++;
                 if(getKey==5){
-                    getKey=0;
-                    SessionManager sm = new SessionManager(view.getContext());
-                    if(sm.getToken().equals(FirebaseInstanceId.getInstance().getToken())) {
-                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText("KeyChain", FirebaseInstanceId.getInstance().getToken());
-                        clipboard.setPrimaryClip(clip);
-                        Toast.makeText(view.getContext(), "Copy keychain to the clipboard!", Toast.LENGTH_SHORT).show();
-                    }else{
-                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText("KeyChain", "the keychain is not the same at the token");
-                        clipboard.setPrimaryClip(clip);
-                        Toast.makeText(view.getContext(), "Wrong keychain!", Toast.LENGTH_SHORT).show();
-                    }
+                    OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
+                        @Override
+                        public void idsAvailable(String userId, String registrationId) {
+                            getKey=0;
+                            SessionManager sm = new SessionManager(view.getContext());
+                            if(sm.getToken().equals(userId)) {
+                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("KeyChain", userId);
+                                clipboard.setPrimaryClip(clip);
+                                Toast.makeText(view.getContext(), "Copy keychain to the clipboard!", Toast.LENGTH_SHORT).show();
+                            }else{
+                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("KeyChain", "the keychain is not the same at the token");
+                                clipboard.setPrimaryClip(clip);
+                                Toast.makeText(view.getContext(), "Wrong keychain!", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+
 
                 }
             }
-        });*/
+        });
         ct=this;
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
