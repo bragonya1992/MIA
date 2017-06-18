@@ -3,6 +3,7 @@ var date = new Date();
 var anioActual = 2016;//date.getFullYear();
 var mysql      = require('mysql');
 var FCM = require('fcm-node');
+var oneSignal = require('onesignal')('ZDA1ZTU4NDUtNjFjZC00ZTFhLWJiMGEtMzdlZGYyNjlmNjkz', '606aa01a-676b-4a6c-89da-37da13078997', true);
 var serverKey = 'AAAALWe_bTo:APA91bHzwpdBtswfdrkov_6_OCHddTgFubCkfKEwg5P51En4yvpWio8eToTHXb0spI-SGv1VSs53O6qteEPZ1Gxg6mUuqFii0uetSbrxgDKlPD8ekNjiJjlbNxF39EdtxIFCVU_X2DQv'; //put your server key here 
 var fcm = new FCM(serverKey);
   var connection = mysql.createConnection({
@@ -26,21 +27,9 @@ exports.query=function(callback,nombre){
   });
 }
 
-function sendRealTimeFirebase(keys, collapse,mensaje,cuerpo, titulo,tipo,curso,seccion,fecha,para,idPublicacion){
-  var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera) 
-      registration_ids: keys,
-      priority: "high",
-      delay_while_idle:true,
-      
-      
-      notification: {
-          title: titulo, 
-          body: cuerpo,
-          tag: collapse,
-          sound : "dog"
-      },
-      
-      data: {  //you can send only notification or only data(or include both) 
+function sendRealTimeOneSignal(keys, collapse,mensaje,cuerpo, titulo,tipo,curso,seccion,fecha,para,idPublicacion){
+  
+  var  data = {  //you can send only notification or only data(or include both) 
           type: tipo,
           curse: curso,
           section: seccion,
@@ -48,16 +37,8 @@ function sendRealTimeFirebase(keys, collapse,mensaje,cuerpo, titulo,tipo,curso,s
           date: fecha,
           to: para,
           publication: idPublicacion
-      }
-  };
-  
-  fcm.send(message, function(err, response){
-      if (err) {
-          console.log("Something has gone wrong!"+err);
-      } else {
-          console.log("Successfully sent with response: ", response);
-      }
-  });
+      };
+      oneSignal.createNotification(mensaje,data, keys)
 }
 
 
@@ -297,7 +278,7 @@ join sesion on sesion.cui=alumno.carne`, function(err, rows, fields) {
                   var parse = JSON.parse(notesContent);
                   console.log(parse);
                   var data = parse.publicacion[0];
-                  sendRealTimeFirebase(keys, "MIAPublication",data.contenido,data.contenido.substring(0, 10)+"...", "Nueva publicación FARUSAC","publication","","",data.fecha,data.para,data.idPublicacion);
+                  sendRealTimeOneSignal(keys, "MIAPublication",data.contenido,data.contenido.substring(0, 10)+"...", "Nueva publicación FARUSAC","publication","","",data.fecha,data.para,data.idPublicacion);
                 }
               }
             });
@@ -328,7 +309,7 @@ join sesion on sesion.cui=maestro.codigomaestro`, function(err, rows, fields) {
                   var parse = JSON.parse(notesContent);
                   console.log(parse);
                   var data = parse.publicacion[0];
-                  sendRealTimeFirebase(keys, "MIAPublication",data.contenido,data.contenido.substring(0, 10)+"...", "Nueva publicación FARUSAC","publication","","",data.fecha,data.para,data.idPublicacion);
+                  sendRealTimeOneSignal(keys, "MIAPublication",data.contenido,data.contenido.substring(0, 10)+"...", "Nueva publicación FARUSAC","publication","","",data.fecha,data.para,data.idPublicacion);
                 }
               }
             });
@@ -449,7 +430,7 @@ where AsignacionAlumno.fkSemestre=? and AsignacionAlumno.fkAnio=? and Curso.Nomb
                   keys.push(notes[i].keyChain);
                 }
                 if(keys.length>0){
-                  sendRealTimeFirebase(keys, curso+seccion,mensaje,curso+" "+seccion+":"+mensaje.substring(0, 10)+"...", "MIA","notification",curso,seccion,"hace pocos momentos","","");
+                  sendRealTimeOneSignal(keys, curso+seccion,mensaje,curso+" "+seccion+":"+mensaje.substring(0, 10)+"...", "MIA","notification",curso,seccion,"hace pocos momentos","","");
                 }
               }
             });
