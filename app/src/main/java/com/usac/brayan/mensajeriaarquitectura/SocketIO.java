@@ -130,7 +130,9 @@ public class SocketIO {
 
 
     public void registrarse(String keyChain){
-        mSocket.emit("app_user","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"role\":\""+ServicioNotificacionesFARUSAC.sm.getRole()+"\",\"keyChain\":\""+keyChain+"\"}");
+        SessionManager sm = new SessionManager(miContexto);
+        Log.d("SessionManager","{\"username\":\""+sm.getId()+"\",\"role\":\""+sm.getRole()+"\",\"keyChain\":\""+keyChain+"\"}");
+        mSocket.emit("app_user","{\"username\":\""+sm.getId()+"\",\"role\":\""+sm.getRole()+"\",\"keyChain\":\""+keyChain+"\"}");
     }
 
     public void solicitarAutenticacion(String carne, String role, String pass){

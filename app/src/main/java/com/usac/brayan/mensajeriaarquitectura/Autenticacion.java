@@ -55,12 +55,13 @@ public class Autenticacion extends AppCompatActivity {
         wait =(ProgressBar) findViewById(R.id.pbHeaderProgress);
         sm = new SessionManager(this);
         if(sm.isLoggedIn()){
+/*            final Activity mAc = this;
             OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
                 @Override
                 public void idsAvailable(String userId, String registrationId) {
-                    if(!sm.getToken().equals(userId)){
+                    if(!sm.getToken().equals("")){
                         //ServicioNotificacionesFARUSAC.sm.setToken(FirebaseInstanceId.getInstance().getToken());
-                        so = new SocketIO(mContext, new SocketIOSubscriber(){
+                        so = new SocketIO(mAc, new SocketIOSubscriber(){
                             @Override
                             public void onNext(Object o) {
                                 super.onNext(o);
@@ -72,12 +73,13 @@ public class Autenticacion extends AppCompatActivity {
 
                             }
                         });
+                        so.escucharNotificaciones();
                         so.registrarse(userId);
-                        so.close();
+                        //so.close();
                     }
 
                 }
-            });
+            });*/
 
             this.startActivity(new Intent(this, principal.class));
             this.finish();

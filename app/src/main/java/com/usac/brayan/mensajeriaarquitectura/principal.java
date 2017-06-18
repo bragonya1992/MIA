@@ -190,12 +190,27 @@ public class principal extends AppCompatActivity
             ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
         }
         iniciarAdapter();
+
+        final Activity mAc = this;
+        OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
+            @Override
+            public void idsAvailable(String userId, String registrationId) {
+                if(!ServicioNotificacionesFARUSAC.sm.getToken().equals(userId)){
+                    ServicioNotificacionesFARUSAC.sc.registrarse(userId);
+
+                    //so.close();
+                }
+
+            }
+        });
+
     }
 
     private static void showLoader(){
         UIHandler.post(new Runnable() {
             @Override
             public void run() {
+                if(circular_progress_bar!=null)
                 circular_progress_bar.setVisibility(View.VISIBLE);
             }
         });
@@ -206,7 +221,9 @@ public class principal extends AppCompatActivity
         UIHandler.post(new Runnable() {
             @Override
             public void run() {
+                if(content_fallback!=null)
                 content_fallback.setVisibility(View.VISIBLE);
+                if(content_principal!=null)
                 content_principal.setVisibility(View.GONE);
             }
         });
@@ -216,6 +233,7 @@ public class principal extends AppCompatActivity
         UIHandler.post(new Runnable() {
             @Override
             public void run() {
+                if(circular_progress_bar!=null)
                 circular_progress_bar.setVisibility(View.GONE);
             }
         });
@@ -225,7 +243,9 @@ public class principal extends AppCompatActivity
         UIHandler.post(new Runnable() {
             @Override
             public void run() {
+                if(content_fallback!=null)
                 content_fallback.setVisibility(View.GONE);
+                if(content_principal!=null)
                 content_principal.setVisibility(View.VISIBLE);
             }
         });
