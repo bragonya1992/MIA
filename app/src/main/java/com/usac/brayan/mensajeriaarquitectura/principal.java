@@ -62,33 +62,33 @@ import static com.usac.brayan.mensajeriaarquitectura.R.layout.left;
 
 public class principal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-        public static final int NOTIFICATION_ID=1;
-        public static NavigationView navigationView;
-        public static LinkedList<Curso> listaCursos= new LinkedList<>();
-        public static Menu nvMenu;
-        public static TextView tx;
-        public static TextView notificationsNumber;
-        public static RelativeLayout content_circle;
-        public static List publications_list = new ArrayList();
-        public static LinearLayout writer;
-        public  Intent IntentAlumnos;
-        public  Intent IntentMaestros;
-        private static RecyclerView recycler;
-        private static RecyclerView.Adapter adapter;
-        private WrapContentLinearLayoutManager lManager;
-        private static int mensajes_totales=0;
-        private static int pagination=0;
+    public static final int NOTIFICATION_ID=1;
+    public static NavigationView navigationView;
+    public static LinkedList<Curso> listaCursos= new LinkedList<>();
+    public static Menu nvMenu;
+    public static TextView tx;
+    public static TextView notificationsNumber;
+    public static RelativeLayout content_circle;
+    public static List publications_list = new ArrayList();
+    public static LinearLayout writer;
+    public  Intent IntentAlumnos;
+    public  Intent IntentMaestros;
+    private static RecyclerView recycler;
+    private static RecyclerView.Adapter adapter;
+    private WrapContentLinearLayoutManager lManager;
+    private static int mensajes_totales=0;
+    private static int pagination=0;
     private static ProgressBar circular_progress_bar;
     private static RelativeLayout content_fallback;
     private static LinearLayout content_principal;
     private static int getKey;
-        public static boolean mIsInForegroundMode=false;
+    public static boolean mIsInForegroundMode=false;
     public static Handler UIHandler = new Handler(Looper.getMainLooper());
-        static Context ct;
+    static Context ct;
     private static boolean loading = true;
-        private CheckBox chkAlumnos;
-        private CheckBox chkMaestros;
-        private EditText content_publication;
+    private CheckBox chkAlumnos;
+    private CheckBox chkMaestros;
+    private EditText content_publication;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
 
     @Override
@@ -107,7 +107,8 @@ public class principal extends AppCompatActivity
         nvMenu =nv.getMenu();
         //mapearCursos(nvMenu);
         setSupportActionBar(toolbar);
-        tx.setText(Html.fromHtml("Bienvenido a MIA  <b><u>"+Autenticacion.sm.getName()+"</u></b>, estas son tus noticias")); // for 24 api and more
+        if(tx!=null)
+            tx.setText(Html.fromHtml("Bienvenido a MIA  <b><u>"+Autenticacion.sm.getName()+"</u></b>, estas son tus noticias")); // for 24 api and more
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

@@ -17,7 +17,7 @@ public class AplicationMaster extends Application {
     public void onCreate() {
         super.onCreate();
         OneSignal.startInit(this)
-                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
+                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.None)
                 .unsubscribeWhenNotificationsAreDisabled(true)
                 .setNotificationReceivedHandler(new MessageDataHandler())
                 .init();
