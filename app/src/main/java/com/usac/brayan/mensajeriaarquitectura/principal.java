@@ -500,7 +500,7 @@ public class principal extends AppCompatActivity
 
     public static void mapearCursos(){
         nvMenu.clear();
-        nvMenu.add("Cursos Asignados").setIcon(R.drawable.ic_group_white_24dp).setTitle("Cursos Asignados");
+        nvMenu.add("Cursos Asignados").setIcon(R.drawable.ic_group_white_24dp).setTitle("Cursos Asignados").setEnabled(false);
         mensajes_totales=0;
         for(int i=0;i<listaCursos.size();i++) {
             MenuItem m=nvMenu.add(listaCursos.get(i).nombre+" - "+listaCursos.get(i).seccion);// Agregar elemento al menu deslizable
