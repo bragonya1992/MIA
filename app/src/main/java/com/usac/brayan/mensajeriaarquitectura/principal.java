@@ -107,6 +107,7 @@ public class principal extends AppCompatActivity
         writer=(LinearLayout) findViewById(R.id.writer);
         NavigationView nv=(NavigationView) findViewById(R.id.nav_view);
         nvMenu =nv.getMenu();
+        nvMenu.addSubMenu("Cursos Asignados");
         //mapearCursos(nvMenu);
         setSupportActionBar(toolbar);
 
@@ -125,10 +126,41 @@ public class principal extends AppCompatActivity
         toggle.syncState();
 
 
-
         ct=this;
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header=navigationView.getHeaderView(0);
+        name_info = (TextView) header.findViewById(R.id.name_info);
+        name_info.setText(Autenticacion.sm.getName()/*"Brayan"*/);
+        name_info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                getKey++;
+                if(getKey==5){
+                    OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
+                        @Override
+                        public void idsAvailable(String userId, String registrationId) {
+                            getKey=0;
+                            SessionManager sm = new SessionManager(view.getContext());
+                            if(sm.getToken().equals(userId)) {
+                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("KeyChain", userId);
+                                clipboard.setPrimaryClip(clip);
+                                Toast.makeText(view.getContext(), "Copy keychain to the clipboard!", Toast.LENGTH_SHORT).show();
+                            }else{
+                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("KeyChain", "the keychain is not the same at the token");
+                                clipboard.setPrimaryClip(clip);
+                                Toast.makeText(view.getContext(), "Wrong keychain!", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+
+
+                }
+            }
+        });
         chkAlumnos = (CheckBox) findViewById(R.id.chkAlumnos);
         chkMaestros = (CheckBox) findViewById(R.id.chkMaestros);
         content_publication = (EditText) findViewById(R.id.content_publication);
@@ -468,6 +500,7 @@ public class principal extends AppCompatActivity
 
     public static void mapearCursos(){
         nvMenu.clear();
+        nvMenu.add("Cursos Asignados").setIcon(R.drawable.ic_group_white_24dp).setTitle("Cursos Asignados");
         mensajes_totales=0;
         for(int i=0;i<listaCursos.size();i++) {
             MenuItem m=nvMenu.add(listaCursos.get(i).nombre+" - "+listaCursos.get(i).seccion);// Agregar elemento al menu deslizable
@@ -597,37 +630,7 @@ public class principal extends AppCompatActivity
     public void onCreateContextMenu (ContextMenu menu,
                               View v,
                               ContextMenu.ContextMenuInfo menuInfo){
-        name_info = (TextView) findViewById(R.id.name_info);
-        name_info.setText(/*Autenticacion.sm.getName()*/"Brayan");
-        name_info.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                getKey++;
-                if(getKey==5){
-                    OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
-                        @Override
-                        public void idsAvailable(String userId, String registrationId) {
-                            getKey=0;
-                            SessionManager sm = new SessionManager(view.getContext());
-                            if(sm.getToken().equals(userId)) {
-                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("KeyChain", userId);
-                                clipboard.setPrimaryClip(clip);
-                                Toast.makeText(view.getContext(), "Copy keychain to the clipboard!", Toast.LENGTH_SHORT).show();
-                            }else{
-                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("KeyChain", "the keychain is not the same at the token");
-                                clipboard.setPrimaryClip(clip);
-                                Toast.makeText(view.getContext(), "Wrong keychain!", Toast.LENGTH_SHORT).show();
-                            }
 
-                        }
-                    });
-
-
-                }
-            }
-        });
     }
 
 }
