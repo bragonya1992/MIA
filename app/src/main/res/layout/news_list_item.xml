@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.usac.brayan.mensajeriaarquitectura.principal">
+
+    <RelativeLayout
+        android:padding="16dp"
+        android:background="#FFFFFFFF"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/post_user_avatar"
+            android:layout_marginRight="16dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+        <LinearLayout
+            android:layout_toRightOf="@id/post_user_avatar"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/post_title"
+                android:text="Titulo de la noticia"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="14sp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textColor="@color/title_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/post_to"
+                android:text="Para:"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="12sp"
+                android:layout_marginBottom="16dp"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:textColor="@color/normal_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/post_excerpt"
+                android:text="Noticia"
+                android:textSize="12sp"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:textColor="@color/normal_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/post_user"
+                    android:layout_weight="1"
+                    android:text="Por"
+                    android:textSize="10sp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:textColor="@color/hint_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/post_date"
+                    android:gravity="right"
+                    android:layout_weight="1"
+                    android:text="Fecha"
+                    android:textSize="10sp"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    android:textColor="@color/hint_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

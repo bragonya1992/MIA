@@ -1,9 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#001027</color>
+    <color name="colorPrimaryDark">#1f2839</color>
+    <color name="colorAccent">#2184f8</color>
     <color name="skyblue">#cce0ff</color>
     <color name="gray">#969799</color>
     <color name="red">#F00</color>
+
+    <!-- TEXT COLORS -->
+    <color name="title_text">#DB000000</color>
+    <color name="normal_text">#8b000000</color>
+    <color name="hint_text">#57000000</color>
+    <color name="dividers">#1f000000</color>
+
+
+
+    <!--
+ Hex Opacity Values
+ 100% — FF
+ 95% — F2
+ 90% — E6
+ 85% — D9
+ 80% — CC
+ 75% — BF
+ 70% — B3
+ 65% — A6
+ 60% — 99
+ 55% — 8C
+ 50% — 80
+ 45% — 73
+ 40% — 66
+ 35% — 59
+ 30% — 4D
+ 25% — 40
+ 20% — 33
+ 15% — 26
+ 10% — 1A
+ 5% — 0D
+ 0% — 00
+ -->
+
+
+        <!-- BOTTOM TAB HOST -->
+        <color name="tab_selected">#2184f8</color>
+
+        <color name="asignar">#F218a853</color>
+
+        <color name="black">#000000</color>
+        <color name="black_95">#F2000000</color>
+        <color name="black_85">#D8000000</color>
+        <color name="black_75">#bf000000</color>
+        <color name="black_65">#A6000000</color>
+        <color name="black_50">#80000000</color>
+        <color name="black_35">#59000000</color>
+        <color name="black_25">#40000000</color>
+        <color name="black_10">#1a000000</color>
+        <color name="black_00">#00000000</color>
+
+        <color name="white">#ffffff</color>
+        <color name="white_90">#E6ffffff</color>
+        <color name="white_85">#D8ffffff</color>
+        <color name="white_75">#BFffffff</color>
+        <color name="white_70">#B3ffffff</color>
+        <color name="white_50">#80ffffff</color>
+        <color name="white_45">#73ffffff</color>
+        <color name="white_25">#40ffffff</color>
+        <color name="white_20">#33ffffff</color>
+        <color name="white_10">#1affffff</color>
+        <color name="almostWhite">#E9EAE4</color>
+        <color name="background_color">#f0f0ee</color>
+        <color name="odd_cell">#f9f9f9</color>
+
+        <!-- MVP COLOR PALETTE -->
+        <color name="mvp_channels_color">#ffd83d</color>
+        <color name="mvp_cameras_color">#14c054</color>
+        <color name="mvp_sports_color">#f02d31</color>
+        <color name="mvp_medals_color">#f02d31</color>
+
+
+        <color name="win_match_circle">#43B148</color>
+        <color name="defeat_match_circle">#E74A24</color>
+        <color name="draw_match_circle">#767676</color>
+        <color name="swipe_to_delete">#D0011b</color>
+
+
+
+
 </resources>

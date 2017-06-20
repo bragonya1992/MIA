@@ -399,6 +399,7 @@ public class principal extends AppCompatActivity
         // Usar un administrador para LinearLayout
         lManager = new WrapContentLinearLayoutManager(this);
         recycler.setLayoutManager(lManager);
+        recycler.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
         // Crear un nuevo adaptador
         adapter = new AdaptadorPublicacion(publications_list);

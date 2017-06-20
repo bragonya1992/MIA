@@ -25,12 +25,13 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_reads_white_24dp"
-                android:background="@null"
+                android:background="@drawable/ic_group_white_24dp"
+                android:backgroundTint="@color/white"
                 android:layout_alignRight="@+id/toolbar"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="40dp"
                 android:id="@+id/reads"/>
+
         </RelativeLayout>
 
 

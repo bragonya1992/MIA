@@ -1,67 +1,97 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:elevation="0dp"
+    android:background="@drawable/back_cards"
+    card_view:cardElevation="0dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    card_view:cardCornerRadius="4dp"
-    card_view:cardElevation="4dp"
-    card_view:cardUseCompatPadding="true">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFFFF"
+        android:padding="16dp">
 
         <ImageView
             android:id="@+id/logoFARUSAC"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:scaleType="centerCrop"
-            android:background="@mipmap/image_publicacion"/>
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginRight="16dp"
+            android:src="@mipmap/image_publicacion" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="FARUSAC"
-            android:id="@+id/tituloPublicacion"
-            android:layout_toRightOf="@+id/logoFARUSAC"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp" />
+            android:layout_toRightOf="@id/logoFARUSAC"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Mensaje"
-            android:id="@+id/contenidoPublicacion"
-            android:layout_below="@+id/paraPublicacion"
-            android:layout_alignLeft="@+id/tituloPublicacion"
-            android:gravity="top" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="fechaPublicacion"
-            android:id="@+id/fechaPublicacion"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Para:"
-            android:id="@+id/paraPublicacion"
-            android:layout_alignLeft="@+id/tituloPublicacion"
-            android:layout_below="@+id/tituloPublicacion"
-             />
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:background="#ffd5d5d5"
-            android:id="@+id/linea"
-            android:layout_toRightOf="@+id/logoFARUSAC">
+            <TextView
+                android:id="@+id/post_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="2"
+                android:text="Titulo de la noticia"
+                android:textColor="@color/title_text"
+                android:textSize="16sp" />
 
-        </View>
+            <TextView
+                android:id="@+id/paraPublicacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="3"
+                android:text="Para:"
+                android:textColor="@color/normal_text"
+                android:textSize="14sp" />
 
+            <TextView
+                android:id="@+id/contenidoPublicacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:text="Noticia"
+                android:textColor="@color/normal_text"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tituloPublicacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="Por: FARUSAC"
+                    android:textColor="@color/hint_text"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/fechaPublicacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:gravity="right"
+                    android:maxLines="3"
+                    android:text="Fecha"
+                    android:textColor="@color/hint_text"
+                    android:textSize="12sp" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </RelativeLayout>
+
 </android.support.v7.widget.CardView>
