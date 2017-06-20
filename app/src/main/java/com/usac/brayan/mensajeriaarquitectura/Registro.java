@@ -1,5 +1,6 @@
 package com.usac.brayan.mensajeriaarquitectura;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,7 @@ public class Registro extends AppCompatActivity {
     public void registrar(View v){
         String p1 =txtPassword.getText().toString();
         String p2 =txtPasswordConfirm.getText().toString();
+        final Activity miAc=this;
         if(p1.equals(p2)) {
             if(txtPassword.getText().length()>7) {
                 if(txtCodigo.getText().length()== 13) {
@@ -54,7 +56,13 @@ public class Registro extends AppCompatActivity {
                         @Override
                         public void onError(Throwable e) {
                             super.onError(e);
-
+                            btnRegistrar.setEnabled(true);
+                            btnRegistrar.setEnabled(true);
+                            txtNombre.setEnabled(true);
+                            txtPassword.setEnabled(true);
+                            txtPasswordConfirm.setEnabled(true);
+                            circular_progress_bar.setVisibility(View.GONE);
+                            Toast.makeText(miAc,"Ha ocurrido un error de conexión, por favor vuelva a intentarlo",Toast.LENGTH_LONG).show();
                         }
                     });
                     so.esperarRegistro();
@@ -87,6 +95,7 @@ public class Registro extends AppCompatActivity {
                 txtNombre.setEnabled(true);
                 txtPassword.setEnabled(true);
                 txtPasswordConfirm.setEnabled(true);
+                circular_progress_bar.setVisibility(View.GONE);
             }
         }
     };

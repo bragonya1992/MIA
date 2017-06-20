@@ -128,6 +128,12 @@ public class Autenticacion extends AppCompatActivity {
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
+                btnIng.setEnabled(true);
+                txtCarne.setEnabled(true);
+                txtPass.setEnabled(true);
+                //setProgressBarIndeterminateVisibility(false);
+                wait.setVisibility(View.GONE);
+                Toast.makeText(actividad,"Ha ocurrido un error de conexión, por favor vuelva a intentarlo",Toast.LENGTH_LONG).show();
 
             }
         });
