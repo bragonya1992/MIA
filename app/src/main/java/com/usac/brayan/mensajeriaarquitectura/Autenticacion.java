@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -44,6 +46,7 @@ public class Autenticacion extends AppCompatActivity {
     public static Context mContext;
     public static SocketIO so;
     public static Activity actividad;
+    public static boolean isError=true;
     static ProgressBar wait;
     ImageView chartImageView;
     @Override
@@ -128,12 +131,21 @@ public class Autenticacion extends AppCompatActivity {
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
-                btnIng.setEnabled(true);
-                txtCarne.setEnabled(true);
-                txtPass.setEnabled(true);
-                //setProgressBarIndeterminateVisibility(false);
-                wait.setVisibility(View.GONE);
-                Toast.makeText(actividad,"Ha ocurrido un error de conexión, por favor vuelva a intentarlo",Toast.LENGTH_LONG).show();
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Code to run on UI thread
+                        btnIng.setEnabled(true);
+                        txtCarne.setEnabled(true);
+                        txtPass.setEnabled(true);
+                        //setProgressBarIndeterminateVisibility(false);
+                        wait.setVisibility(View.GONE);
+                        if(isError)
+                            Toast.makeText(actividad,"Ha ocurrido un error de conexión, por favor vuelva a intentarlo",Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
             }
         });
@@ -171,6 +183,8 @@ public class Autenticacion extends AppCompatActivity {
 
             }
         });
+        isError=false;
+        so.close();
         activity.finish();
         btnIng.setEnabled(true);
         txtCarne.setEnabled(true);

@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +22,7 @@ public class Registro extends AppCompatActivity {
     EditText txtCodigo;
     EditText txtPasswordConfirm;
     ProgressBar circular_progress_bar;
+    public static boolean isError=true;
     Button btnRegistrar;
     Spinner sp;
     public static SocketIO so;
@@ -56,13 +59,21 @@ public class Registro extends AppCompatActivity {
                         @Override
                         public void onError(Throwable e) {
                             super.onError(e);
-                            btnRegistrar.setEnabled(true);
-                            btnRegistrar.setEnabled(true);
-                            txtNombre.setEnabled(true);
-                            txtPassword.setEnabled(true);
-                            txtPasswordConfirm.setEnabled(true);
-                            circular_progress_bar.setVisibility(View.GONE);
-                            Toast.makeText(miAc,"Ha ocurrido un error de conexión, por favor vuelva a intentarlo",Toast.LENGTH_LONG).show();
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    btnRegistrar.setEnabled(true);
+                                    btnRegistrar.setEnabled(true);
+                                    txtNombre.setEnabled(true);
+                                    txtPassword.setEnabled(true);
+                                    txtPasswordConfirm.setEnabled(true);
+                                    circular_progress_bar.setVisibility(View.GONE);
+                                    if(isError)
+                                    Toast.makeText(miAc,"Ha ocurrido un error de conexión, por favor vuelva a intentarlo",Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
                         }
                     });
                     so.esperarRegistro();
@@ -88,6 +99,7 @@ public class Registro extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             boolean response = intent.getBooleanExtra("estado",false);
             if(response) {
+                isError=false;
                 finish();
             }else{
                 btnRegistrar.setEnabled(true);
