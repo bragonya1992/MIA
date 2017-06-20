@@ -22,6 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:id="@+id/name_info"
         android:text="Cursos Asignados"
         android:textColor="@color/colorPrimary"
         android:textSize="24dp"

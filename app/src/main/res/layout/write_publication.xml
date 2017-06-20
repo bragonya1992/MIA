@@ -10,6 +10,11 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="Titulo de tu publicacion (Opcional)"
+            android:id="@+id/title_publication"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="Escribe aqui tu publicacion"
             android:id="@+id/content_publication"/>
         <LinearLayout

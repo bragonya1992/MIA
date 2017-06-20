@@ -22,6 +22,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,12 +62,11 @@ import static android.text.Html.FROM_HTML_MODE_LEGACY;
 import static com.usac.brayan.mensajeriaarquitectura.R.layout.left;
 
 public class principal extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, NavigationView.OnCreateContextMenuListener {
     public static final int NOTIFICATION_ID=1;
     public static NavigationView navigationView;
     public static LinkedList<Curso> listaCursos= new LinkedList<>();
     public static Menu nvMenu;
-    public static TextView tx;
     public static TextView notificationsNumber;
     public static RelativeLayout content_circle;
     public static List publications_list = new ArrayList();
@@ -89,6 +89,8 @@ public class principal extends AppCompatActivity
     private CheckBox chkAlumnos;
     private CheckBox chkMaestros;
     private EditText content_publication;
+    private EditText title_publication;
+    private TextView name_info;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
 
     @Override
@@ -96,10 +98,10 @@ public class principal extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        tx = (TextView) findViewById(R.id.textView2);
         notificationsNumber=(TextView) findViewById(R.id.textOne);
         circular_progress_bar = (ProgressBar) findViewById(R.id.circular_progress_bar);
         content_circle = (RelativeLayout) findViewById(R.id.content_circle);
+        name_info = (TextView) findViewById(R.id.name_info);
         content_fallback = (RelativeLayout) findViewById(R.id.content_fallback);
         content_principal = (LinearLayout) findViewById(R.id.content) ;
         writer=(LinearLayout) findViewById(R.id.writer);
@@ -107,8 +109,6 @@ public class principal extends AppCompatActivity
         nvMenu =nv.getMenu();
         //mapearCursos(nvMenu);
         setSupportActionBar(toolbar);
-        if(tx!=null)
-            tx.setText(Html.fromHtml("Bienvenido a MIA  <b><u>"+Autenticacion.sm.getName()+"</u></b>, estas son tus noticias")); // for 24 api and more
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -125,41 +125,14 @@ public class principal extends AppCompatActivity
         toggle.syncState();
 
 
-        tx.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                getKey++;
-                if(getKey==5){
-                    OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
-                        @Override
-                        public void idsAvailable(String userId, String registrationId) {
-                            getKey=0;
-                            SessionManager sm = new SessionManager(view.getContext());
-                            if(sm.getToken().equals(userId)) {
-                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("KeyChain", userId);
-                                clipboard.setPrimaryClip(clip);
-                                Toast.makeText(view.getContext(), "Copy keychain to the clipboard!", Toast.LENGTH_SHORT).show();
-                            }else{
-                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("KeyChain", "the keychain is not the same at the token");
-                                clipboard.setPrimaryClip(clip);
-                                Toast.makeText(view.getContext(), "Wrong keychain!", Toast.LENGTH_SHORT).show();
-                            }
 
-                        }
-                    });
-
-
-                }
-            }
-        });
         ct=this;
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         chkAlumnos = (CheckBox) findViewById(R.id.chkAlumnos);
         chkMaestros = (CheckBox) findViewById(R.id.chkMaestros);
         content_publication = (EditText) findViewById(R.id.content_publication);
+        title_publication = (EditText) findViewById(R.id.title_publication);
         IntentAlumnos = new Intent(this, MensajesAlumnos.class);
         IntentMaestros = new Intent(this, MensajesMaestros.class);
         showLoader();
@@ -183,6 +156,7 @@ public class principal extends AppCompatActivity
         if(ServicioNotificacionesFARUSAC.sm==null){
             ServicioNotificacionesFARUSAC.sm = new SessionManager(this);
         }
+
         if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
             toolbar.setTitle("Modo para docentes"); // titulo de la ventana
             ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
@@ -255,11 +229,12 @@ public class principal extends AppCompatActivity
 
     public void sendToServerPublication(View v){
         String contenido = content_publication.getText().toString();
+        String titulo = title_publication.getText().toString();
         int para =para();
         if(para==-1){
             Toast.makeText(this,"Por favor seleccione a quien desea enviar la publicacion",Toast.LENGTH_LONG).show();
         }else{
-            ServicioNotificacionesFARUSAC.sc.publicar(para, StringEscapeUtils.escapeJava(contenido.replaceAll("[\\n\\r]+","\\$32").replace("\"","$33").replace("\"","$33").replace("$34","\'")));
+            ServicioNotificacionesFARUSAC.sc.publicar(para, StringEscapeUtils.escapeJava(contenido.replaceAll("[\\n\\r]+","\\$32").replace("\"","$33").replace("\"","$33").replace("$34","\'")),titulo);
             writer.setVisibility(View.GONE);
             content_publication.setText("");
         }
@@ -616,6 +591,43 @@ public class principal extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onCreateContextMenu (ContextMenu menu,
+                              View v,
+                              ContextMenu.ContextMenuInfo menuInfo){
+        name_info = (TextView) findViewById(R.id.name_info);
+        name_info.setText(/*Autenticacion.sm.getName()*/"Brayan");
+        name_info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                getKey++;
+                if(getKey==5){
+                    OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
+                        @Override
+                        public void idsAvailable(String userId, String registrationId) {
+                            getKey=0;
+                            SessionManager sm = new SessionManager(view.getContext());
+                            if(sm.getToken().equals(userId)) {
+                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("KeyChain", userId);
+                                clipboard.setPrimaryClip(clip);
+                                Toast.makeText(view.getContext(), "Copy keychain to the clipboard!", Toast.LENGTH_SHORT).show();
+                            }else{
+                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("KeyChain", "the keychain is not the same at the token");
+                                clipboard.setPrimaryClip(clip);
+                                Toast.makeText(view.getContext(), "Wrong keychain!", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+
+
+                }
+            }
+        });
     }
 
 }

@@ -189,8 +189,8 @@ public class SocketIO {
         mSocket.emit("getPublicacion","{\"para\":\""+para+"\",\"pagination\":\""+pagination+"\"}");
     }
 
-    public void publicar(int para, String mensaje){
-        mSocket.emit("publicar","{\"para\":\""+para+"\",\"contenido\":\""+mensaje+"\",\"codigo\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\"}");
+    public void publicar(int para, String mensaje,String titulo){
+        mSocket.emit("publicar","{\"para\":\""+para+"\",\"contenido\":\""+mensaje+"\",\"codigo\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"titulo\":\""+titulo+"\"}");
     }
 
     public void pedirListadoCurso(){

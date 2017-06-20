@@ -33,7 +33,11 @@ public class MessageDataHandler implements OneSignal.NotificationReceivedHandler
                 if(data.getString("type").equals("notification")) {
                     tryToShowMessage(data.getString("section"),data.getString("curse"),data.getString("content"),data.getString("date"));
                 }else{
-                    tryToShowPublication(data.getString("content"),data.getString("to"),data.getString("date"),data.getString("publication"));
+                    String titulo = data.getString("tituloPublication");
+                    if(titulo==null || titulo.isEmpty()){
+                        titulo="Noticia";
+                    }
+                    tryToShowPublication(data.getString("content"),data.getString("to"),data.getString("date"),data.getString("publication"),titulo);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -70,9 +74,9 @@ public class MessageDataHandler implements OneSignal.NotificationReceivedHandler
         }
     }
 
-    public static void tryToShowPublication(String Content,String To,String Date,String Publication){
+    public static void tryToShowPublication(String Content,String To,String Date,String Publication,String titulo){
         if(principal.publications_list!=null){
-            Publicacion pub = new Publicacion(Content,To,Date,Integer.parseInt(Publication));
+            Publicacion pub = new Publicacion(Content,To,Date,Integer.parseInt(Publication),titulo);
             final List<Publicacion> list = new ArrayList<>();
             list.add(pub);
             Handler handler = new Handler(Looper.getMainLooper());

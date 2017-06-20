@@ -49,7 +49,7 @@ public class AsignacionDeCursos extends AppCompatActivity {
         recycler.setLayoutManager(lManager);
 
         // Crear un nuevo adaptador
-        adaptador = new AdaptadorDeCurso(items);
+        adaptador = new AdaptadorDeCurso(items,this);
         adapter=adaptador;
         recycler.setAdapter(adapter);
         buscador.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

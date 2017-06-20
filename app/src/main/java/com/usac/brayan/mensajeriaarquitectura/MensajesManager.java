@@ -52,7 +52,11 @@ public class MensajesManager {
         if (jsonArray.length() > 0) {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject temp = jsonArray.getJSONObject(i);
-                Publicacion temporal = new Publicacion(StringEscapeUtils.unescapeJava(temp.getString("contenido").replace("$32","<br>").replace("$33","\"").replace("$34","\'")),realPara(temp.getString("para")),temp.getString("fecha"),temp.getInt("idPublicacion"));
+                String titulo = temp.getString("titulo");
+                if(titulo==null || titulo.isEmpty() || titulo.equals("")){
+                    titulo="Noticia";
+                }
+                Publicacion temporal = new Publicacion(StringEscapeUtils.unescapeJava(temp.getString("contenido").replace("$32","<br>").replace("$33","\"").replace("$34","\'")),realPara(temp.getString("para")),temp.getString("fecha"),temp.getInt("idPublicacion"),titulo);
                 salida.addLast(temporal);
             }
         }

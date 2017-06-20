@@ -26,12 +26,14 @@ public class AdaptadorPublicacion extends RecyclerView.Adapter<AdaptadorPublicac
         public TextView contenido;
         public TextView fecha;
         public TextView para;
+        public TextView titulo;
 
         public PublicacionViewHolder(View v) {
             super(v);
             contenido = (TextView) v.findViewById(R.id.contenidoPublicacion);
             fecha = (TextView) v.findViewById(R.id.fechaPublicacion);
             para = (TextView) v.findViewById(R.id.paraPublicacion);
+            titulo = (TextView) v.findViewById(R.id.post_title);
             v.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
@@ -69,6 +71,7 @@ public class AdaptadorPublicacion extends RecyclerView.Adapter<AdaptadorPublicac
         viewHolder.contenido.setText(Html.fromHtml(ChatArrayAdapter.convertion(items.get(i).getContenido())));
         viewHolder.fecha.setText(items.get(i).getFecha());
         viewHolder.para.setText("Para:"+String.valueOf(items.get(i).getPara()));
+        viewHolder.titulo.setText(items.get(i).getTitulo());
         Linkify.addLinks(viewHolder.contenido, Linkify.WEB_URLS);
     }
 }

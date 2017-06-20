@@ -1,5 +1,6 @@
 package com.usac.brayan.mensajeriaarquitectura;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
@@ -13,7 +14,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +31,8 @@ import com.tooltip.Tooltip;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 
 public class Autenticacion extends AppCompatActivity {
     static Button btnIng;
@@ -84,7 +89,7 @@ public class Autenticacion extends AppCompatActivity {
             this.startActivity(new Intent(this, principal.class));
             this.finish();
         }else{
-            Tooltip tooltip = new Tooltip.Builder(fab).setGravity(Gravity.TOP)
+            /*Tooltip tooltip = new Tooltip.Builder(fab).setGravity(Gravity.TOP)
                     .setText("¡Registrate aquí!")
                     .show();
             tooltip.setOnClickListener(new OnClickListener() {
@@ -92,7 +97,8 @@ public class Autenticacion extends AppCompatActivity {
                 public void onClick(@NonNull Tooltip tooltip) {
                     tooltip.dismiss();
                 }
-            });
+            });*/
+            enterReveal();
         }
 
         final Activity mActivity= this;
@@ -172,6 +178,27 @@ public class Autenticacion extends AppCompatActivity {
         txtPass.setEnabled(true);
         //setProgressBarIndeterminateVisibility(false);
         wait.setVisibility(View.GONE);
+    }
+
+    void enterReveal() {
+        new MaterialTapTargetPrompt.Builder(Autenticacion.this)
+                .setTarget(findViewById(R.id.fab))
+                .setPrimaryText("¿No estás registrado?")
+                .setSecondaryText("¡Registrate aquí!")
+                .setOnHidePromptListener(new MaterialTapTargetPrompt.OnHidePromptListener()
+                {
+                    @Override
+                    public void onHidePrompt(MotionEvent event, boolean tappedTarget)
+                    {
+                        //TODO: Store in SharedPrefs so you don't show this prompt again.
+                    }
+
+                    @Override
+                    public void onHidePromptComplete()
+                    {
+                    }
+                })
+                .show();
     }
 
     private static void sendRegistrationToServer(String token,Activity a) {

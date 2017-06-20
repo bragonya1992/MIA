@@ -12,6 +12,15 @@ public class Publicacion implements Parcelable{
     String para;
     String fecha;
     int idPublicacion;
+    String titulo;
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
 
     public Publicacion(String mensaje){
         this.contenido=mensaje;
@@ -22,11 +31,12 @@ public class Publicacion implements Parcelable{
         this.para=emisor;
     }
 
-    public Publicacion(String mensaje,String para,String fecha,int idPublicacion){
+    public Publicacion(String mensaje,String para,String fecha,int idPublicacion,String titulo){
         this.contenido=mensaje;
         this.para=para;
         this.fecha=fecha;
         this.idPublicacion=idPublicacion;
+        this.titulo= titulo;
     }
 
 
