@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.NotificationCompat;
@@ -58,6 +59,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import static android.text.Html.FROM_HTML_MODE_LEGACY;
 import static com.usac.brayan.mensajeriaarquitectura.R.layout.left;
@@ -93,6 +95,7 @@ public class principal extends AppCompatActivity
     private EditText title_publication;
     private TextView name_info;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
+    TextToSpeech t1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,6 +214,25 @@ public class principal extends AppCompatActivity
 
             }
         });
+
+        boolean speeching=getIntent().getBooleanExtra("speech",false);
+        if(speeching){
+            t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if(status != TextToSpeech.ERROR) {
+                        t1.setLanguage(new Locale("es", "MEX"));
+                        t1.setPitch(0);
+                        t1.setSpeechRate(0.95f);
+                        t1.speak("Bienvenido a mía "+ServicioNotificacionesFARUSAC.sm.getName(), TextToSpeech.QUEUE_FLUSH, null);
+                    }
+                }
+            });
+
+            Log.d("speech","entry");
+        }else{
+            Log.d("speech","no entry");
+        }
 
     }
 
