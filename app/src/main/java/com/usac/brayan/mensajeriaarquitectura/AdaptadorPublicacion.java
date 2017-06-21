@@ -3,6 +3,8 @@ package com.usac.brayan.mensajeriaarquitectura;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.provider.CalendarContract;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.util.Linkify;
@@ -42,6 +44,22 @@ public class AdaptadorPublicacion extends RecyclerView.Adapter<AdaptadorPublicac
                     clipboard.setPrimaryClip(clip);
                     Toast.makeText(view.getContext(), "El contenido se ha copiado al portapapeles!", Toast.LENGTH_SHORT).show();
                     return false;
+                }
+            });
+
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_INSERT);
+                        intent.setData(CalendarContract.Events.CONTENT_URI);
+                        intent.setType("vnd.android.cursor.item/event");
+                        intent.putExtra(CalendarContract.Events.TITLE, titulo.getText()+" : "+contenido.getText());
+                        intent.putExtra(CalendarContract.Events.EVENT_LOCATION, "FARUSAC");
+                        intent.putExtra(CalendarContract.Events.DESCRIPTION, contenido.getText());
+                        intent.putExtra(CalendarContract.Events.STATUS, contenido.getText());
+                        v.getContext().startActivity(intent);
+                    }catch (Exception e){e.printStackTrace();}
                 }
             });
 

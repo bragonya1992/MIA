@@ -3,6 +3,8 @@ package com.usac.brayan.mensajeriaarquitectura;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.provider.CalendarContract;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
@@ -85,6 +87,20 @@ public class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(view.getContext(), "El mensaje se ha copiado al portapapeles!", Toast.LENGTH_SHORT).show();
                 return false;
+            }
+        });
+
+        chatText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_INSERT);
+                    intent.setData(CalendarContract.Events.CONTENT_URI);
+                    intent.setType("vnd.android.cursor.item/event");
+                    intent.putExtra(CalendarContract.Events.TITLE, msj);
+                    intent.putExtra(CalendarContract.Events.EVENT_LOCATION, "FARUSAC");
+                    v.getContext().startActivity(intent);
+                }catch (Exception e){e.printStackTrace();}
             }
         });
 

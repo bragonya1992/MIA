@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -500,10 +501,11 @@ public class principal extends AppCompatActivity
 
     public static void mapearCursos(){
         nvMenu.clear();
-        nvMenu.add("Cursos Asignados").setIcon(R.drawable.ic_group_white_24dp).setTitle("Cursos Asignados").setEnabled(false);
+        //nvMenu.add("Cursos Asignados").setIcon(R.drawable.ic_group_white_24dp).setTitle("Cursos Asignados").setEnabled(false);
+        SubMenu sub=nvMenu.addSubMenu("Cursos Asignados").setIcon(R.drawable.ic_group_white_24dp);
         mensajes_totales=0;
         for(int i=0;i<listaCursos.size();i++) {
-            MenuItem m=nvMenu.add(listaCursos.get(i).nombre+" - "+listaCursos.get(i).seccion);// Agregar elemento al menu deslizable
+            MenuItem m=sub.add(listaCursos.get(i).nombre+" - "+listaCursos.get(i).seccion);// Agregar elemento al menu deslizable
             int n=listaCursos.get(i).contador;
             if(n>0) {
                 principal p = new principal();
