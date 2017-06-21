@@ -108,8 +108,8 @@ public class principal extends AppCompatActivity
         writer=(LinearLayout) findViewById(R.id.writer);
         NavigationView nv=(NavigationView) findViewById(R.id.nav_view);
         nvMenu =nv.getMenu();
-        nvMenu.addSubMenu("Cursos Asignados");
         //mapearCursos(nvMenu);
+        toolbar.setTitle("Noticias");
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -168,7 +168,9 @@ public class principal extends AppCompatActivity
         title_publication = (EditText) findViewById(R.id.title_publication);
         IntentAlumnos = new Intent(this, MensajesAlumnos.class);
         IntentMaestros = new Intent(this, MensajesMaestros.class);
-        showLoader();
+        if((publications_list.size()==0 && pagination!=0) || (publications_list.size()!=0 && publications_list.size()!=10 && pagination==0) || (publications_list.size()==0 && pagination==0) ) {
+            showLoader();
+        }
         ServicioNotificacionesFARUSAC.newInstance(this, new SocketIOSubscriber(){
             @Override
             public void onNext(Object o) {
@@ -191,10 +193,8 @@ public class principal extends AppCompatActivity
         }
 
         if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
-            toolbar.setTitle("Modo para docentes"); // titulo de la ventana
             ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
         }else{
-            toolbar.setTitle("Modo para estudiantes"); // titulo de la ventana
             ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
         }
         iniciarAdapter();
@@ -338,7 +338,7 @@ public class principal extends AppCompatActivity
                             hideFallback();
                             hideLoader();
                         }
-                        if(listaCursos.isEmpty()){
+                        if(listaCursos.size()==0){
                             if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
                                 ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
                             }else{
@@ -371,13 +371,14 @@ public class principal extends AppCompatActivity
                         hideFallback();
                         hideLoader();
                     }
-                    if(listaCursos.isEmpty()){
+                    if(listaCursos.size()==0){
                         if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
                             ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
                         }else{
                             ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
                         }
                     }
+
                 }
             });
         }
@@ -550,21 +551,34 @@ public class principal extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        pagination=0;
-        try {
-            publications_list.clear();
-            adapter.notifyDataSetChanged();
-        }catch (Exception e){
-            e.printStackTrace();
+        Log.d("pagination",pagination+"");
+        Log.d("pagination lista size",publications_list.size()+"");
+        if((publications_list.size()==0 && pagination!=0) || (publications_list.size()!=0 && publications_list.size()!=10 && pagination==0) || (publications_list.size()==0 && pagination==0) ) {
+            pagination = 0;
+            try {
+                publications_list.clear();
+                adapter.notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (Autenticacion.sm.getRole() == 2) {
+                ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
+                ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(), pagination);
+            } else {
+                ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
+                ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(), pagination);
+            }
+            showLoader();
         }
-        if(Autenticacion.sm.getRole()==2){
-            ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
-            showLoader();
-            ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
-        }else{
-            showLoader();
-            ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
-            ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
+        if(principal.listaCursos!=null) {
+            if (principal.listaCursos.size()==0) {
+                if (Autenticacion.sm.getRole() == 2) {
+                    ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
+                } else {
+                    ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
+                }
+            }
         }
         mIsInForegroundMode = true;
     }
