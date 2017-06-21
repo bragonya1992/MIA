@@ -16,6 +16,7 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -38,6 +39,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -89,6 +92,25 @@ public class MensajesMaestros extends AppCompatActivity {
 
             }
         });
+        if(principal.isTutorial) {
+            new MaterialTapTargetPrompt.Builder(MensajesMaestros.this)
+                    .setTarget(R.id.reads)
+                    .setPrimaryText("¡Mira quienes son tus Alumnos!")
+                    .setSecondaryText("Si presionas click en este botón podrás ver quienes están asignados a este curso")
+                    .setOnHidePromptListener(new MaterialTapTargetPrompt.OnHidePromptListener() {
+                        @Override
+                        public void onHidePrompt(MotionEvent event, boolean tappedTarget) {
+                            //TODO: Store in SharedPrefs so you don't show this prompt again.
+                        }
+
+                        @Override
+                        public void onHidePromptComplete() {
+                        }
+                    })
+                    .show();
+        }
+
+
         registerReceiver(recieverForEstudiantes, new IntentFilter("recieverForEstudiantes"));
         listView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         listView.setAdapter(chatArrayAdapter);

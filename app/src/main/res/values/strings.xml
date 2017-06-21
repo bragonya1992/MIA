@@ -22,8 +22,8 @@
     </string>
     <string name="title_activity_autenticacion">Autenticacion</string>
     <string-array name="country_arrays">
-        <item>Maestro</item>
         <item>Alumno</item>
+        <item>Maestro</item>
     </string-array>
 
     <string-array name="roles">
