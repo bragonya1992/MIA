@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import java.util.List;
 public class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
 
     private TextView chatText;
+    private ImageButton agend;
     private List<ChatMessage> chatMessageList = new ArrayList<ChatMessage>();
     private Context context;
     private static LinkedList<String> pila = new LinkedList<>();
@@ -76,6 +78,7 @@ public class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
             row = inflater.inflate(R.layout.left, parent, false);
         }
         chatText = (TextView) row.findViewById(R.id.msgr);
+        agend = (ImageButton)  row.findViewById(R.id.agendar);
         chatText.setText(Html.fromHtml(StringEscapeUtils.unescapeJava(convertion(chatMessageObj.getMessage()).replace("$32","<br>").replace("$33","\"").replace("$34","\'"))));
         date = (TextView) row.findViewById(R.id.fecha_msj);
         final String msj =chatMessageObj.getMessage();
@@ -90,7 +93,7 @@ public class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
             }
         });
 
-        chatText.setOnClickListener(new View.OnClickListener() {
+        agend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {

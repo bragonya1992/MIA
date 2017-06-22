@@ -11,6 +11,7 @@ import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,13 +30,15 @@ public class AdaptadorPublicacion extends RecyclerView.Adapter<AdaptadorPublicac
         public TextView fecha;
         public TextView para;
         public TextView titulo;
-
+        public ImageButton agendar;
         public PublicacionViewHolder(View v) {
             super(v);
             contenido = (TextView) v.findViewById(R.id.contenidoPublicacion);
             fecha = (TextView) v.findViewById(R.id.fechaPublicacion);
             para = (TextView) v.findViewById(R.id.paraPublicacion);
             titulo = (TextView) v.findViewById(R.id.post_title);
+            agendar = (ImageButton) v.findViewById(R.id.agendar);
+
             v.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
@@ -47,7 +50,7 @@ public class AdaptadorPublicacion extends RecyclerView.Adapter<AdaptadorPublicac
                 }
             });
 
-            v.setOnClickListener(new View.OnClickListener() {
+            agendar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {

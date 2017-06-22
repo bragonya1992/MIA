@@ -3,39 +3,63 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/msgr"
-        android:layout_width="wrap_content"
+<LinearLayout
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:layout_marginBottom="2dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="20dp"
-        android:background="@drawable/textv"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
-        android:text="Sample"
-        android:textColor="#000"
-        android:textSize="25dp"
-        android:maxLines="20"/>
-
+        android:background="@color/white">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="LEIDO"
+            android:textColor="#ffffff"
+            android:textSize="12dp"
+            android:background="@color/gray"
+            android:maxLines="20"
+            android:visibility="visible"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="16dp"
+            android:padding="4dp"/>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_access_alarms_24dp"
+            android:background="@null"
+            android:layout_toLeftOf="@+id/fecha_msj"
+            android:padding="4dp"
+            android:id="@+id/agendar"/>
     <TextView
         android:id="@+id/fecha_msj"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="20dp"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
+        android:layout_alignParentRight="true"
         android:text="DD-MM-YY"
-        android:textColor="#000"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="12dp"
         android:maxLines="20"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        android:layout_marginRight="8dp"
+        android:padding="8dp"/>
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/msgr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="Sample"
+        android:textColor="@color/normal_text"
+        android:padding="12dp"
+        android:textSize="18dp"/>
+
+</LinearLayout>
+
 
 </LinearLayout>

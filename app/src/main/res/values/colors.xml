@@ -5,6 +5,7 @@
     <color name="colorAccent">#2184f8</color>
     <color name="skyblue">#cce0ff</color>
     <color name="gray">#969799</color>
+    <color name="light_gray">#26969799</color>
     <color name="red">#F00</color>
 
     <!-- TEXT COLORS -->
