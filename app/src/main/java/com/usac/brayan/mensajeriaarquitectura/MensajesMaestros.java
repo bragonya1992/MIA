@@ -105,6 +105,10 @@ public class MensajesMaestros extends AppCompatActivity {
 
                         @Override
                         public void onHidePromptComplete() {
+                            principal.steps=principal.steps-1;
+                            if (principal.steps==0) {
+                                principal.isTutorial=false;
+                            }
                         }
                     })
                     .show();

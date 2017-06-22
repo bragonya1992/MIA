@@ -98,6 +98,7 @@ public class principal extends AppCompatActivity
     private EditText content_publication;
     private EditText title_publication;
     private TextView name_info;
+    public static int steps=0;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     public static boolean isTutorial=false;
     TextToSpeech t1;
@@ -201,8 +202,10 @@ public class principal extends AppCompatActivity
         }
 
         if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
+            steps=2;
             ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
         }else{
+            steps=1;
             ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
         }
         iniciarAdapter();
@@ -722,7 +725,10 @@ public class principal extends AppCompatActivity
                                     public void onHidePromptComplete()
                                     {
                                         View rootView = ac.getWindow().getDecorView().findViewById(android.R.id.content);
-                                        final Snackbar snack = Snackbar.make(rootView, "Da un tap sobre una noticia y podrás agendarla o con un tap largo copiarás su contenido", Snackbar.LENGTH_INDEFINITE);
+                                        final Snackbar snack = Snackbar.make(rootView, "Presiona el reloj en una noticia y podrás agendarla o con un tap largo copiarás su contenido", Snackbar.LENGTH_INDEFINITE);
+                                        View snackview = snack.getView();
+                                        TextView snacktext = (TextView) snackview.findViewById(android.support.design.R.id.snackbar_text);
+                                        snacktext.setMaxLines(5);
                                         snack.show();
                                                 //.setActionTextColor(Color.CYAN)
                                         Thread thread = new Thread() {
@@ -730,6 +736,10 @@ public class principal extends AppCompatActivity
                                             public void run() {
                                                 try {
                                                         sleep(5000);
+                                                        steps=steps-1;
+                                                    if (steps==0) {
+                                                        isTutorial=false;
+                                                    }
                                                         snack.dismiss();
                                                 } catch (InterruptedException e) {
                                                     e.printStackTrace();
