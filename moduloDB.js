@@ -27,7 +27,7 @@ exports.query=function(callback,nombre){
   });
 }
 
-function sendRealTimeOneSignal(keys, collapse,mensaje,cuerpo, titulo,tipo,curso,seccion,fecha,para,idPublicacion){
+function sendRealTimeOneSignal(keys, collapse,mensaje,cuerpo, titulo,tipo,curso,seccion,fecha,para,idPublicacion,title){
   
   var  data = {  //you can send only notification or only data(or include both) 
           type: tipo,
@@ -36,9 +36,14 @@ function sendRealTimeOneSignal(keys, collapse,mensaje,cuerpo, titulo,tipo,curso,
           content: mensaje,
           date: fecha,
           to: para,
-          publication: idPublicacion
+          publication: idPublicacion,
+          tituloPublication:title
       };
-      oneSignal.createNotification(mensaje,data, keys)
+      if(tipo=="notification"){
+        oneSignal.createNotification(mensaje,data, keys,curso,seccion)
+      }else{
+        oneSignal.createNotification(mensaje,data,keys,tipo,"")
+      }
 }
 
 
@@ -155,13 +160,13 @@ from Curso where Nombre=?),?,?,?,?);`,[username,curso,seccion,semestreActual,ani
 }
 
 
-exports.publicar=function(CodigoMaestro,para,contenido,socket,socketon){
+exports.publicar=function(CodigoMaestro,para,contenido,titulo,socket,socketon){
   var notes;
-  connection.query(`insert into Publicacion(idPublicacion,para,fkCodigoMaestro,contenido) values(0,?,?,?);`,[para,CodigoMaestro,contenido], function(err, rows, fields) {
+  connection.query(`insert into Publicacion(idPublicacion,para,fkCodigoMaestro,contenido,titulo) values(0,?,?,?,?);`,[para,CodigoMaestro,contenido,titulo], function(err, rows, fields) {
     if (!err){
       notes = rows;
       notes="{\"publicacion\":[";
-      notes+="{\"idPublicacion\":\""+rows.insertId+"\",\"fecha\":\"hace pocos momentos\",\"contenido\":\""+contenido+"\",\"para\":\""+para+"\"}";
+      notes+="{\"idPublicacion\":\""+rows.insertId+"\",\"fecha\":\"hace pocos momentos\",\"titulo\":\""+titulo+"\",\"contenido\":\""+contenido+"\",\"para\":\""+para+"\"}";
       notes+="]}";
       //console.log("ESTAS SON MIS NOTAS: "+JSON.stringify(fields));
     }
@@ -190,11 +195,15 @@ exports.publicar=function(CodigoMaestro,para,contenido,socket,socketon){
 exports.getPublicacion=function(para,pagination,socket){
   var notes;
   var realPaginationInf = pagination*10;
-  connection.query(`select idPublicacion,DATE_FORMAT(fecha,'%Y-%m-%d %H:%i') As fecha, contenido, para from Publicacion where para=0 or para=? order by fecha desc limit ?,10;`,[para,realPaginationInf], function(err, rows, fields) {
+  connection.query(`select idPublicacion,DATE_FORMAT(fecha,'%Y-%m-%d %H:%i') As fecha, contenido, para,titulo from Publicacion where para=0 or para=? order by fecha desc limit ?,10;`,[para,realPaginationInf], function(err, rows, fields) {
     if (!err){
       notes="{\"publicacion\":[";
       for(var i in rows){
-        notes+="{\"idPublicacion\":\""+rows[i].idPublicacion+"\",\"fecha\":\""+rows[i].fecha+"\",\"contenido\":\""+rows[i].contenido+"\",\"para\":\""+rows[i].para+"\"},";
+        if(rows[i].titulo==undefined || rows[i].titulo==null || rows[i].titulo=="" ){
+          notes+="{\"idPublicacion\":\""+rows[i].idPublicacion+"\",\"fecha\":\""+rows[i].fecha+"\",\"titulo\":\"\",\"contenido\":\""+rows[i].contenido+"\",\"para\":\""+rows[i].para+"\"},";
+        }else{
+          notes+="{\"idPublicacion\":\""+rows[i].idPublicacion+"\",\"fecha\":\""+rows[i].fecha+"\",\"titulo\":\""+rows[i].titulo+"\",\"contenido\":\""+rows[i].contenido+"\",\"para\":\""+rows[i].para+"\"},";
+        }
       }
       notes = notes.slice(0, -1);
       notes+="]}";
@@ -278,7 +287,7 @@ join sesion on sesion.cui=alumno.carne`, function(err, rows, fields) {
                   var parse = JSON.parse(notesContent);
                   console.log(parse);
                   var data = parse.publicacion[0];
-                  sendRealTimeOneSignal(keys, "MIAPublication",data.contenido,data.contenido.substring(0, 10)+"...", "Nueva publicación FARUSAC","publication","","",data.fecha,data.para,data.idPublicacion);
+                  sendRealTimeOneSignal(keys, "MIAPublication",data.contenido,data.contenido.substring(0, 10)+"...", "Nueva publicación FARUSAC","publication","","",data.fecha,data.para,data.idPublicacion,data.titulo);
                 }
               }
             });
@@ -309,7 +318,7 @@ join sesion on sesion.cui=maestro.codigomaestro`, function(err, rows, fields) {
                   var parse = JSON.parse(notesContent);
                   console.log(parse);
                   var data = parse.publicacion[0];
-                  sendRealTimeOneSignal(keys, "MIAPublication",data.contenido,data.contenido.substring(0, 10)+"...", "Nueva publicación FARUSAC","publication","","",data.fecha,data.para,data.idPublicacion);
+                  sendRealTimeOneSignal(keys, "MIAPublication",data.contenido,data.contenido.substring(0, 10)+"...", "Nueva publicación FARUSAC","publication","","",data.fecha,data.para,data.idPublicacion,data.titulo);
                 }
               }
             });
@@ -430,7 +439,7 @@ where AsignacionAlumno.fkSemestre=? and AsignacionAlumno.fkAnio=? and Curso.Nomb
                   keys.push(notes[i].keyChain);
                 }
                 if(keys.length>0){
-                  sendRealTimeOneSignal(keys, curso+seccion,mensaje,curso+" "+seccion+":"+mensaje.substring(0, 10)+"...", "MIA","notification",curso,seccion,"hace pocos momentos","","");
+                  sendRealTimeOneSignal(keys, curso+seccion,mensaje,curso+" "+seccion+":"+mensaje.substring(0, 10)+"...", "MIA","notification",curso,seccion,"hace pocos momentos","","","");
                 }
               }
             });

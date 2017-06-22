@@ -99,7 +99,11 @@ io.sockets.on('connection', function(socket) {
   socket.on('publicar',function(cad){
     var peticion = JSON.parse(cad); // here is my workspace
     console.log(peticion.codigo+" (super usuario) va a publicar ");
-    DB.publicar(peticion.codigo,peticion.para,peticion.contenido,io.sockets.connected[this.id],io.sockets);
+    if(peticion.titulo!=undefined || peticion.titulo!=null || peticion.titulo!=""){
+      DB.publicar(peticion.codigo,peticion.para,peticion.contenido,peticion.titulo,io.sockets.connected[this.id],io.sockets);
+    }else{
+      DB.publicar(peticion.codigo,peticion.para,peticion.contenido,"",io.sockets.connected[this.id],io.sockets);
+    }
   
   
   }).on('error', function(err) { console.log("handler error" +err) });;
