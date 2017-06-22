@@ -65,8 +65,6 @@
                 android:id="@+id/contenidoPublicacion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="3"
                 android:text="Noticia"
                 android:textColor="@color/normal_text"
                 android:textSize="14sp" />

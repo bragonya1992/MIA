@@ -19,7 +19,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         multiDexEnabled true
-        versionCode 14
+        versionCode 13
         versionName "3.0"
         manifestPlaceholders = [onesignal_app_id: "606aa01a-676b-4a6c-89da-37da13078997",
                                 // Project number pulled from dashboard, local value is ignored.

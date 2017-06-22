@@ -141,7 +141,6 @@ public class MensajesMaestros extends AppCompatActivity {
                 Log.d("FIRST: ",""+firstVisibleItem);
                 if(firstVisibleItem==0){
                     if(contador==10) {
-                        Toast.makeText(getApplicationContext(), "Estoy en el tope "+peticiones, Toast.LENGTH_SHORT).show();
                         peticiones++;
                         Log.d("PETICIONES:",""+peticiones);
                         contador=0;
