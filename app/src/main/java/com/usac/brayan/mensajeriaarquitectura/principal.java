@@ -1,6 +1,7 @@
 package com.usac.brayan.mensajeriaarquitectura;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ClipData;
@@ -26,6 +27,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -61,11 +63,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
+
 import static android.text.Html.FROM_HTML_MODE_LEGACY;
 import static com.usac.brayan.mensajeriaarquitectura.R.layout.left;
 
 public class principal extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, NavigationView.OnCreateContextMenuListener {
+        implements NavigationView.OnNavigationItemSelectedListener, NavigationView.OnCreateContextMenuListener, DialogConfirmacion.responseDialogConfirm {
     public static final int NOTIFICATION_ID=1;
     public static NavigationView navigationView;
     public static LinkedList<Curso> listaCursos= new LinkedList<>();
@@ -95,6 +99,7 @@ public class principal extends AppCompatActivity
     private EditText title_publication;
     private TextView name_info;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
+    public static boolean isTutorial=false;
     TextToSpeech t1;
 
     @Override
@@ -216,6 +221,7 @@ public class principal extends AppCompatActivity
         });
 
         boolean speeching=getIntent().getBooleanExtra("speech",false);
+        isTutorial=speeching;
         if(speeching){
             t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
                 @Override
@@ -224,7 +230,7 @@ public class principal extends AppCompatActivity
                         t1.setLanguage(new Locale("es", "MEX"));
                         t1.setPitch(0);
                         t1.setSpeechRate(0.95f);
-                        t1.speak("Bienvenido a mía "+ServicioNotificacionesFARUSAC.sm.getName(), TextToSpeech.QUEUE_FLUSH, null);
+                        t1.speak("Bienvenido a mía "+ServicioNotificacionesFARUSAC.sm.getName()+" si deseas ver el tutorial, presiona aceptar, un gusto", TextToSpeech.QUEUE_FLUSH, null);
                     }
                 }
             });
@@ -233,6 +239,8 @@ public class principal extends AppCompatActivity
         }else{
             Log.d("speech","no entry");
         }
+
+
 
     }
 
@@ -573,6 +581,13 @@ public class principal extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        if(isTutorial) {
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            // Create and show the dialog.
+            DialogConfirmacion newFragment = new DialogConfirmacion();
+            newFragment.setListener(this);
+            newFragment.show(ft, "dialogTutorial");
+        }
         Log.d("pagination",pagination+"");
         Log.d("pagination lista size",publications_list.size()+"");
         if((publications_list.size()==0 && pagination!=0) || (publications_list.size()!=0 && publications_list.size()!=10 && pagination==0) || (publications_list.size()==0 && pagination==0) ) {
@@ -671,4 +686,63 @@ public class principal extends AppCompatActivity
 
     }
 
+    @Override
+    public void onConfirm() {
+        final Toolbar tb = (Toolbar) this.findViewById(R.id.toolbar);
+        final Activity ac =this;
+        new MaterialTapTargetPrompt.Builder(principal.this)
+                .setTarget(tb.getChildAt(1))
+                .setPrimaryText("Cursos")
+                .setSecondaryText("¡Cuando te asignes cursos aparecerán si das un tap aquí! \n ¡También aparecerá un icono cuando tengas notificaciones nuevas en tus cursos!")
+                .setOnHidePromptListener(new MaterialTapTargetPrompt.OnHidePromptListener()
+                {
+
+                    @Override
+                    public void onHidePrompt(MotionEvent event, boolean tappedTarget)
+                    {
+                        //TODO: Store in SharedPrefs so you don't show this prompt again.
+                    }
+
+                    @Override
+                    public void onHidePromptComplete()
+                    {
+                        new MaterialTapTargetPrompt.Builder(principal.this)
+                                .setTarget(tb.getChildAt(2))
+                                .setPrimaryText("Opciones")
+                                .setSecondaryText("-En este menu puedes cerrar sesión \n -Si eres alumno, también puedes asignarte cursos")
+                                .setOnHidePromptListener(new MaterialTapTargetPrompt.OnHidePromptListener()
+                                {
+                                    @Override
+                                    public void onHidePrompt(MotionEvent event, boolean tappedTarget)
+                                    {
+                                        //TODO: Store in SharedPrefs so you don't show this prompt again.
+                                    }
+
+                                    @Override
+                                    public void onHidePromptComplete()
+                                    {
+                                        View rootView = ac.getWindow().getDecorView().findViewById(android.R.id.content);
+                                        final Snackbar snack = Snackbar.make(rootView, "Da un tap sobre una noticia y podrás agendarla o con un tap largo copiarás su contenido", Snackbar.LENGTH_INDEFINITE);
+                                        snack.show();
+                                                //.setActionTextColor(Color.CYAN)
+                                        Thread thread = new Thread() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                        sleep(5000);
+                                                        snack.dismiss();
+                                                } catch (InterruptedException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        };
+
+                                        thread.start();
+                                    }
+                                })
+                                .show();
+                    }
+                })
+                .show();
+    }
 }
