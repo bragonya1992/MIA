@@ -2,12 +2,12 @@ var express = require('express');
 var app = express();  
 var server = require('http').Server(app);  
 var io = require('socket.io')(server);
+var credentials =require('./local.js');
 var DB =require('./moduloDB.js');
 var keypress = require('keypress');
 var contador=0;
 
-
-app.use(express.static('/home/ubuntu/workspace'));
+app.use(express.static(__dirname));
 
 app.get('/', function(req, res) {  
   res.status(200).send("Hello World!");

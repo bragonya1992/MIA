@@ -1,4 +1,5 @@
-  var socket = io.connect('https://node-server-bragonya.c9users.io:8080', { 'forceNew': true });
+  var credentials =require('./local.js');
+  var socket = io.connect(credentials.domainWithPort, { 'forceNew': true });
   var username='';
   var curso='';
   var seccion='';
@@ -108,7 +109,8 @@ function closeSession(){
 }
 
 function verifySession(){
-  if(document.cookie==""){
+    console.log("actual cookie"+document.cookie);
+  if(document.cookie=="" || document.cookie==null || document.cookie == undefined){
     window.location.replace("/login.html");
   }
 }

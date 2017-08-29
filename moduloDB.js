@@ -2,14 +2,16 @@ var semestreActual=2;
 var date = new Date();
 var anioActual = 2016;//date.getFullYear();
 var mysql      = require('mysql');
+var credentials =require('./local.js');
 var FCM = require('fcm-node');
 var oneSignal = require('onesignal')('ZDA1ZTU4NDUtNjFjZC00ZTFhLWJiMGEtMzdlZGYyNjlmNjkz', '606aa01a-676b-4a6c-89da-37da13078997', true);
 var serverKey = 'AAAALWe_bTo:APA91bHzwpdBtswfdrkov_6_OCHddTgFubCkfKEwg5P51En4yvpWio8eToTHXb0spI-SGv1VSs53O6qteEPZ1Gxg6mUuqFii0uetSbrxgDKlPD8ekNjiJjlbNxF39EdtxIFCVU_X2DQv'; //put your server key here 
 var fcm = new FCM(serverKey);
   var connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    database : 'nodeprueba2'
+    host     : credentials.hostDB/*'localhost'*/,
+    user     : credentials.userDB/*'root'*/,
+    password : credentials.passwordDB,
+    database : credentials.databaseName/*'nodeprueba2'*/
   });
 
   connection.connect();

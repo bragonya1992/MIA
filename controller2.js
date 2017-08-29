@@ -1,4 +1,5 @@
-  var socket = io.connect('https://node-server-bragonya.c9users.io:8080', { 'forceNew': true });
+  var credentials =require('./local.js');
+  var socket = io.connect(credentials.domainWithPort, { 'forceNew': true });
   var username='1';
   var curso='Materiales';
   var seccion='A';
