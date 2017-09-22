@@ -50,10 +50,10 @@ function sendRealTimeOneSignal(keys, collapse,mensaje,cuerpo, titulo,tipo,curso,
 
 
 exports.autenticar=function(carne,pass,role,socket){
-  var tabla ="Alumno"; var campo1 ="Carne"; var rol =1;
+  var tabla ="alumno"; var campo1 ="carne"; var rol =1;
   if(role=="Maestro"){
-    var tabla ="Maestro";
-    var campo1="CodigoMaestro";
+    var tabla ="maestro";
+    var campo1="codigomaestro";
     var rol =2;
   }
   var notes;
@@ -85,10 +85,10 @@ exports.autenticar=function(carne,pass,role,socket){
 
 exports.getCursosMaestro=function(CodigoMaestro,socket){
   var notes;
-  connection.query(`select Curso.Nombre As Nombre,Maestro.Nombre As Catedratico,AsignacionMaestro.fkSeccion as Seccion from AsignacionMaestro 
-join Curso on fkCodigoCurso=CodigoCurso 
-join Maestro on CodigoMaestro=fkCodigoMaestro 
-where Maestro.CodigoMaestro=? and AsignacionMaestro.fkSemestre=? and AsignacionMaestro.fkAnio=?`,[CodigoMaestro,semestreActual,anioActual], function(err, rows, fields) {
+  connection.query(`select curso.Nombre As Nombre,maestro.Nombre As Catedratico,asignacionmaestro.fkseccion as Seccion from asignacionmaestro 
+join curso on fkCodigoCurso=CodigoCurso 
+join maestro on CodigoMaestro=fkCodigoMaestro 
+where maestro.CodigoMaestro=? and asignacionmaestro.fkSemestre=? and AsignacionMaestro.fkAnio=?`,[CodigoMaestro,semestreActual,anioActual], function(err, rows, fields) {
     if (!err){
       //console.log('The solution is: ', JSON.stringify(rows));
       console.log("EXTRACCION: ");
@@ -115,12 +115,12 @@ where Maestro.CodigoMaestro=? and AsignacionMaestro.fkSemestre=? and AsignacionM
 exports.getCursosAlumno=function(carne,socket){
   console.log("Extrallendo cursos de "+carne);
   var notes;
-  connection.query(`select Curso.Nombre,AsignacionAlumno.fkSeccion as Seccion, (select COUNT(*) from Instancia
-where fkCodigoCursoAlumno=AsignacionAlumno.fkCodigoCurso and fkCarne=AsignacionAlumno.fkCarne and Instancia.fkSeccionAlumno=AsignacionAlumno.fkSeccion and fkSemestreAlumno=AsignacionAlumno.fkSemestre and fkAnioAlumno=AsignacionAlumno.fkAnio and visto=0) as Contador
-from AsignacionAlumno 
-join Curso on fkCodigoCurso=CodigoCurso
-where AsignacionAlumno.fkCarne=? and fkSemestre=? and fkAnio=?
-group by Curso.Nombre,  Seccion`,[carne,semestreActual,anioActual], function(err, rows, fields) {
+  connection.query(`select curso.Nombre,asignacionalumno.fkSeccion as seccion, (select COUNT(*) from instancia
+where fkCodigoCursoAlumno=asignacionalumno.fkCodigoCurso and fkCarne=asignacionalumno.fkCarne and instancia.fkSeccionAlumno=asignacionalumno.fkSeccion and fkSemestreAlumno=asignacionalumno.fkSemestre and fkAnioAlumno=asignacionalumno.fkAnio and visto=0) as Contador
+from asignacionalumno 
+join curso on fkCodigoCurso=CodigoCurso
+where asignacionalumno.fkCarne=? and fkSemestre=? and fkAnio=?
+group by curso.Nombre,  seccion`,[carne,semestreActual,anioActual], function(err, rows, fields) {
     if (!err){
       //console.log('The solution is: ', JSON.stringify(rows));
       //console.log("EXTRACCION: "+rows[0].Nombre);
@@ -144,8 +144,8 @@ group by Curso.Nombre,  Seccion`,[carne,semestreActual,anioActual], function(err
 
 exports.insertMensajeMaestro=function(username,curso,seccion,mensaje,socket){
   var notes;
-  connection.query(`insert into Mensaje(idMensaje,fkCodigoMaestro,fkCodigoCurso,fkSeccion,fkSemestre,fkAnio,mensaje) values(0,?,(select CodigoCurso
-from Curso where Nombre=?),?,?,?,?);`,[username,curso,seccion,semestreActual,anioActual,mensaje], function(err, rows, fields) {
+  connection.query(`insert into mensaje(idMensaje,fkCodigoMaestro,fkCodigoCurso,fkSeccion,fkSemestre,fkAnio,mensaje) values(0,?,(select CodigoCurso
+from curso where Nombre=?),?,?,?,?);`,[username,curso,seccion,semestreActual,anioActual,mensaje], function(err, rows, fields) {
     if (!err){
       notes=1;
     }
@@ -164,7 +164,7 @@ from Curso where Nombre=?),?,?,?,?);`,[username,curso,seccion,semestreActual,ani
 
 exports.publicar=function(CodigoMaestro,para,contenido,titulo,socket,socketon){
   var notes;
-  connection.query(`insert into Publicacion(idPublicacion,para,fkCodigoMaestro,contenido,titulo) values(0,?,?,?,?);`,[para,CodigoMaestro,contenido,titulo], function(err, rows, fields) {
+  connection.query(`insert into publicacion(idPublicacion,para,fkCodigoMaestro,contenido,titulo) values(0,?,?,?,?);`,[para,CodigoMaestro,contenido,titulo], function(err, rows, fields) {
     if (!err){
       notes = rows;
       notes="{\"publicacion\":[";
@@ -224,7 +224,7 @@ exports.getPublicacion=function(para,pagination,socket){
 exports.getLastPublicacion=function(para,lastId,socket){
   var notes;
   var lengthRows=0;
-  connection.query(`select idPublicacion,DATE_FORMAT(fecha,'%Y-%m-%d %H:%i') As fecha, contenido, para from Publicacion where (para=0 or para=?) and idPublicacion>? order by fecha desc limit 0,10;`,[para,lastId], function(err, rows, fields) {
+  connection.query(`select idPublicacion,DATE_FORMAT(fecha,'%Y-%m-%d %H:%i') As fecha, contenido, para from publicacion where (para=0 or para=?) and idPublicacion>? order by fecha desc limit 0,10;`,[para,lastId], function(err, rows, fields) {
     if (!err){
       lengthRows=rows.length;
       notes="{\"publicacion\":[";
@@ -249,7 +249,7 @@ exports.getLastPublicacion=function(para,lastId,socket){
 
 exports.authPublication=function(CodigoMaestro,socket){
   var notes;
-  connection.query(`select tipo from Maestro where CodigoMaestro=?`,[CodigoMaestro], function(err, rows, fields) {
+  connection.query(`select tipo from maestro where CodigoMaestro=?`,[CodigoMaestro], function(err, rows, fields) {
     if (!err){
       if(rows.length>0){
         notes=rows[0].tipo;
@@ -299,7 +299,7 @@ join sesion on sesion.cui=alumno.carne`, function(err, rows, fields) {
 
 function notificarTodosMaestro (notesContent,socket){
   var notes;
-  connection.query(`select Maestro.codigomaestro as codigomaestro, sesion.llave as keyChain from Maestro
+  connection.query(`select maestro.codigomaestro as codigomaestro, sesion.llave as keyChain from maestro
 join sesion on sesion.cui=maestro.codigomaestro`, function(err, rows, fields) {
     if (!err){
       notes=rows;
@@ -346,7 +346,7 @@ exports.deleteSesion=function(username,callback){
 
 exports.registrarAlumno=function(username,password,codigo,socket){
   var notes;
-  connection.query(`insert into Alumno values(?,?,?)`,[codigo,username,password], function(err, rows, fields) {
+  connection.query(`insert into alumno values(?,?,?)`,[codigo,username,password], function(err, rows, fields) {
     if (!err){
       notes="exitoso";
     }
@@ -383,7 +383,7 @@ exports.registrarSesion=function(username,keyChain,socket){
 
 exports.asignarCurso=function(username,curso,seccion,socket){
   var notes;
-  connection.query(`insert into AsignacionAlumno(fkCarne,fkCodigoCurso,fkSeccion,fkSemestre,fkAnio) values(?,(select CodigoCurso from Curso where nombre=?),?,?,?)`,[username,curso,seccion,semestreActual,anioActual], function(err, rows, fields) {
+  connection.query(`insert into asignacionalumno(fkCarne,fkCodigoCurso,fkSeccion,fkSemestre,fkAnio) values(?,(select CodigoCurso from Curso where nombre=?),?,?,?)`,[username,curso,seccion,semestreActual,anioActual], function(err, rows, fields) {
     if (!err){
       notes="exitoso";
     }
@@ -401,7 +401,7 @@ exports.asignarCurso=function(username,curso,seccion,socket){
 
 exports.registrarMaestro=function(username,password,codigo,socket){
   var notes;
-  connection.query(`insert into Maestro values (?,?,?,0);`,[codigo,username,password], function(err, rows, fields) {
+  connection.query(`insert into maestro values (?,?,?,0);`,[codigo,username,password], function(err, rows, fields) {
     if (!err){
       notes="exitoso";
     }
@@ -419,11 +419,11 @@ exports.registrarMaestro=function(username,password,codigo,socket){
 
 function listaAlumnos(curso,seccion,mensaje,socket){
   var notes;
-  connection.query(`select fkCarne as Carne, fkSeccion as Seccion, Curso.Nombre as Curso, sesion.llave as keyChain
-from AsignacionAlumno
-join Curso on Curso.CodigoCurso=AsignacionAlumno.fkCodigoCurso
+  connection.query(`select fkCarne as Carne, fkSeccion as Seccion, curso.Nombre as Curso, sesion.llave as keyChain
+from asignacionalumno
+join curso on curso.CodigoCurso=asignacionalumno.fkCodigoCurso
 join sesion on sesion.cui = asignacionalumno.fkCarne
-where AsignacionAlumno.fkSemestre=? and AsignacionAlumno.fkAnio=? and Curso.Nombre=? and AsignacionAlumno.fkSeccion=?`,[semestreActual,anioActual,curso,seccion], function(err, rows, fields) {
+where asignacionalumno.fkSemestre=? and asignacionalumno.fkAnio=? and curso.Nombre=? and asignacionalumno.fkSeccion=?`,[semestreActual,anioActual,curso,seccion], function(err, rows, fields) {
     if (!err){
       notes=rows;
     }
@@ -449,13 +449,13 @@ where AsignacionAlumno.fkSemestre=? and AsignacionAlumno.fkAnio=? and Curso.Nomb
 
 function notificarAlumnos (username,socket){
   var notes;
-  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,AsignacionAlumno.fkSeccion as Seccion
-from Instancia  
-join AsignacionAlumno on fkCodigoCursoAlumno=fkCodigoCurso and Instancia.fkCarne=AsignacionAlumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
-join Curso on AsignacionAlumno.fkCodigoCurso=CodigoCurso
-join Mensaje on Instancia.fkMensaje=Mensaje.idMensaje
-where AsignacionAlumno.fkCarne=? and AsignacionAlumno.fkSemestre=? and AsignacionAlumno.fkAnio=? and Instancia.visto=0
-order by Mensaje.fecha desc limit 5;`,[username,semestreActual,anioActual], function(err, rows, fields) {
+  connection.query(`select curso.Nombre As Curso,mensaje.mensaje As mensaje,asignacionalumno.fkSeccion as Seccion
+from instancia  
+join asignacionalumno on fkCodigoCursoAlumno=fkCodigoCurso and instancia.fkCarne=asignacionalumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
+join curso on asignacionalumno.fkCodigoCurso=CodigoCurso
+join mensaje on instancia.fkMensaje=mensaje.idMensaje
+where asignacionalumno.fkCarne=? and asignacionalumno.fkSemestre=? and asignacionalumno.fkAnio=? and instancia.visto=0
+order by mensaje.fecha desc limit 5;`,[username,semestreActual,anioActual], function(err, rows, fields) {
     if (!err){
       notes="{\"arreglo\":[";
       for(var i in rows){
@@ -476,7 +476,7 @@ order by Mensaje.fecha desc limit 5;`,[username,semestreActual,anioActual], func
             
   exports.getAlumnos= function(curso,seccion,socket){
   var notes;
-  connection.query(`select fkCarne as carne, Alumno.Nombre as nombre from asignacionalumno 
+  connection.query(`select fkCarne as carne, alumno.Nombre as nombre from asignacionalumno 
   join curso on curso.codigocurso=asignacionalumno.fkcodigocurso 
   join alumno on alumno.carne=asignacionalumno.fkCarne 
   where curso.nombre=? and fkseccion=? and fksemestre=? and fkanio=?;`,[curso,seccion,semestreActual,anioActual], function(err, rows, fields) {
@@ -500,10 +500,10 @@ order by Mensaje.fecha desc limit 5;`,[username,semestreActual,anioActual], func
 
 exports.cambiarVisibilidad=function(carne,curso,seccion){
   console.log(carne+ "pide cambiar la visilidad de los mensajes del curso "+curso);
-  connection.query(`UPDATE Instancia 
-join AsignacionAlumno on fkCodigoCursoAlumno=fkCodigoCurso and Instancia.fkCarne=AsignacionAlumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
-join Curso on fkCodigoCursoAlumno=Curso.CodigoCurso
-SET visto=1 WHERE visto=0 and AsignacionAlumno.fkCarne=? and Curso.Nombre=? and AsignacionAlumno.fkSeccion=? and fkAnioAlumno=? and fkSemestreAlumno=?`,[carne,curso,seccion,anioActual,semestreActual], function(err, rows, fields) {
+  connection.query(`UPDATE instancia 
+join asignacionalumno on fkCodigoCursoAlumno=fkCodigoCurso and instancia.fkCarne=asignacionalumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
+join curso on fkCodigoCursoAlumno=curso.CodigoCurso
+SET visto=1 WHERE visto=0 and asignacionalumno.fkCarne=? and curso.Nombre=? and asignacionalumno.fkSeccion=? and fkAnioAlumno=? and fkSemestreAlumno=?`,[carne,curso,seccion,anioActual,semestreActual], function(err, rows, fields) {
     if (!err){
       //console.log('The solution is: ', JSON.stringify(rows));
       //console.log("EXTRACCION: "+rows[0].Nombre);
@@ -518,13 +518,13 @@ SET visto=1 WHERE visto=0 and AsignacionAlumno.fkCarne=? and Curso.Nombre=? and 
 exports.getTopAlumno=function(carne,curso,seccion,inf,sup,socket){
   console.log(carne+ "pide mas mensajes del curso "+curso);
   var notes;
-  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,DATE_FORMAT(Mensaje.fecha,'%Y-%m-%d %H:%i') As Fecha,AsignacionAlumno.fkSeccion as Seccion, Instancia.visto As Visibilidad
-from Instancia  
-join AsignacionAlumno on fkCodigoCursoAlumno=fkCodigoCurso and Instancia.fkCarne=AsignacionAlumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
-join Curso on AsignacionAlumno.fkCodigoCurso=CodigoCurso
-join Mensaje on Instancia.fkMensaje=Mensaje.idMensaje
-where AsignacionAlumno.fkCarne=? and AsignacionAlumno.fkSemestre=? and AsignacionAlumno.fkAnio=? and Curso.Nombre=? and AsignacionAlumno.fkSeccion=?
-order by Mensaje.fecha desc limit `+inf+`,`+sup,[carne,semestreActual,anioActual,curso,seccion], function(err, rows, fields) {
+  connection.query(`select curso.Nombre As Curso,mensaje.mensaje As Mensaje,DATE_FORMAT(Mensaje.fecha,'%Y-%m-%d %H:%i') As Fecha,asignacionalumno.fkSeccion as Seccion, instancia.visto As Visibilidad
+from instancia  
+join asignacionalumno on fkCodigoCursoAlumno=fkCodigoCurso and instancia.fkCarne=asignacionalumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
+join curso on asignacionalumno.fkCodigoCurso=CodigoCurso
+join mensaje on instancia.fkMensaje=mensaje.idMensaje
+where asignacionalumno.fkCarne=? and asignacionalumno.fkSemestre=? and asignacionalumno.fkAnio=? and curso.Nombre=? and asignacionalumno.fkSeccion=?
+order by mensaje.fecha desc limit `+inf+`,`+sup,[carne,semestreActual,anioActual,curso,seccion], function(err, rows, fields) {
     if (!err){
       notes="{\"arreglo\":[";
       for(var i in rows){
@@ -547,13 +547,13 @@ order by Mensaje.fecha desc limit `+inf+`,`+sup,[carne,semestreActual,anioActual
 exports.getMensajesAlumno=function(carne,curso,seccion,socket){
   console.log(carne+ "pide mas mensajes del curso "+curso);
   var notes;
-  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,DATE_FORMAT(Mensaje.fecha,'%Y-%m-%d %H:%i') as Fecha,AsignacionAlumno.fkSeccion as Seccion, Instancia.visto As Visibilidad
-from Instancia  
-join AsignacionAlumno on fkCodigoCursoAlumno=fkCodigoCurso and Instancia.fkCarne=AsignacionAlumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
-join Curso on AsignacionAlumno.fkCodigoCurso=CodigoCurso
-join Mensaje on Instancia.fkMensaje=Mensaje.idMensaje
-where AsignacionAlumno.fkCarne=? and AsignacionAlumno.fkSemestre=? and AsignacionAlumno.fkAnio=? and Curso.Nombre=? and AsignacionAlumno.fkSeccion=?
-order by Mensaje.fecha desc limit 10;`,[carne,semestreActual,anioActual,curso,seccion], function(err, rows, fields) {
+  connection.query(`select curso.Nombre As Curso,mensaje.mensaje As Mensaje,DATE_FORMAT(mensaje.fecha,'%Y-%m-%d %H:%i') as Fecha,asignacionalumno.fkSeccion as Seccion, instancia.visto As Visibilidad
+from instancia  
+join asignacionalumno on fkCodigoCursoAlumno=fkCodigoCurso and instancia.fkCarne=asignacionalumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
+join curso on asignacionalumno.fkCodigoCurso=CodigoCurso
+join mensaje on instancia.fkMensaje=mensaje.idMensaje
+where asignacionalumno.fkCarne=? and asignacionalumno.fkSemestre=? and asignacionalumno.fkAnio=? and curso.Nombre=? and asignacionalumno.fkSeccion=?
+order by mensaje.fecha desc limit 10;`,[carne,semestreActual,anioActual,curso,seccion], function(err, rows, fields) {
     if (!err){
       notes="{\"arreglo\":[";
       for(var i in rows){
@@ -576,11 +576,11 @@ order by Mensaje.fecha desc limit 10;`,[carne,semestreActual,anioActual,curso,se
 exports.getMensajesMaestro=function(codigo,curso,seccion,socket){
   console.log(codigo+ "pide mas mensajes del curso "+curso);
   var notes;
-  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,Mensaje.fkSeccion as Seccion,DATE_FORMAT(Mensaje.fecha,'%Y-%m-%d %H:%i') as Fecha
-from Mensaje  
-join Curso on Mensaje.fkCodigoCurso=CodigoCurso
-where Mensaje.fkCodigoMaestro=? and Mensaje.fkSemestre=? and Mensaje.fkAnio=? and Curso.Nombre=? and Mensaje.fkSeccion=?
-order by Mensaje.fecha desc limit 10`,[codigo,semestreActual,anioActual,curso,seccion], function(err, rows, fields) {
+  connection.query(`select curso.Nombre As Curso,mensaje.mensaje As Mensaje,mensaje.fkSeccion as Seccion,DATE_FORMAT(Mensaje.fecha,'%Y-%m-%d %H:%i') as Fecha
+from mensaje  
+join curso on mensaje.fkCodigoCurso=CodigoCurso
+where mensaje.fkCodigoMaestro=? and mensaje.fkSemestre=? and mensaje.fkAnio=? and curso.Nombre=? and mensaje.fkSeccion=?
+order by mensaje.fecha desc limit 10`,[codigo,semestreActual,anioActual,curso,seccion], function(err, rows, fields) {
     if (!err){
       notes="{\"arreglo\":[";
       for(var i in rows){
@@ -603,11 +603,11 @@ order by Mensaje.fecha desc limit 10`,[codigo,semestreActual,anioActual,curso,se
 exports.getTopMaestro=function(codigo,curso,seccion,inf,sup,socket){
   console.log(codigo+ "pide mas mensajes del curso "+curso);
   var notes;
-  connection.query(`select Curso.Nombre As Curso,Mensaje.mensaje As Mensaje,DATE_FORMAT(Mensaje.fecha,'%Y-%m-%d %H:%i') As Fecha,Mensaje.fkSeccion as Seccion,Mensaje.fecha
-from Mensaje  
-join Curso on Mensaje.fkCodigoCurso=CodigoCurso
-where Mensaje.fkCodigoMaestro=? and Mensaje.fkSemestre=? and Mensaje.fkAnio=? and Curso.Nombre=? and Mensaje.fkSeccion=?
-order by Mensaje.fecha desc limit `+inf+`,`+sup,[codigo,semestreActual,anioActual,curso,seccion], function(err, rows, fields) {
+  connection.query(`select curso.Nombre As Curso,mensaje.mensaje As Mensaje,DATE_FORMAT(mensaje.fecha,'%Y-%m-%d %H:%i') As Fecha,mensaje.fkSeccion as Seccion,mensaje.fecha
+from mensaje  
+join curso on mensaje.fkCodigoCurso=CodigoCurso
+where mensaje.fkCodigoMaestro=? and mensaje.fkSemestre=? and mensaje.fkAnio=? and curso.Nombre=? and mensaje.fkSeccion=?
+order by mensaje.fecha desc limit `+inf+`,`+sup,[codigo,semestreActual,anioActual,curso,seccion], function(err, rows, fields) {
     if (!err){
       notes="{\"arreglo\":[";
       for(var i in rows){
@@ -631,12 +631,12 @@ order by Mensaje.fecha desc limit `+inf+`,`+sup,[codigo,semestreActual,anioActua
 exports.getListadoCursos=function(socket){
   //console.log(carne+ "pide mas mensajes del curso "+curso);
   var notes;
-  connection.query(`select Curso.Nombre as Curso, AsignacionMaestro.fkSeccion as Seccion, Maestro.Nombre as Maestro
-from AsignacionMaestro
-join Curso on Curso.CodigoCurso=AsignacionMaestro.fkCodigoCurso
-join Maestro on Maestro.CodigoMaestro=AsignacionMaestro.fkCodigoMaestro
-where AsignacionMaestro.fkSemestre=? and AsignacionMaestro.fkAnio=?
-order by Curso.Nombre,AsignacionMaestro.fkSeccion,Maestro asc`,[semestreActual,anioActual], function(err, rows, fields) {
+  connection.query(`select curso.Nombre as Curso, asignacionmaestro.fkSeccion as Seccion, maestro.Nombre as Maestro
+from asignacionmaestro
+join curso on curso.CodigoCurso=asignacionmaestro.fkCodigoCurso
+join maestro on maestro.CodigoMaestro=asignacionmaestro.fkCodigoMaestro
+where asignacionmaestro.fkSemestre=? and asignacionmaestro.fkAnio=?
+order by curso.Nombre,asignacionmaestro.fkSeccion,Maestro asc`,[semestreActual,anioActual], function(err, rows, fields) {
     if (!err){
       notes="{\"arreglo\":[";
       for(var i in rows){

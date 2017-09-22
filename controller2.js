@@ -1,11 +1,11 @@
-  var credentials =require('./local.js');
-  var socket = io.connect(credentials.domainWithPort, { 'forceNew': true });
+  var socket = io.connect(domainWithPort, { 'forceNew': true });
   var username='1';
   var curso='Materiales';
   var seccion='A';
   socket.on('connect', function(){
   });
 
+console.log("cre from cli "+domainWithPort);
   socket.on("responseAutenticar",function(msj){
     inToTheSystem(msj)
   });

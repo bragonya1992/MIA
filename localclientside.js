@@ -1,0 +1,1 @@
+var domainWithPort = 'localhost:8080';

@@ -1,5 +1,4 @@
-  var credentials =require('./local.js');
-  var socket = io.connect(credentials.domainWithPort, { 'forceNew': true });
+  var socket = io.connect(domainWithPort, { 'forceNew': true });
   var username='';
   var curso='';
   var seccion='';
@@ -10,6 +9,8 @@
   	
     socket.emit('listaCursosMaestro',"{\"username\":\""+username+"\"}");
   });
+
+  console.log("cre from cli "+domainWithPort);
 
   socket.on("recibirMensajes",function(msj){
   	renderMsj(msj)
