@@ -88,8 +88,8 @@ public class Autenticacion extends AppCompatActivity {
 
                 }
             });*/
-
-            this.startActivity(new Intent(this, principal.class).putExtra("speech",false));
+            sm.setShowTutorial(false);
+            this.startActivity(new Intent(this, principal.class));
             this.finish();
         }else{
             /*Tooltip tooltip = new Tooltip.Builder(fab).setGravity(Gravity.TOP)
@@ -160,7 +160,8 @@ public class Autenticacion extends AppCompatActivity {
     public static void entrar(String nombre, String carne, int role){
         Autenticacion.sm.createLoginSession(nombre,role,carne);
         so.close();
-        mContext.startActivity(new Intent(mContext, principal.class).putExtra("speech",true));
+        sm.setShowTutorial(true);
+        mContext.startActivity(new Intent(mContext, principal.class));
         final Activity activity= actividad;
 /*        ServicioNotificacionesFARUSAC.newInstance(activity, new SocketIOSubscriber(){
             @Override

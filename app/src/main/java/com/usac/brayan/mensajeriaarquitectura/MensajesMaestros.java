@@ -92,7 +92,7 @@ public class MensajesMaestros extends AppCompatActivity {
 
             }
         });
-        if(principal.isTutorial) {
+        if(ServicioNotificacionesFARUSAC.sm.showTutorial()) {
             new MaterialTapTargetPrompt.Builder(MensajesMaestros.this)
                     .setTarget(R.id.reads)
                     .setPrimaryText("¡Mira quienes son tus Alumnos!")
@@ -107,7 +107,7 @@ public class MensajesMaestros extends AppCompatActivity {
                         public void onHidePromptComplete() {
                             principal.steps=principal.steps-1;
                             if (principal.steps==0) {
-                                principal.isTutorial=false;
+                                ServicioNotificacionesFARUSAC.sm.setShowTutorial(false);
                             }
                         }
                     })

@@ -42,6 +42,12 @@ public class ServicioNotificacionesFARUSAC{
         //verifyStatusSocket();
     }
 
+    public static SessionManager getSessionManager(Context c){
+        if(sm==null)
+            sm= new SessionManager(c);
+        return sm;
+    }
+
 /*    public static void verifyStatusSocket(){
         if(timer==null) {
             timer = new CountDownTimer(3000, 1000) {

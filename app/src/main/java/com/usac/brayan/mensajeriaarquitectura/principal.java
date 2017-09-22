@@ -100,7 +100,6 @@ public class principal extends AppCompatActivity
     private TextView name_info;
     public static int steps=0;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
-    public static boolean isTutorial=false;
     TextToSpeech t1;
 
     @Override
@@ -223,9 +222,7 @@ public class principal extends AppCompatActivity
             }
         });
 
-        boolean speeching=getIntent().getBooleanExtra("speech",false);
-        isTutorial=speeching;
-        if(speeching){
+        if(ServicioNotificacionesFARUSAC.sm.showTutorial()){
             t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
                 @Override
                 public void onInit(int status) {
@@ -584,7 +581,7 @@ public class principal extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if(isTutorial) {
+        if(ServicioNotificacionesFARUSAC.sm.showTutorial()) {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             // Create and show the dialog.
             DialogConfirmacion newFragment = new DialogConfirmacion();
@@ -611,14 +608,10 @@ public class principal extends AppCompatActivity
             }
             showLoader();
         }
-        if(principal.listaCursos!=null) {
-            if (principal.listaCursos.size()==0) {
-                if (Autenticacion.sm.getRole() == 2) {
-                    ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
-                } else {
-                    ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
-                }
-            }
+        if (Autenticacion.sm.getRole() == 2) {
+            ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
+        } else {
+            ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
         }
         mIsInForegroundMode = true;
     }
@@ -738,7 +731,7 @@ public class principal extends AppCompatActivity
                                                         sleep(5000);
                                                         steps=steps-1;
                                                     if (steps==0) {
-                                                        isTutorial=false;
+                                                        ServicioNotificacionesFARUSAC.sm.setShowTutorial(false);
                                                     }
                                                         snack.dismiss();
                                                 } catch (InterruptedException e) {

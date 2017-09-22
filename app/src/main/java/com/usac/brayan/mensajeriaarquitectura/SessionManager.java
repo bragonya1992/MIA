@@ -34,6 +34,7 @@ public class SessionManager {
     public static final String CARNE = "CARNE";
     public static final String LASTPUBLICATIONREGISTER = "LASTPUBLICATIONREGISTER";
     public static final String TOKEN = "TOKEN";
+    public static final String TUTORIAL = "TUTORIAL";
 
     // Constructor
     public SessionManager(Context context){
@@ -62,6 +63,14 @@ public class SessionManager {
 
     public int getLastPublicationRegister(){
         return pref.getInt(LASTPUBLICATIONREGISTER,-1);
+    }
+    public boolean showTutorial(){
+        return pref.getBoolean(TUTORIAL,false);
+    }
+
+    public void setShowTutorial(boolean value){
+        editor.putBoolean(TUTORIAL,value);
+        editor.commit();
     }
 
     public String getToken(){

@@ -18,8 +18,6 @@ public class DialogConfirmacion extends DialogFragment {
     }
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-
         AlertDialog.Builder builder =
                 new AlertDialog.Builder(getActivity());
 
@@ -34,6 +32,7 @@ public class DialogConfirmacion extends DialogFragment {
                 })
                 .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        ServicioNotificacionesFARUSAC.getSessionManager(getContext()).setShowTutorial(false);
                         dialog.cancel();
                     }
                 });

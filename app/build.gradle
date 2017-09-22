@@ -19,7 +19,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         multiDexEnabled true
-        versionCode 13
+        versionCode 15
         versionName "3.0"
         manifestPlaceholders = [onesignal_app_id: "606aa01a-676b-4a6c-89da-37da13078997",
                                 // Project number pulled from dashboard, local value is ignored.
@@ -52,6 +52,6 @@ dependencies {
     compile 'com.github.vihtarb:tooltip:0.1.9'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'io.reactivex.rxjava2:rxjava:2.1.0'
-    compile 'com.onesignal:OneSignal:[3.5.3,4.0.0)'
+    compile 'com.onesignal:OneSignal:3.5.8'
     compile 'uk.co.samuelwall:material-tap-target-prompt:1.1.4'
 }
