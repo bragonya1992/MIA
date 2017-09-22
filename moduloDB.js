@@ -85,7 +85,7 @@ exports.autenticar=function(carne,pass,role,socket){
 
 exports.getCursosMaestro=function(CodigoMaestro,socket){
   var notes;
-  connection.query(`select curso.Nombre As Nombre,maestro.Nombre As Catedratico,asignacionmaestro.fkseccion as Seccion from asignacionmaestro 
+  connection.query(`select curso.Nombre As Nombre,maestro.Nombre As Catedratico,asignacionmaestro.fkSeccion as Seccion from asignacionmaestro 
 join curso on fkCodigoCurso=CodigoCurso 
 join maestro on CodigoMaestro=fkCodigoMaestro 
 where maestro.CodigoMaestro=? and asignacionmaestro.fkSemestre=? and AsignacionMaestro.fkAnio=?`,[CodigoMaestro,semestreActual,anioActual], function(err, rows, fields) {
