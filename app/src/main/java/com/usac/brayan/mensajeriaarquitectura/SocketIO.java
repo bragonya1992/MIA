@@ -169,20 +169,20 @@ public class SocketIO {
     }
 
     public void pedirCursosMaestro(){
-        mSocket.emit("listaCursosMaestro","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\"}");
+        mSocket.emit("listaCursosMaestro","{\"username\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getId()+"\"}");
     }
 
     public void authPublication(){
-        mSocket.emit("authPublication","{\"codigo\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\"}");
+        mSocket.emit("authPublication","{\"codigo\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getId()+"\"}");
     }
 
     public void getLastPublicacion(){
-        mSocket.emit("getLastPublicacion","{\"para\":\""+ServicioNotificacionesFARUSAC.sm.getRole()+"\",\"lastId\":\""+ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()+"\"}");
-        Log.d("SocketIO","getLastPublicacion "+"{\"para\":\""+ServicioNotificacionesFARUSAC.sm.getRole()+"\",\"lastId\":\""+ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()+"\"}");
+        mSocket.emit("getLastPublicacion","{\"para\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getRole()+"\",\"lastId\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getLastPublicationRegister()+"\"}");
+        Log.d("SocketIO","getLastPublicacion "+"{\"para\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getRole()+"\",\"lastId\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getLastPublicationRegister()+"\"}");
     }
 
     public void pedirCursosAlumno(){
-        mSocket.emit("listaCursosAlumno","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\"}");
+        mSocket.emit("listaCursosAlumno","{\"username\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getId()+"\"}");
     }
 
     public void getPublicaciones(int para, int pagination){
@@ -190,7 +190,7 @@ public class SocketIO {
     }
 
     public void publicar(int para, String mensaje,String titulo){
-        mSocket.emit("publicar","{\"para\":\""+para+"\",\"contenido\":\""+mensaje+"\",\"codigo\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"titulo\":\""+titulo+"\"}");
+        mSocket.emit("publicar","{\"para\":\""+para+"\",\"contenido\":\""+mensaje+"\",\"codigo\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getId()+"\",\"titulo\":\""+titulo+"\"}");
     }
 
     public void pedirListadoCurso(){
@@ -199,19 +199,19 @@ public class SocketIO {
     }
 
     public void pedirTopAlumno(int i, int f,String curso, String seccion){
-        mSocket.emit("getTopAlumno","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"inicio\":\""+i+"\",\"final\":\""+f+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
+        mSocket.emit("getTopAlumno","{\"username\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getId()+"\",\"inicio\":\""+i+"\",\"final\":\""+f+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
     }
 
     public void pedirTopMaestro(int i, int f,String curso, String seccion){
-        mSocket.emit("getTopMaestro","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"inicio\":\""+i+"\",\"final\":\""+f+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
+        mSocket.emit("getTopMaestro","{\"username\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getId()+"\",\"inicio\":\""+i+"\",\"final\":\""+f+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
     }
 
     public void pedirMensajesAlumno(String curso, String seccion){
-        mSocket.emit("getMensajesAlumno","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
+        mSocket.emit("getMensajesAlumno","{\"username\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getId()+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
     }
 
     public void pedirMensajesMaestro(String curso, String seccion){
-        mSocket.emit("getMensajesMaestro","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
+        mSocket.emit("getMensajesMaestro","{\"username\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getId()+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
     }
 
     public void getAlumnos(String curso, String seccion){
@@ -219,22 +219,22 @@ public class SocketIO {
     }
 
     public void cambiarVisibilidad(String curso, String seccion){
-        mSocket.emit("cambiarVisibilidad","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
+        mSocket.emit("cambiarVisibilidad","{\"username\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getId()+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
     }
 
     public void enviarMensaje(String curso, String seccion,String mensaje){
-        mSocket.emit("sendMessage","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\",\"mensaje\":\""+mensaje+"\"}");
+        mSocket.emit("sendMessage","{\"username\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getId()+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\",\"mensaje\":\""+mensaje+"\"}");
     }
 
     public void enviarAsignacionCurso(String curso, String seccion){
-        mSocket.emit("enviarAsignacionCurso","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
+        mSocket.emit("enviarAsignacionCurso","{\"username\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getId()+"\",\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\"}");
     }
 
 
     public void deleteSesion(){
-        String cui=ServicioNotificacionesFARUSAC.sm.getId();
-        Log.d("deleteSesion",ServicioNotificacionesFARUSAC.sm.getId());
-        mSocket.emit("deleteSesion","{\"username\":\""+ServicioNotificacionesFARUSAC.sm.getId()+"\"}",new Ack() {
+        String cui=ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getId();
+        Log.d("deleteSesion",ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getId());
+        mSocket.emit("deleteSesion","{\"username\":\""+ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getId()+"\"}",new Ack() {
             @Override
             public void call(Object... args) {
                 String response = (String) args[0];
@@ -282,7 +282,7 @@ public class SocketIO {
                                 @Override
                                 public void idsAvailable(String userId, String registrationId) {
                                     Log.d("debug", "User:" + userId);
-                                    ServicioNotificacionesFARUSAC.sm.setToken(userId);
+                                    ServicioNotificacionesFARUSAC.getSessionManager(miContexto).setToken(userId);
 
                                 }
                             });
@@ -437,7 +437,7 @@ public class SocketIO {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                        if (ServicioNotificacionesFARUSAC.sm.getRole() == 2) {
+                        if (ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getRole() == 2) {
                             try {
                                 LinkedList<ChatMessage> list = MensajesManager.convertJsonToMensaje(args[0].toString().trim());
                                 int total=list.size()-1;
@@ -495,7 +495,7 @@ public class SocketIO {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    if (ServicioNotificacionesFARUSAC.sm.getRole() == 2) {
+                    if (ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getRole() == 2) {
 
                     } else {
                         try {
@@ -544,7 +544,7 @@ public class SocketIO {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
+                    if(ServicioNotificacionesFARUSAC.getSessionManager(miContexto).getRole()==2) {
                         try {
                             LinkedList<ChatMessage> list =MensajesManager.convertJsonToMensaje(args[0].toString().trim());
                             for(int i=0;i<list.size();i++){
@@ -625,7 +625,7 @@ public class SocketIO {
 
     public void cancelNotification()
     {
-        //you can get notificationManager like this:
+        //you can get notificationManager like miContexto:
         //notificationManage r= (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationManager notificationManager = (NotificationManager) miContexto.getSystemService(miContexto.NOTIFICATION_SERVICE);
         notificationManager.cancel("MensajeriaFARUSAC", NOTIFICATION_ID);

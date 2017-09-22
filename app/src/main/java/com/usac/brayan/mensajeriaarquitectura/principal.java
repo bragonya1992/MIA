@@ -196,11 +196,8 @@ public class principal extends AppCompatActivity
 
             }
         });
-        if(ServicioNotificacionesFARUSAC.sm==null){
-            ServicioNotificacionesFARUSAC.sm = new SessionManager(this);
-        }
 
-        if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
+        if(ServicioNotificacionesFARUSAC.getSessionManager(this).getRole()==2) {
             steps=2;
             ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
         }else{
@@ -213,7 +210,7 @@ public class principal extends AppCompatActivity
         OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
             @Override
             public void idsAvailable(String userId, String registrationId) {
-                if(!ServicioNotificacionesFARUSAC.sm.getToken().equals(userId)){
+                if(!ServicioNotificacionesFARUSAC.getSessionManager(mAc).getToken().equals(userId)){
                     ServicioNotificacionesFARUSAC.sc.registrarse(userId);
 
                     //so.close();
@@ -222,7 +219,7 @@ public class principal extends AppCompatActivity
             }
         });
 
-        if(ServicioNotificacionesFARUSAC.sm.showTutorial()){
+        if(ServicioNotificacionesFARUSAC.getSessionManager(this).showTutorial()){
             t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
                 @Override
                 public void onInit(int status) {
@@ -230,7 +227,7 @@ public class principal extends AppCompatActivity
                         t1.setLanguage(new Locale("es", "MEX"));
                         t1.setPitch(0);
                         t1.setSpeechRate(0.95f);
-                        t1.speak("Bienvenido a mía "+ServicioNotificacionesFARUSAC.sm.getName()+" si deseas ver el tutorial, presiona aceptar, un gusto", TextToSpeech.QUEUE_FLUSH, null);
+                        t1.speak("Bienvenido a mía "+ServicioNotificacionesFARUSAC.getSessionManager(ct).getName()+" si deseas ver el tutorial, presiona aceptar, un gusto", TextToSpeech.QUEUE_FLUSH, null);
                     }
                 }
             });
@@ -363,13 +360,13 @@ public class principal extends AppCompatActivity
                     public void onComplete() {
                         super.onComplete();
                         if(publications_list.isEmpty()){
-                            ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
+                            ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.getSessionManager(ct).getRole(),pagination);
                         }else{
                             hideFallback();
                             hideLoader();
                         }
                         if(listaCursos.size()==0){
-                            if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
+                            if(ServicioNotificacionesFARUSAC.getSessionManager(ct).getRole()==2) {
                                 ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
                             }else{
                                 ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
@@ -396,13 +393,13 @@ public class principal extends AppCompatActivity
                 public void onComplete() {
                     super.onComplete();
                     if(publications_list.isEmpty()){
-                        ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
+                        ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.getSessionManager(ct).getRole(),pagination);
                     }else{
                         hideFallback();
                         hideLoader();
                     }
                     if(listaCursos.size()==0){
-                        if(ServicioNotificacionesFARUSAC.sm.getRole()==2) {
+                        if(ServicioNotificacionesFARUSAC.getSessionManager(ct).getRole()==2) {
                             ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
                         }else{
                             ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
@@ -462,14 +459,14 @@ public class principal extends AppCompatActivity
                             loading = false;
                             pagination=pagination+1;
                             showLoader();
-                            ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
+                            ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.getSessionManager(ct).getRole(),pagination);
                             //Do pagination.. i.e. fetch new data
                         }
                     }
                 }
             }
         });
-        //ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(),pagination);
+        //ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.getSessionManager(this).getRole(),pagination);
     }
 
     public static void addPublications(List<Publicacion> newMessages){
@@ -480,8 +477,8 @@ public class principal extends AppCompatActivity
             adapter.notifyDataSetChanged();
             loading = true;
             if (newMessages.size() > 0) {
-                if (newMessages.get(0).idPublicacion > ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()) {
-                    ServicioNotificacionesFARUSAC.sm.setLastPublicationRegister(newMessages.get(0).idPublicacion);
+                if (newMessages.get(0).idPublicacion > ServicioNotificacionesFARUSAC.getSessionManager(ct).getLastPublicationRegister()) {
+                    ServicioNotificacionesFARUSAC.getSessionManager(ct).setLastPublicationRegister(newMessages.get(0).idPublicacion);
                 }
             }
         }
@@ -495,8 +492,8 @@ public class principal extends AppCompatActivity
             adapter.notifyDataSetChanged();
             loading = true;
             if (newMessages.size() > 0) {
-                if (newMessages.get(0).idPublicacion > ServicioNotificacionesFARUSAC.sm.getLastPublicationRegister()) {
-                    ServicioNotificacionesFARUSAC.sm.setLastPublicationRegister(newMessages.get(0).idPublicacion);
+                if (newMessages.get(0).idPublicacion > ServicioNotificacionesFARUSAC.getSessionManager(ct).getLastPublicationRegister()) {
+                    ServicioNotificacionesFARUSAC.getSessionManager(ct).setLastPublicationRegister(newMessages.get(0).idPublicacion);
                 }
             }
         }
@@ -581,7 +578,7 @@ public class principal extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if(ServicioNotificacionesFARUSAC.sm.showTutorial()) {
+        if(ServicioNotificacionesFARUSAC.getSessionManager(this).showTutorial()) {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             // Create and show the dialog.
             DialogConfirmacion newFragment = new DialogConfirmacion();
@@ -601,10 +598,10 @@ public class principal extends AppCompatActivity
 
             if (Autenticacion.sm.getRole() == 2) {
                 ServicioNotificacionesFARUSAC.sc.pedirCursosMaestro();
-                ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(), pagination);
+                ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.getSessionManager(this).getRole(), pagination);
             } else {
                 ServicioNotificacionesFARUSAC.sc.pedirCursosAlumno();
-                ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.sm.getRole(), pagination);
+                ServicioNotificacionesFARUSAC.sc.getPublicaciones(ServicioNotificacionesFARUSAC.getSessionManager(this).getRole(), pagination);
             }
             showLoader();
         }
@@ -731,7 +728,7 @@ public class principal extends AppCompatActivity
                                                         sleep(5000);
                                                         steps=steps-1;
                                                     if (steps==0) {
-                                                        ServicioNotificacionesFARUSAC.sm.setShowTutorial(false);
+                                                        ServicioNotificacionesFARUSAC.getSessionManager(ct).setShowTutorial(false);
                                                     }
                                                         snack.dismiss();
                                                 } catch (InterruptedException e) {
