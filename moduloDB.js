@@ -383,7 +383,7 @@ exports.registrarSesion=function(username,keyChain,socket){
 
 exports.asignarCurso=function(username,curso,seccion,socket){
   var notes;
-  connection.query(`insert into asignacionalumno(fkCarne,fkCodigoCurso,fkSeccion,fkSemestre,fkAnio) values(?,(select CodigoCurso from Curso where nombre=?),?,?,?)`,[username,curso,seccion,semestreActual,anioActual], function(err, rows, fields) {
+  connection.query(`insert into asignacionalumno(fkCarne,fkCodigoCurso,fkSeccion,fkSemestre,fkAnio) values(?,(select CodigoCurso from curso where nombre=?),?,?,?)`,[username,curso,seccion,semestreActual,anioActual], function(err, rows, fields) {
     if (!err){
       notes="exitoso";
     }
