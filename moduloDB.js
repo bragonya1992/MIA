@@ -7,14 +7,35 @@ var FCM = require('fcm-node');
 var oneSignal = require('onesignal')('ZDA1ZTU4NDUtNjFjZC00ZTFhLWJiMGEtMzdlZGYyNjlmNjkz', '606aa01a-676b-4a6c-89da-37da13078997', true);
 var serverKey = 'AAAALWe_bTo:APA91bHzwpdBtswfdrkov_6_OCHddTgFubCkfKEwg5P51En4yvpWio8eToTHXb0spI-SGv1VSs53O6qteEPZ1Gxg6mUuqFii0uetSbrxgDKlPD8ekNjiJjlbNxF39EdtxIFCVU_X2DQv'; //put your server key here 
 var fcm = new FCM(serverKey);
-  var connection = mysql.createConnection({
+  var db_config= {
     host     : credentials.hostDB/*'localhost'*/,
     user     : credentials.userDB/*'root'*/,
     password : credentials.passwordDB,
     database : credentials.databaseName/*'nodeprueba2'*/
-  });
+  };
+  var connection;
+function handleDisconnect() {
+  connection = mysql.createConnection(db_config); // Recreate the connection, since
+                                                  // the old one cannot be reused.
 
-  connection.connect();
+  connection.connect(function(err) {              // The server is either down
+    if(err) {                                     // or restarting (takes a while sometimes).
+      console.log('error when connecting to db:', err);
+      setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
+    }                                     // to avoid a hot loop, and to allow our node script to
+  });                                     // process asynchronous requests in the meantime.
+                                          // If you're also serving http, display a 503 error.
+  connection.on('error', function(err) {
+    console.log('db error', err);
+    if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+      handleDisconnect();                         // lost due to either server restart, or a
+    } else {                                      // connnection idle timeout (the wait_timeout
+      throw err;                                  // server variable configures this)
+    }
+  });
+}
+
+handleDisconnect();
 
 exports.query=function(callback,nombre){
   connection.query('SELECT * from usuario where nombre=?',[nombre], function(err, rows, fields) {
@@ -88,7 +109,7 @@ exports.getCursosMaestro=function(CodigoMaestro,socket){
   connection.query(`select curso.Nombre As Nombre,maestro.Nombre As Catedratico,asignacionmaestro.fkSeccion as Seccion from asignacionmaestro 
 join curso on fkCodigoCurso=CodigoCurso 
 join maestro on CodigoMaestro=fkCodigoMaestro 
-where maestro.CodigoMaestro=? and asignacionmaestro.fkSemestre=? and AsignacionMaestro.fkAnio=?`,[CodigoMaestro,semestreActual,anioActual], function(err, rows, fields) {
+where maestro.CodigoMaestro=? and asignacionmaestro.fkSemestre=? and asignacionMaestro.fkAnio=?`,[CodigoMaestro,semestreActual,anioActual], function(err, rows, fields) {
     if (!err){
       //console.log('The solution is: ', JSON.stringify(rows));
       console.log("EXTRACCION: ");
@@ -115,7 +136,7 @@ where maestro.CodigoMaestro=? and asignacionmaestro.fkSemestre=? and AsignacionM
 exports.getCursosAlumno=function(carne,socket){
   console.log("Extrallendo cursos de "+carne);
   var notes;
-  connection.query(`select curso.Nombre,asignacionalumno.fkSeccion as seccion, (select COUNT(*) from instancia
+  connection.query(`select curso.Nombre,asignacionalumno.fkSeccion as Seccion, (select COUNT(*) from instancia
 where fkCodigoCursoAlumno=asignacionalumno.fkCodigoCurso and fkCarne=asignacionalumno.fkCarne and instancia.fkSeccionAlumno=asignacionalumno.fkSeccion and fkSemestreAlumno=asignacionalumno.fkSemestre and fkAnioAlumno=asignacionalumno.fkAnio and visto=0) as Contador
 from asignacionalumno 
 join curso on fkCodigoCurso=CodigoCurso
