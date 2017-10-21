@@ -2,13 +2,31 @@
   var username='';
   var curso='';
   var seccion='';
+  var datacookie = getCookieMIA();
   socket.on('connect', function(){
-    var json = JSON.parse(document.cookie);
+    console.log("actual datacookie from socket"+datacookie);
+    var json = JSON.parse(datacookie);
     username = json.carne;
   	socket.emit('app_user',"{\"username\":\""+username+"\",\"role\":\"maestro\"}");
   	
     socket.emit('listaCursosMaestro',"{\"username\":\""+username+"\"}");
   });
+
+  function getCookieMIA() {
+    if(document.cookie=="" || document.cookie==null || document.cookie == undefined){
+      return "{}";
+    }
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var cr = decodedCookie.split('MIAI');
+    if(cr.length>1){
+      var temp = cr[1];
+      var cl = temp.split('MIAE');
+      if(cl.length>0){
+        return cl[0];
+      }
+    }
+    return "{}";
+}
 
   console.log("cre from cli "+domainWithPort);
 
@@ -110,8 +128,10 @@ function closeSession(){
 }
 
 function verifySession(){
+
+    console.log("actual datacookie from verifySession"+datacookie);
     console.log("actual cookie"+document.cookie);
-  if(document.cookie=="" || document.cookie==null || document.cookie == undefined){
+  if(datacookie=="{}"){
     window.location.replace("/login.html");
   }
 }

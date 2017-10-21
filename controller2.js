@@ -6,6 +6,7 @@
   });
 
 console.log("cre from cli "+domainWithPort);
+console.log("actual cookie c2"+document.cookie);
   socket.on("responseAutenticar",function(msj){
     inToTheSystem(msj)
   });
@@ -106,8 +107,12 @@ $(function() {
       document.getElementById("myAlert").innerHTML=`<a href="#" class="close" onclick="$('#myAlert').hide()">&times;</a>
   Tus datos no son correctos, vuelve a intentarlo`;
     }else{
-      document.cookie= data;
+      setDataCookie(data);
       window.location.replace("/mensajeexpress.html");
     }
     document.getElementById("loader").style.display = "none";
+  }
+
+  function setDataCookie(data){
+      document.cookie = 'MIAI'+data+'MIAE';
   }
