@@ -109,7 +109,7 @@ exports.getCursosMaestro=function(CodigoMaestro,socket){
   connection.query(`select curso.Nombre As Nombre,maestro.Nombre As Catedratico,asignacionmaestro.fkSeccion as Seccion from asignacionmaestro 
 join curso on fkCodigoCurso=CodigoCurso 
 join maestro on CodigoMaestro=fkCodigoMaestro 
-where maestro.CodigoMaestro=? and asignacionmaestro.fkSemestre=? and asignacionMaestro.fkAnio=?`,[CodigoMaestro,semestreActual,anioActual], function(err, rows, fields) {
+where maestro.CodigoMaestro=? and asignacionmaestro.fkSemestre=? and asignacionmaestro.fkAnio=?`,[CodigoMaestro,semestreActual,anioActual], function(err, rows, fields) {
     if (!err){
       //console.log('The solution is: ', JSON.stringify(rows));
       console.log("EXTRACCION: ");
@@ -218,7 +218,7 @@ exports.publicar=function(CodigoMaestro,para,contenido,titulo,socket,socketon){
 exports.getPublicacion=function(para,pagination,socket){
   var notes;
   var realPaginationInf = pagination*10;
-  connection.query(`select idPublicacion,DATE_FORMAT(fecha,'%Y-%m-%d %H:%i') As fecha, contenido, para,titulo from Publicacion where para=0 or para=? order by fecha desc limit ?,10;`,[para,realPaginationInf], function(err, rows, fields) {
+  connection.query(`select idPublicacion,DATE_FORMAT(fecha,'%Y-%m-%d %H:%i') As fecha, contenido, para,titulo from publicacion where para=0 or para=? order by fecha desc limit ?,10;`,[para,realPaginationInf], function(err, rows, fields) {
     if (!err){
       notes="{\"publicacion\":[";
       for(var i in rows){
