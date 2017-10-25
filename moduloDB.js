@@ -289,8 +289,8 @@ exports.authPublication=function(CodigoMaestro,socket){
 
 function notificarTodosAlumnos (notesContent,socket){
   var notes;
-  connection.query(`select alumno.carne as carne, sesion.llave as keyChain from alumno
-join sesion on sesion.cui=alumno.carne`, function(err, rows, fields) {
+  connection.query(`select alumno.Carne as carne, sesion.llave as keyChain from alumno
+join sesion on sesion.cui=alumno.Carne`, function(err, rows, fields) {
     if (!err){
       notes=rows;
     }
@@ -320,8 +320,8 @@ join sesion on sesion.cui=alumno.carne`, function(err, rows, fields) {
 
 function notificarTodosMaestro (notesContent,socket){
   var notes;
-  connection.query(`select maestro.codigomaestro as codigomaestro, sesion.llave as keyChain from maestro
-join sesion on sesion.cui=maestro.codigomaestro`, function(err, rows, fields) {
+  connection.query(`select maestro.CodigoMaestro as CodigoMaestro, sesion.llave as keyChain from maestro
+join sesion on sesion.cui=maestro.CodigoMaestro`, function(err, rows, fields) {
     if (!err){
       notes=rows;
     }
@@ -470,7 +470,7 @@ where asignacionalumno.fkSemestre=? and asignacionalumno.fkAnio=? and curso.Nomb
 
 function notificarAlumnos (username,socket){
   var notes;
-  connection.query(`select curso.Nombre As Curso,mensaje.mensaje As mensaje,asignacionalumno.fkSeccion as Seccion
+  connection.query(`select curso.Nombre As Curso,mensaje.mensaje As Mensaje,asignacionalumno.fkSeccion as Seccion
 from instancia  
 join asignacionalumno on fkCodigoCursoAlumno=fkCodigoCurso and instancia.fkCarne=asignacionalumno.fkCarne and fkSeccionAlumno=fkSeccion and fkSemestreAlumno=fkSemestre and fkAnioAlumno=fkAnio
 join curso on asignacionalumno.fkCodigoCurso=CodigoCurso
@@ -597,7 +597,7 @@ order by mensaje.fecha desc limit 10;`,[carne,semestreActual,anioActual,curso,se
 exports.getMensajesMaestro=function(codigo,curso,seccion,socket){
   console.log(codigo+ "pide mas mensajes del curso "+curso);
   var notes;
-  connection.query(`select curso.Nombre As Curso,mensaje.mensaje As Mensaje,mensaje.fkSeccion as Seccion,DATE_FORMAT(Mensaje.fecha,'%Y-%m-%d %H:%i') as Fecha
+  connection.query(`select curso.Nombre As Curso,mensaje.mensaje As Mensaje,mensaje.fkSeccion as Seccion,DATE_FORMAT(mensaje.fecha,'%Y-%m-%d %H:%i') as Fecha
 from mensaje  
 join curso on mensaje.fkCodigoCurso=CodigoCurso
 where mensaje.fkCodigoMaestro=? and mensaje.fkSemestre=? and mensaje.fkAnio=? and curso.Nombre=? and mensaje.fkSeccion=?
