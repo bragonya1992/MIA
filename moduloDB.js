@@ -3,6 +3,7 @@ var date = new Date();
 var anioActual = 2016;//date.getFullYear();
 var mysql      = require('mysql');
 var credentials =require('./local.js');
+var request = require('request');
 var FCM = require('fcm-node');
 var oneSignal = require('onesignal')('ZDA1ZTU4NDUtNjFjZC00ZTFhLWJiMGEtMzdlZGYyNjlmNjkz', '606aa01a-676b-4a6c-89da-37da13078997', true);
 var serverKey = 'AAAALWe_bTo:APA91bHzwpdBtswfdrkov_6_OCHddTgFubCkfKEwg5P51En4yvpWio8eToTHXb0spI-SGv1VSs53O6qteEPZ1Gxg6mUuqFii0uetSbrxgDKlPD8ekNjiJjlbNxF39EdtxIFCVU_X2DQv'; //put your server key here 
@@ -366,21 +367,52 @@ exports.deleteSesion=function(username,callback){
 
 
 exports.registrarAlumno=function(username,password,codigo,socket){
-  var notes;
-  connection.query(`insert into alumno values(?,?,?)`,[codigo,username,password], function(err, rows, fields) {
-    if (!err){
-      notes="exitoso";
+  callbackForUserRegister(function(canRegister,name){
+    if(canRegister){
+      var notes;
+      connection.query(`insert into alumno values(?,?,?)`,[codigo,name,password], function(err, rows, fields) {
+        if (!err){
+          notes="exitoso";
+        }
+        else{
+          console.log('Error mientras se registrarba el usuario '+username+":"+err);
+          notes=err;
+        }
+      }).on('end', function(){
+                  console.log("salida on registrarAlumno: "+notes);
+                // console.log("estuiantes del curso seran extraidos");
+                 var cadena = "{\"estado\":\""+notes+"\"}";
+                 socket.emit("recibirEstadoRegistro", cadena);
+                });
+    }else{
+      console.log("salida on registrarAlumno: NO ES MIEMBRO DE FARUSAC");
+      // console.log("estuiantes del curso seran extraidos");
+       var cadena = "{\"estado\":\"registro erroneo porque no eres miembro de FARUSAC\"}";
+       socket.emit("recibirEstadoRegistro", cadena);
     }
-    else{
-      console.log('Error mientras se registrarba el usuario '+username+":"+err);
-      notes=err;
+  },"estudiante",codigo);
+}
+
+function callbackForUserRegister(callback,rol,id){
+  var options = {
+    uri: credentials.uriWs,
+    method: 'POST',
+    json: {
+      "auth":{"user":credentials.userWS,"passwd":credentials.pswWs},"rol":rol,"id":id
     }
-  }).on('end', function(){
-              console.log("salida on registrarAlumno: "+notes);
-            // console.log("estuiantes del curso seran extraidos");
-             var cadena = "{\"estado\":\""+notes+"\"}";
-             socket.emit("recibirEstadoRegistro", cadena);
-            });
+  };
+
+  request(options, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      if(body.error==true){
+        callback(false,"");
+      }else{
+        callback(true,body.nombre);
+      }
+    }else{
+      callback(false,"");
+    }
+  });
 }
 
 exports.registrarSesion=function(username,keyChain,socket){
@@ -421,21 +453,30 @@ exports.asignarCurso=function(username,curso,seccion,socket){
 }
 
 exports.registrarMaestro=function(username,password,codigo,socket){
-  var notes;
-  connection.query(`insert into maestro values (?,?,?,0);`,[codigo,username,password], function(err, rows, fields) {
-    if (!err){
-      notes="exitoso";
-    }
-    else{
-      console.log('Error mientras se registrarba el usuario '+username+":"+err);
-      notes=err;
-    }
-  }).on('end', function(){
-              console.log("salida on registrarMaestro: "+notes);
-            // console.log("estuiantes del curso seran extraidos");
-             var cadena = "{\"estado\":\""+notes+"\"}";
-             socket.emit("recibirEstadoRegistro", cadena);
-            });
+    callbackForUserRegister(function(canRegister,name){
+    if(canRegister){
+      var notes;
+      connection.query(`insert into maestro values (?,?,?,0);`,[codigo,name,password], function(err, rows, fields) {
+        if (!err){
+          notes="exitoso";
+        }
+        else{
+          console.log('Error mientras se registrarba el usuario '+username+":"+err);
+          notes=err;
+        }
+      }).on('end', function(){
+                  console.log("salida on registrarMaestro: "+notes);
+                // console.log("estuiantes del curso seran extraidos");
+                 var cadena = "{\"estado\":\""+notes+"\"}";
+                 socket.emit("recibirEstadoRegistro", cadena);
+                });
+    }else{
+        console.log("salida on registrarAlumno: NO ES MIEMBRO DE FARUSAC");
+        // console.log("estuiantes del curso seran extraidos");
+         var cadena = "{\"estado\":\"registro erroneo porque no eres miembro de FARUSAC\"}";
+         socket.emit("recibirEstadoRegistro", cadena);
+      }
+    },"docente",codigo);
 }
 
 function listaAlumnos(curso,seccion,mensaje,socket){
