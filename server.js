@@ -9,8 +9,8 @@ var contador=0;
 
 app.use(express.static(__dirname));
 
-app.get('/', function(req, res) {  
-  res.status(200).send("Hello World!");
+app.get('/crud', function(req, res) {  
+  res.sendFile('CRUD.html', {root: __dirname });
 });
 
 io.sockets.on('connection', function(socket) {  
@@ -150,7 +150,22 @@ io.sockets.on('connection', function(socket) {
   
   }).on('error', function(err) { console.log("handler error" +err) });
 
-  socket.on('getListadoCursos',function(){
+  socket.on('insertAsignacionMaestro',function(cad){
+    var peticion = JSON.parse(cad);
+      DB.insertAsignacionMaestro(peticion.username,peticion.curso,peticion.seccion,io.sockets.connected[this.id]);
+  }).on('error', function(err) { console.log("handler error" +err) });
+
+  socket.on('insertCurso',function(cad){
+    var peticion = JSON.parse(cad);
+      DB.insertCurso(peticion.codigo,peticion.nombre,io.sockets.connected[this.id]);
+  }).on('error', function(err) { console.log("handler error" +err) });
+
+  socket.on('updateSuperUser',function(cad){
+    var peticion = JSON.parse(cad);
+      DB.updateSuperUser(peticion.codigo,io.sockets.connected[this.id]);
+  }).on('error', function(err) { console.log("handler error" +err) });
+
+  socket.on('getAsignacionMaestro',function(){
       DB.getListadoCursos(io.sockets.connected[this.id]);
   }).on('error', function(err) { console.log("handler error" +err) });
 

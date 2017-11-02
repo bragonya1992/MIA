@@ -1,8 +1,8 @@
-var semestreActual=2;
-var date = new Date();
-var anioActual = 2016;//date.getFullYear();
-var mysql      = require('mysql');
 var credentials =require('./local.js');
+var semestreActual=credentials.semestreActual;
+var date = new Date();
+var anioActual = credentials.anioActual;//date.getFullYear();
+var mysql      = require('mysql');
 var request = require('request');
 var FCM = require('fcm-node');
 var oneSignal = require('onesignal')('ZDA1ZTU4NDUtNjFjZC00ZTFhLWJiMGEtMzdlZGYyNjlmNjkz', '606aa01a-676b-4a6c-89da-37da13078997', true);
@@ -715,6 +715,48 @@ order by curso.Nombre,asignacionmaestro.fkSeccion,Maestro asc`,[semestreActual,a
                 console.log("salida listado: "+notes);
                 socket.emit("recibirListadoCursos", notes);
             });;
+}
+
+exports.insertAsignacionMaestro=function(username,curso,seccion,socket){
+    var notes;
+    connection.query(`insert into asignacionmaestro(fkCodigoMaestro,fkCodigoCurso,fkSeccion,fkSemestre,fkAnio) values(?,?,?,?,?);`,[username,curso,seccion,semestreActual,anioActual], function(err, rows, fields) {
+      if (!err){
+        notes="exitoso";
+      }
+      else{
+        notes=err;
+      }
+    }).on('end', function(){
+              socket.emit("reciever", ""+notes);
+              });
+}
+
+exports.insertCurso=function(codigo,nombre,socket){
+  var notes;
+    connection.query(`insert into curso values(?,?);`,[codigo,nombre], function(err, rows, fields) {
+      if (!err){
+        notes="exitoso";
+      }
+      else{
+        notes=err;
+      }
+    }).on('end', function(){
+              socket.emit("reciever", ""+notes);
+              });
+}
+
+exports.updateSuperUser=function(codigo,socket){
+  var notes;
+    connection.query(`update maestro set tipo=1 where CodigoMaestro =?;`,[codigo], function(err, rows, fields) {
+        if (!err){
+          notes="exito";
+        }
+        else{
+          notes=err;
+        }
+      }).on('end', function(){
+              socket.emit("reciever", ""+notes);
+              });
 }
 
 exports.end =function(){

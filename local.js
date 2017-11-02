@@ -6,3 +6,5 @@ exports.domainWithPort = 'localhost:8080';
 exports.userWS = '';
 exports.pswWs = '';
 exports.uriWs = 'http://www.arquitectura.usac.edu.gt/rest/AuthMIA';
+exports.anioActual = 2016;
+exports.semestreActual=2;
