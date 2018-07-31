@@ -10,7 +10,7 @@ Tipo int
 )ENGINE=INNODB;
 
 create table curso(
-CodigoCurso int,
+CodigoCurso varchar(15),
 Nombre varchar(60) not null unique,
 primary key(CodigoCurso)
 )ENGINE=INNODB;
@@ -24,7 +24,7 @@ Contrasena varchar(30)
 
 create table asignacionmaestro(
 fkCodigoMaestro varchar(13),
-fkCodigoCurso int,
+fkCodigoCurso varchar(15),
 fkSeccion varchar(3) not null,
 fkSemestre int not null,
 fkAnio int not null,
@@ -36,7 +36,7 @@ fecha TIMESTAMP DEFAULT   CURRENT_TIMESTAMP
 
 create table asignacionalumno(
 fkCarne varchar(13),
-fkCodigoCurso int,
+fkCodigoCurso varchar(15),
 fkSeccion varchar(3),
 fkSemestre int not null,
 fkAnio int not null,
@@ -49,7 +49,7 @@ primary key (fkCarne,fkCodigoCurso,fkSeccion,fkSemestre,fkAnio)
 create table mensaje(
 idMensaje int primary key AUTO_INCREMENT,
 fkCodigoMaestro varchar(13),
-fkCodigoCurso int,
+fkCodigoCurso varchar(15),
 fkSeccion varchar(3),
 fkSemestre int not null,
 fkAnio int not null,
