@@ -7,7 +7,7 @@ BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE Cmensaje INT;
     DECLARE Cvisto INT;
-    DECLARE CcodigoCurso INT;
+    DECLARE CcodigoCurso varchar(15);
     DECLARE Ccarne varchar(13);
     DECLARE CSeccion varchar(3);
     DECLARE CSemestre INT;
