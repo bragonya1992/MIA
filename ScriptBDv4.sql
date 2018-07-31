@@ -62,7 +62,7 @@ mensaje varchar (1500) CHARACTER SET utf8mb4
 create table instancia(
 fkMensaje int,
 visto int not null,
-fkCodigoCursoAlumno int,
+fkCodigoCursoAlumno varchar(15),
 fkCarne varchar(13),
 fkSeccionAlumno varchar(3),
 fkSemestreAlumno int not null,
