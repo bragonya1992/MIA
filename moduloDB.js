@@ -400,7 +400,7 @@ function callbackForUserRegister(callback,rol,id){
     json: {
       "auth":{"user":credentials.userWS,"passwd":credentials.pswWs},"rol":rol,"id":id
     }
-  };
+  }; 
 
   request(options, function (error, response, body) {
     if (!error && response.statusCode == 200) {
@@ -411,6 +411,28 @@ function callbackForUserRegister(callback,rol,id){
       }
     }else{
       callback(false,"");
+    }
+  });
+}
+
+function callbackForAssignation(callback,id,codigoCurso,seccion){
+  var options = {
+    uri: credentials.uriWs,
+    method: 'POST',
+    json: {
+      "action":"verificarAsignacion","id":id,"anio":anioActual,"semestre":semestreActual,"evaluacion":1,"curso":codigoCurso,"seccion":seccion
+    }
+  }; 
+
+  request(options, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      if(body.error==true){
+        callback(false);
+      }else{
+        callback(body.result);
+      }
+    }else{
+      callback(false);
     }
   });
 }
@@ -435,21 +457,29 @@ exports.registrarSesion=function(username,keyChain,socket){
 
 
 exports.asignarCurso=function(username,curso,seccion,socket){
-  var notes;
-  connection.query(`insert into asignacionalumno(fkCarne,fkCodigoCurso,fkSeccion,fkSemestre,fkAnio) values(?,(select CodigoCurso from curso where nombre=?),?,?,?)`,[username,curso,seccion,semestreActual,anioActual], function(err, rows, fields) {
-    if (!err){
-      notes="exitoso";
+  callbackForAssignation(function(canAssig){
+    if(canAssig){
+      var notes;
+      connection.query(`insert into asignacionalumno(fkCarne,fkCodigoCurso,fkSeccion,fkSemestre,fkAnio) values(?,(select CodigoCurso from curso where nombre=?),?,?,?)`,[username,curso,seccion,semestreActual,anioActual], function(err, rows, fields) {
+        if (!err){
+          notes="exitoso";
+        }
+        else{
+          console.log('asignar curso '+username+" al curso "+curso+":"+err);
+          notes=err;
+        }
+      }).on('end', function(){
+                  console.log("asignar curso: "+notes);
+                // console.log("estuiantes del curso seran extraidos");
+                var cadena = "{\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\",\"estado\":\""+notes+"\"}";
+                socket.emit("recibirAsignacionCurso", cadena);
+                });
+    }else{
+      console.log(username+" al curso "+curso+": no tiene permisos");
+      socket.emit("recibirAsignacionCurso", "No tienes permisos para asignarte este curso");
     }
-    else{
-      console.log('Error mientras se asignaba el usuario '+username+" al curso "+curso+":"+err);
-      notes=err;
-    }
-  }).on('end', function(){
-              console.log("salida on asignarCurso: "+notes);
-            // console.log("estuiantes del curso seran extraidos");
-             var cadena = "{\"curso\":\""+curso+"\",\"seccion\":\""+seccion+"\",\"estado\":\""+notes+"\"}";
-             socket.emit("recibirAsignacionCurso", cadena);
-            });
+  },username,curso,seccion)
+  
 }
 
 exports.registrarMaestro=function(username,password,codigo,socket){
